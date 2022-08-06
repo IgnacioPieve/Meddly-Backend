@@ -1,9 +1,18 @@
 import random
 import string
 
-from sqlalchemy import Column, String, DateTime, Float
+from sqlalchemy import Column, String, DateTime, Float, Integer, ForeignKey
+from sqlalchemy.orm import relationship
+
 from database import Base, SessionLocal
 from models.utils import CRUD
+
+
+class Supervised(Base, CRUD):
+    __tablename__ = 'supervised'
+    id = Column(Integer, primary_key=True, index=True)
+    supervisor = Column(String, ForeignKey('user.id'), nullable=False, index=True)
+    supervised = Column(String, ForeignKey('user.id'), nullable=False, index=True)
 
 
 class User(Base, CRUD):
@@ -23,6 +32,17 @@ class User(Base, CRUD):
 
     def __init__(self, **kwargs):
         super().__init__(invitation=self.generate_code(), **kwargs)
+
+    @property
+    def supervisors(self):
+        a = {
+            "id": "1",
+            "email": "aahafkjha@gmail.com",
+            "first_name": "aaa",
+            "last_name": "aaaa",
+            "avatar": "aaaaa",
+        }
+        return [a, a]
 
     @staticmethod
     def generate_code():

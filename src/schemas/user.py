@@ -52,7 +52,7 @@ class UserSchema(UserUpdateSchema):
     created_at: datetime.datetime
     updated_at: datetime.datetime
     # diseases: list[str]
-    # supervisors: list[SupervisorModel]
+    supervisors: list[SupervisorSchema]
     # supervised: list[SupervisorModel]
     invitation: str
 
