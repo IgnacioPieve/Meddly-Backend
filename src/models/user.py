@@ -1,21 +1,20 @@
-import random
-import string
+from sqlalchemy import Column, String, DateTime, Float, Integer, ForeignKey, or_
+from sqlalchemy.orm import  relationship
 
-from sqlalchemy import Column, String, DateTime, Float, Integer, ForeignKey
-from sqlalchemy.orm import relationship
-
-from database import Base, SessionLocal
-from models.utils import CRUD
+from models.utils import CRUD, generate_code
+from config import translations
 
 
-class Supervised(Base, CRUD):
+class Supervised(CRUD):
     __tablename__ = 'supervised'
     id = Column(Integer, primary_key=True, index=True)
-    supervisor = Column(String, ForeignKey('user.id'), nullable=False, index=True)
-    supervised = Column(String, ForeignKey('user.id'), nullable=False, index=True)
+    supervisor_id = Column(String, ForeignKey('user.id'), nullable=False, index=True)
+    supervisor = relationship('User', backref='supervised_list', foreign_keys=[supervisor_id])
+    supervised_id = Column(String, ForeignKey('user.id'), nullable=False, index=True)
+    supervised = relationship('User', backref='supervisors_list', foreign_keys=[supervised_id])
 
 
-class User(Base, CRUD):
+class User(CRUD):
     __tablename__ = "user"
 
     id = Column(String, primary_key=True, index=True)
@@ -30,40 +29,35 @@ class User(Base, CRUD):
     birth = Column(DateTime, nullable=True)
     avatar = Column(String, nullable=True)
 
-    def __init__(self, **kwargs):
-        super().__init__(invitation=self.generate_code(), **kwargs)
+    def create(self):
+        self.invitation = self.generate_code()
+        return super().create()
+
+    def accept_invitation(self, invitation_code):
+        supervisor = User(self.db, User.invitation == invitation_code).get()
+        if supervisor is None:
+            raise translations['errors']['supervisors']['code_not_valid']
+        already_supervised = Supervised(self.db, or_(Supervised.supervisor == supervisor,
+                                                     Supervised.supervised == self)).get() is not None
+        if already_supervised:
+            raise translations['errors']['supervisors']['already_supervised']
+        supervisor.invitation = generate_code()
+
+        supervisor.save()
+        Supervised(self.db, supervisor=supervisor, supervised=self).create()
+
+    @property
+    def supervised(self):
+        supervised_list = []
+        for supervised in Supervised(self.db, Supervised.supervisor == self).get_all():
+            supervised.supervised.db = self.db
+            supervised_list.append(supervised.supervised)
+        return supervised_list
 
     @property
     def supervisors(self):
-        a = {
-            "id": "1",
-            "email": "aahafkjha@gmail.com",
-            "first_name": "aaa",
-            "last_name": "aaaa",
-            "avatar": "aaaaa",
-        }
-        return [a, a]
-
-    @staticmethod
-    def generate_code():
-        """
-        Generates a 10-character code and checks that it does not exist in the database
-        """
-        with SessionLocal.begin() as session:
-            def generate():
-                generated_code = []
-                for k in [3, 4, 3]:
-                    generated_code.append(
-                        "".join(random.choices(string.ascii_uppercase, k=k))
-                    )
-                generated_code = "-".join(generated_code).upper()
-                return generated_code
-
-            def is_repeated(code_to_check):
-                code_is_repeated = session.query(User).filter(User.invitation == code_to_check).first() is not None
-                return code_is_repeated
-
-            code = generate()
-            while is_repeated(code):
-                code = generate()
-            return code
+        supervisors_list = []
+        for supervisor in Supervised(self.db, Supervised.supervised == self).get_all():
+            supervisor.supervisor.db = self.db
+            supervisors_list.append(supervisor.supervisor)
+        return supervisors_list

@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class ResponseSchema(BaseModel):
+class GenericResponseSchema(BaseModel):
     status_code: int
     message: str
 

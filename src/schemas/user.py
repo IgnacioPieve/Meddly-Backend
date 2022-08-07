@@ -4,6 +4,7 @@ from schemas.example_data import example_profile
 
 
 class SupervisorSchema(BaseModel):
+    # This is a Response Schema.
     id: str
     email: EmailStr
     first_name: str | None
@@ -11,6 +12,7 @@ class SupervisorSchema(BaseModel):
     avatar: str | None
 
     class Config:
+        orm_mode = True
         schema_extra = {
             "example": {
                 "id": example_profile.id(),
@@ -23,6 +25,7 @@ class SupervisorSchema(BaseModel):
 
 
 class UserUpdateSchema(BaseModel):
+    # This an Input Schema.
     first_name: str | None
     last_name: str | None
     height: float | None
@@ -47,13 +50,14 @@ class UserUpdateSchema(BaseModel):
 
 
 class UserSchema(UserUpdateSchema):
+    # This is a Response Schema.
     id: str
     email: EmailStr
     created_at: datetime.datetime
     updated_at: datetime.datetime
     # diseases: list[str]
     supervisors: list[SupervisorSchema]
-    # supervised: list[SupervisorModel]
+    supervised: list[SupervisorSchema]
     invitation: str
 
     class Config:
@@ -65,26 +69,17 @@ class UserSchema(UserUpdateSchema):
                 "created_at": example_profile.created_at(),
                 "updated_at": example_profile.updated_at(),
                 "invitation": example_profile.invitation(),
-                **UserUpdateSchema.Config.schema_extra["example"]
+                **UserUpdateSchema.Config.schema_extra["example"],
+                "supervisors": [
+                    {
+                        **SupervisorSchema.Config.schema_extra["example"],
+                    },
+                ],
+                "supervised": [
+                    {
+                        **SupervisorSchema.Config.schema_extra["example"],
+                    },
+                ],
                 # "diseases": ["diabetes", "hipertension"],
-                # "supervisors": [
-                #     {
-                #         "email": "example@test.com",
-                #         "first_name": "John",
-                #         "last_name": "Doe",
-                #     },
-                #     {
-                #         "email": "example@test.com",
-                #         "first_name": "John",
-                #         "last_name": "Doe",
-                #     },
-                # ],
-                # "supervised": [
-                #     {
-                #         "email": "example@test.com",
-                #         "first_name": "John",
-                #         "last_name": "Doe",
-                #     },
-                # ],
             }
         }

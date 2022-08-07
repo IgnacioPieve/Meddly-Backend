@@ -34,12 +34,10 @@ async def authenticate(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid authentication credentials. {err}",
         )
-
-    user = db.query(User).filter(User.id == decoded_token["user_id"]).first()
+    user: User = User(db, User.id == decoded_token["user_id"]).get()
     if not user:
-        user = User(id=decoded_token["user_id"], email=decoded_token["email"])
-        user.create(db)
-    return user
+        user = User(db, id=decoded_token["user_id"], email=decoded_token["email"]).create()
+    return user, db
 
 
 # async def authenticate_with_supervisor(

@@ -2,6 +2,9 @@ import json
 import os
 
 # ---------- CONFIG VARIABLES ----------
+from fastapi import HTTPException
+from starlette import status
+
 ENV_NAME = os.getenv("ENV_NAME")
 
 if ENV_NAME == 'prod':
@@ -50,4 +53,32 @@ metadata = {
     },
     "description": description,
     "docs_url": "/",
+}
+
+# ----- TRANSLATIONS -----
+translations = {
+    "errors": {
+        "supervisors": {
+            "already_supervised": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                                detail={
+                                                    'en': "You are already being supervised by this user",
+                                                    'es': "Ya estás siendo supervisado por este usuario",
+                                                }),
+            "code_not_valid": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                            detail={
+                                                'en': "The invitation code is not valid",
+                                                'es': "El código de invitación no es válido",
+                                            }),
+            "supervised_not_found": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                                  detail={
+                                                      'en': "User not found (maybe you are not being supervised by this user)",
+                                                      'es': "Usuario no encontrado (puede que no estés siendo supervisado por este usuario)",
+                                                  }),
+            "supervisor_not_found": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                                  detail={
+                                                      'en': "User not found (maybe you are not supervising this user)",
+                                                      'es': "Usuario no encontrado (puede que no estés supervisando este usuario)",
+                                                  }),
+        }
+    }
 }
