@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import config
-from routers import user, supervisors, test
+from routers import user, supervisor, notification, test
 from database import engine, Base
 
 # ----- DATABASE -----
@@ -11,7 +11,8 @@ app = FastAPI(**config.metadata)
 
 # ----- ROUTERS -----
 app.include_router(user.router)
-app.include_router(supervisors.router)
+app.include_router(supervisor.router)
+app.include_router(notification.router)
 app.include_router(test.router)
 
 if __name__ == "__main__":

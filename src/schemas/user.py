@@ -58,6 +58,7 @@ class UserSchema(UserUpdateSchema):
     # diseases: list[str]
     supervisors: list[SupervisorSchema]
     supervised: list[SupervisorSchema]
+    notification_preferences: list[str]
     invitation: str
 
     class Config:
@@ -69,6 +70,7 @@ class UserSchema(UserUpdateSchema):
                 "created_at": example_profile.created_at(),
                 "updated_at": example_profile.updated_at(),
                 "invitation": example_profile.invitation(),
+                "notification_preferences": example_profile.notification_preferences(),
                 **UserUpdateSchema.Config.schema_extra["example"],
                 "supervisors": [
                     {

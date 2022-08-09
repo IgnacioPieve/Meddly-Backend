@@ -1,3 +1,5 @@
+import threading
+
 from sqlalchemy import Column, String, DateTime, Float, Integer, ForeignKey, or_
 from sqlalchemy.orm import  relationship
 
@@ -30,7 +32,7 @@ class User(CRUD):
     avatar = Column(String, nullable=True)
 
     def create(self):
-        self.invitation = self.generate_code()
+        self.invitation = generate_code()
         return super().create()
 
     def accept_invitation(self, invitation_code):
@@ -49,7 +51,7 @@ class User(CRUD):
     @property
     def supervised(self):
         supervised_list = []
-        for supervised in Supervised(self.db, Supervised.supervisor == self).get_all():
+        for supervised in self.supervised_list:
             supervised.supervised.db = self.db
             supervised_list.append(supervised.supervised)
         return supervised_list
@@ -57,7 +59,17 @@ class User(CRUD):
     @property
     def supervisors(self):
         supervisors_list = []
-        for supervisor in Supervised(self.db, Supervised.supervised == self).get_all():
+        for supervisor in self.supervisors_list:
             supervisor.supervisor.db = self.db
             supervisors_list.append(supervisor.supervisor)
         return supervisors_list
+
+    @property
+    def notification_preferences(self):
+        return [str(preference) for preference in self.notification_preferences_list]
+
+    def send_notification(self, message):
+        # TODO: PONER 'message: Message'
+        for notification_preference in self.notification_preferences_list:
+            thread = threading.Thread(target=notification_preference.send_notification, args=(message,))
+            thread.start()

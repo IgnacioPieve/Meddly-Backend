@@ -13,7 +13,7 @@ router = APIRouter(prefix="/supervisors", tags=["Supervisors"])
 @router.delete(
     "/supervisor/{supervisor_id}", response_model=UserSchema, status_code=200, summary="Delete supervisor"
 )
-async def delete_supervisor(
+def delete_supervisor(
     supervisor_id: str,
     authentication=Depends(auth.authenticate)
 ):
@@ -31,7 +31,7 @@ async def delete_supervisor(
 @router.delete(
     "/supervised/{supervised_id}", response_model=UserSchema, status_code=200, summary="Delete supervised"
 )
-async def delete_supervised(
+def delete_supervised(
     supervised_id: str,
     authentication=Depends(auth.authenticate)
 ):
@@ -47,8 +47,8 @@ async def delete_supervised(
 
 
 @router.post("/invitation", response_model=UserSchema, status_code=200, summary="Accept invitation")
-async def accept_invitation(
-    code,
+def accept_invitation(
+    code: str,
     authentication=Depends(auth.authenticate)
 ):
     """

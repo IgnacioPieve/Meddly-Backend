@@ -58,6 +58,23 @@ metadata = {
 # ----- TRANSLATIONS -----
 translations = {
     "errors": {
+        "notifications": {
+            "not_valid": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                       detail={
+                                           'en': "The selected preference is not valid",
+                                           'es': "La preferencia seleccionada no es válida",
+                                       }),
+            "notification_preference_already_exists": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                                                    detail={
+                                                                        'en': "The selected preference already exists",
+                                                                        'es': "La preferencia seleccionada ya existe",
+                                                                    }),
+            "notification_preference_not_found": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                                               detail={
+                                                                   'en': "The selected preference does not exist",
+                                                                   'es': "La preferencia seleccionada no existe",
+                                                               }),
+        },
         "supervisors": {
             "already_supervised": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                                 detail={

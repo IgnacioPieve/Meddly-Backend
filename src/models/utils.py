@@ -18,6 +18,9 @@ class CRUD(Base):
         self.criterion = criterion
         super().__init__(**kwargs)
 
+    def validate(self):
+        pass
+
     def get(self):
         object_class = self.__class__
         result: object_class = self.db.query(object_class).filter(*self.criterion).first()
@@ -35,6 +38,7 @@ class CRUD(Base):
         return result
 
     def create(self):
+        self.validate()
         self.created_at = datetime.datetime.now()
         self.updated_at = datetime.datetime.now()
         self.db.add(self)
@@ -43,6 +47,7 @@ class CRUD(Base):
         return self
 
     def save(self):
+        self.validate()
         self.updated_at = datetime.datetime.now()
         self.db.commit()
         self.db.refresh(self)
