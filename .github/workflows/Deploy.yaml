@@ -40,4 +40,4 @@ jobs:
 
       - name: Run container in dev
         run: >
-          ssh staging "docker run -d -p 80:8000"
+          ssh staging "docker run -d -p 80:8000 meddly"
