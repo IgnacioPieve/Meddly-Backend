@@ -44,7 +44,6 @@ class UserUpdateSchema(BaseModel):
                 "weight": example_profile.weight(),
                 "sex": example_profile.sex(),
                 "avatar": example_profile.avatar(),
-
             }
         }
 

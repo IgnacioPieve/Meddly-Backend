@@ -23,7 +23,9 @@ class CRUD(Base):
 
     def get(self):
         object_class = self.__class__
-        result: object_class = self.db.query(object_class).filter(*self.criterion).first()
+        result: object_class = (
+            self.db.query(object_class).filter(*self.criterion).first()
+        )
         if result:
             result.db = self.db
         return result
@@ -61,10 +63,12 @@ class CRUD(Base):
 
 def generate_code():
     from models.user import User
+
     """
     Generates a 10-character code and checks that it does not exist in the database
     """
     with SessionLocal.begin() as session:
+
         def generate():
             generated_code = []
             for k in [3, 4, 3]:
@@ -75,7 +79,10 @@ def generate_code():
             return generated_code
 
         def is_repeated(code_to_check):
-            code_is_repeated = session.query(User).filter(User.invitation == code_to_check).first() is not None
+            code_is_repeated = (
+                session.query(User).filter(User.invitation == code_to_check).first()
+                is not None
+            )
             return code_is_repeated
 
         code = generate()

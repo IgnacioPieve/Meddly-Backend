@@ -36,7 +36,9 @@ async def authenticate(
         )
     user: User = User(db, User.id == decoded_token["user_id"]).get()
     if not user:
-        user = User(db, id=decoded_token["user_id"], email=decoded_token["email"]).create()
+        user = User(
+            db, id=decoded_token["user_id"], email=decoded_token["email"]
+        ).create()
     return user, db
 
 

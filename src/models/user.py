@@ -1,19 +1,23 @@
 import threading
 
 from sqlalchemy import Column, String, DateTime, Float, Integer, ForeignKey, or_
-from sqlalchemy.orm import  relationship
+from sqlalchemy.orm import relationship
 
 from models.utils import CRUD, generate_code
 from config import translations
 
 
 class Supervised(CRUD):
-    __tablename__ = 'supervised'
+    __tablename__ = "supervised"
     id = Column(Integer, primary_key=True, index=True)
-    supervisor_id = Column(String, ForeignKey('user.id'), nullable=False, index=True)
-    supervisor = relationship('User', backref='supervised_list', foreign_keys=[supervisor_id])
-    supervised_id = Column(String, ForeignKey('user.id'), nullable=False, index=True)
-    supervised = relationship('User', backref='supervisors_list', foreign_keys=[supervised_id])
+    supervisor_id = Column(String, ForeignKey("user.id"), nullable=False, index=True)
+    supervisor = relationship(
+        "User", backref="supervised_list", foreign_keys=[supervisor_id]
+    )
+    supervised_id = Column(String, ForeignKey("user.id"), nullable=False, index=True)
+    supervised = relationship(
+        "User", backref="supervisors_list", foreign_keys=[supervised_id]
+    )
 
 
 class User(CRUD):
@@ -38,11 +42,16 @@ class User(CRUD):
     def accept_invitation(self, invitation_code):
         supervisor = User(self.db, User.invitation == invitation_code).get()
         if supervisor is None:
-            raise translations['errors']['supervisors']['code_not_valid']
-        already_supervised = Supervised(self.db, or_(Supervised.supervisor == supervisor,
-                                                     Supervised.supervised == self)).get() is not None
+            raise translations["errors"]["supervisors"]["code_not_valid"]
+        already_supervised = (
+            Supervised(
+                self.db,
+                or_(Supervised.supervisor == supervisor, Supervised.supervised == self),
+            ).get()
+            is not None
+        )
         if already_supervised:
-            raise translations['errors']['supervisors']['already_supervised']
+            raise translations["errors"]["supervisors"]["already_supervised"]
         supervisor.invitation = generate_code()
 
         supervisor.save()
@@ -71,5 +80,7 @@ class User(CRUD):
     def send_notification(self, message):
         # TODO: PONER 'message: Message'
         for notification_preference in self.notification_preferences_list:
-            thread = threading.Thread(target=notification_preference.send_notification, args=(message,))
+            thread = threading.Thread(
+                target=notification_preference.send_notification, args=(message,)
+            )
             thread.start()
