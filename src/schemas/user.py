@@ -1,5 +1,7 @@
 import datetime
+
 from pydantic import BaseModel, EmailStr
+
 from schemas.example_data import example_profile
 
 
@@ -44,7 +46,6 @@ class UserUpdateSchema(BaseModel):
                 "weight": example_profile.weight(),
                 "sex": example_profile.sex(),
                 "avatar": example_profile.avatar(),
-
             }
         }
 

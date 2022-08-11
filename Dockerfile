@@ -2,12 +2,10 @@ FROM python:3.10
 
 COPY ./src /app/src
 
-WORKDIR /app
+WORKDIR /app/src
 
 RUN pip3 install -r requirements.txt
 
 EXPOSE 8000
 
-WORKDIR /app/src
-
-CMD ["python", "main.py"]
+CMD ["python", "app.py"]

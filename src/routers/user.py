@@ -17,10 +17,11 @@ async def get_user(authentication=Depends(auth.authenticate)):
     return user
 
 
-@router.post("/", response_model=UserSchema, status_code=200, summary="Update user data")
+@router.post(
+    "/", response_model=UserSchema, status_code=200, summary="Update user data"
+)
 async def update_user(
-        update_data: UserUpdateSchema,
-        authentication=Depends(auth.authenticate)
+    update_data: UserUpdateSchema, authentication=Depends(auth.authenticate)
 ):
     """
     Actualiza los datos de un usuario (sobreecribiendo el objeto completo).
@@ -32,16 +33,13 @@ async def update_user(
     return user
 
 
-@router.delete("/", response_model=GenericResponseSchema, status_code=200, summary="Delete user")
-async def delete_user(
-        authentication=Depends(auth.authenticate)
-):
+@router.delete(
+    "/", response_model=GenericResponseSchema, status_code=200, summary="Delete user"
+)
+async def delete_user(authentication=Depends(auth.authenticate)):
     """
     Elimina completamente a un usuario
     """
     user, _ = authentication
     user.destroy()
-    return {
-        "status_code": 200,
-        "message": 'Success'
-    }
+    return {"status_code": 200, "message": "Success"}

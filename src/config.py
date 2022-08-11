@@ -7,14 +7,14 @@ from starlette import status
 
 ENV_NAME = os.getenv("ENV_NAME")
 
-if ENV_NAME == 'prod':
+if ENV_NAME == "prod":
     pass
-elif ENV_NAME == 'dev':
+elif ENV_NAME == "dev":
     pass
 else:
     # Environ variables for local development
-    DB_URL = 'sqlite:///database.db'
-    ENV_NAME = 'local-dev'
+    DB_URL = "sqlite:///database.db"
+    ENV_NAME = "local-dev"
 
 FIREBASE_JSON = {
     "type": "service_account",
@@ -27,7 +27,7 @@ FIREBASE_JSON = {
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-g73bu%40meddly-fbcf7.iam.gserviceaccount.com",
-    "key": "AIzaSyBWeIdwEe2rS3fMvrbayV0gQeWY9zpnAxo"
+    "key": "AIzaSyBWeIdwEe2rS3fMvrbayV0gQeWY9zpnAxo",
 }
 
 # ---------- METADATA ----------
@@ -59,43 +59,57 @@ metadata = {
 translations = {
     "errors": {
         "notifications": {
-            "not_valid": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                       detail={
-                                           'en': "The selected preference is not valid",
-                                           'es': "La preferencia seleccionada no es válida",
-                                       }),
-            "notification_preference_already_exists": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                                                    detail={
-                                                                        'en': "The selected preference already exists",
-                                                                        'es': "La preferencia seleccionada ya existe",
-                                                                    }),
-            "notification_preference_not_found": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                                               detail={
-                                                                   'en': "The selected preference does not exist",
-                                                                   'es': "La preferencia seleccionada no existe",
-                                                               }),
+            "not_valid": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "The selected preference is not valid",
+                    "es": "La preferencia seleccionada no es válida",
+                },
+            ),
+            "notification_preference_already_exists": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "The selected preference already exists",
+                    "es": "La preferencia seleccionada ya existe",
+                },
+            ),
+            "notification_preference_not_found": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "The selected preference does not exist",
+                    "es": "La preferencia seleccionada no existe",
+                },
+            ),
         },
         "supervisors": {
-            "already_supervised": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                                detail={
-                                                    'en': "You are already being supervised by this user",
-                                                    'es': "Ya estás siendo supervisado por este usuario",
-                                                }),
-            "code_not_valid": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                            detail={
-                                                'en': "The invitation code is not valid",
-                                                'es': "El código de invitación no es válido",
-                                            }),
-            "supervised_not_found": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                                  detail={
-                                                      'en': "User not found (maybe you are not being supervised by this user)",
-                                                      'es': "Usuario no encontrado (puede que no estés siendo supervisado por este usuario)",
-                                                  }),
-            "supervisor_not_found": HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                                  detail={
-                                                      'en': "User not found (maybe you are not supervising this user)",
-                                                      'es': "Usuario no encontrado (puede que no estés supervisando este usuario)",
-                                                  }),
-        }
+            "already_supervised": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "You are already being supervised by this user",
+                    "es": "Ya estás siendo supervisado por este usuario",
+                },
+            ),
+            "code_not_valid": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "The invitation code is not valid",
+                    "es": "El código de invitación no es válido",
+                },
+            ),
+            "supervised_not_found": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "User not found (maybe you are not being supervised by this user)",
+                    "es": "Usuario no encontrado (puede que no estés siendo supervisado por este usuario)",
+                },
+            ),
+            "supervisor_not_found": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "User not found (maybe you are not supervising this user)",
+                    "es": "Usuario no encontrado (puede que no estés supervisando este usuario)",
+                },
+            ),
+        },
     }
 }

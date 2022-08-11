@@ -7,8 +7,5 @@ class GenericResponseSchema(BaseModel):
 
     class Config:
         schema_extra = {
-            "example": {
-                "status_code": 200,
-                "message": 'Deletion successful'
-            }
+            "example": {"status_code": 200, "message": "Deletion successful"}
         }

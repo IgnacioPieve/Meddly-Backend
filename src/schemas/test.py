@@ -6,9 +6,4 @@ class UserRequestModel(BaseModel):
     password: str
 
     class Config:
-        schema_extra = {
-            "example": {
-                "email": 'test@test.com',
-                "password": 'password'
-            }
-        }
+        schema_extra = {"example": {"email": "test@test.com", "password": "password"}}
