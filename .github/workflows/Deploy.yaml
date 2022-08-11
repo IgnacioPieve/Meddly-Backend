@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+#  pull_request_target:
+#    branches: ["main", "dev"]
+#    types:
+#      - closed
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: "Deploy to Server"
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configurar SSH para Main
+#        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ubuntu
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST_MAIN }}
+      - name: Pull changes
+        run: |
+          ssh staging 'cd ~/Meddly && git pull'
+      - name: Stop Container
+        run: ssh staging 'docker stop meddly' || true
+
+      - name: Delete container and image
+        run: |
+          ssh staging 'docker rm meddly' || true
+          ssh staging 'docker rmi meddly' || true
+
+      - name: Build image
+        run: ssh staging 'cd ~/Meddly && docker build -t meddly .'
+
+      - name: Run container in dev
+#        if: github.ref == 'refs/heads/dev'
+        run: >
+          ssh staging "docker run -d -p 80:8000"
