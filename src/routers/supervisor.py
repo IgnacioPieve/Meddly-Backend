@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy import and_
 
+from config import translations
 from dependencies import auth
 from models.user import Supervised
 from schemas.user import UserSchema
-from config import translations
-
 
 router = APIRouter(prefix="/supervisors", tags=["Supervisors"])
 

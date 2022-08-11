@@ -2,11 +2,11 @@ import firebase_admin
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from firebase_admin import auth, credentials
+from sqlalchemy.orm import Session
 
 from config import FIREBASE_JSON
-from models.user import User
-from sqlalchemy.orm import Session
 from dependencies import database
+from models.user import User
 
 cred = credentials.Certificate(FIREBASE_JSON)
 firebase_admin.initialize_app(cred)

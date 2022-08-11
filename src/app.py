@@ -1,7 +1,8 @@
 from fastapi import FastAPI
+
 import config
-from routers import user, supervisor, notification, test
-from database import engine, Base
+from database import Base, engine
+from routers import notification, supervisor, test, user
 
 # ----- DATABASE -----
 Base.metadata.create_all(bind=engine)

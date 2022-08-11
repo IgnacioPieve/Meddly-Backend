@@ -1,10 +1,11 @@
 import threading
 
-from sqlalchemy import Column, String, DateTime, Float, Integer, ForeignKey, or_
+from sqlalchemy import (Column, DateTime, Float, ForeignKey, Integer, String,
+                        or_)
 from sqlalchemy.orm import relationship
 
-from models.utils import CRUD, generate_code
 from config import translations
+from models.utils import CRUD, generate_code
 
 
 class Supervised(CRUD):

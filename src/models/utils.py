@@ -5,7 +5,7 @@ import string
 from sqlalchemy import Column, DateTime
 from sqlalchemy.orm import Session
 
-from database import SessionLocal, Base
+from database import Base, SessionLocal
 
 
 class CRUD(Base):

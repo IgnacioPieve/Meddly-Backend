@@ -1,8 +1,8 @@
 import datetime
-
-from faker import Faker
 import random
 import string
+
+from faker import Faker
 
 
 def generate_invitation():

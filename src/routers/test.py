@@ -1,7 +1,8 @@
 import requests
 from fastapi import APIRouter, Depends
-from schemas.test import UserRequestModel
+
 from config import FIREBASE_JSON
+from schemas.test import UserRequestModel
 
 router = APIRouter(prefix="/test", tags=["Test"])
 

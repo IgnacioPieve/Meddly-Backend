@@ -1,5 +1,5 @@
-from sqlalchemy import exc, and_
 from fastapi import APIRouter, Depends
+from sqlalchemy import and_, exc
 
 from config import translations
 from dependencies import auth

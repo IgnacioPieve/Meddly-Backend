@@ -1,5 +1,7 @@
 import datetime
+
 from pydantic import BaseModel, EmailStr
+
 from schemas.example_data import example_profile
 
 
