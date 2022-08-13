@@ -1,11 +1,11 @@
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 import config
 from config import SENDGRID_CONFIG, translations
 from models.utils import CRUD
-from sendgrid.helpers.mail import Mail
-from sendgrid import SendGridAPIClient
 
 
 class NotificationPreference(CRUD):
