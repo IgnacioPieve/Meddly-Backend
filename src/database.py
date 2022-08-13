@@ -4,8 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from config import DB_URL, ENV_NAME
 
-# TODO: Change to local-dev
-if ENV_NAME == "local-devs":
+if ENV_NAME == "local-dev":
     engine = create_engine(DB_URL, connect_args={"check_same_thread": False})
 else:
     engine = create_engine(DB_URL)
