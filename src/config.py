@@ -10,7 +10,7 @@ ENV_NAME = os.getenv("ENV_NAME")
 if ENV_NAME == "prod":
     DB_URL = "postgresql://ufgbchph:cTqNG9causgSbi-eEXhsDt32FdsWwY4B@kesavan.db.elephantsql.com/ufgbchph"
 elif ENV_NAME == "dev":
-    DB_URL = "postgres://zwvcehpe:1W85KcjdhU7AAs8sbXWlKxbIXlen97dk@kesavan.db.elephantsql.com/zwvcehpe"
+    DB_URL = "postgresql://zwvcehpe:1W85KcjdhU7AAs8sbXWlKxbIXlen97dk@kesavan.db.elephantsql.com/zwvcehpe"
 else:
     # Environ variables for local development
     DB_URL = "sqlite:///database.db"
