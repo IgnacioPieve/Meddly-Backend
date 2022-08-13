@@ -8,7 +8,8 @@ jobs:
     name: "Deploy to Server"
     runs-on: ubuntu-latest
     steps:
-      - name: Configurar SSH para Main
+      - name: Setup SSH on Main Server
+        if: github.ref == 'refs/heads/main'
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/staging.key
@@ -24,6 +25,23 @@ jobs:
           SSH_USER: ubuntu
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST_MAIN }}
+      - name: Setup SSH on Dev Server
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ubuntu
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_DEV_HOST }}
       - name: Pull changes
         run: |
           ssh staging 'cd ~/Meddly && git pull'
@@ -38,6 +56,12 @@ jobs:
       - name: Build image
         run: ssh staging 'cd ~/Meddly && docker build -t meddly .'
 
-      - name: Run container in dev
+      - name: Run container in main
+        if: github.ref == 'refs/heads/main'
         run: >
-          ssh staging "docker run -d -p 80:8000 meddly"
+          ssh staging "docker run -d -p 80:8000 meddly --env MEDDLY_ENV=prod"
+
+      - name: Run container in dev
+        if: github.ref == 'refs/heads/dev'
+        run: >
+          ssh staging "docker run -d -p 80:8000 meddly --env MEDDLY_ENV=dev"

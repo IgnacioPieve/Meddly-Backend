@@ -1,16 +1,15 @@
 import json
 import os
-
-# ---------- CONFIG VARIABLES ----------
 from fastapi import HTTPException
 from starlette import status
 
+# ---------- CONFIG VARIABLES ----------
 ENV_NAME = os.getenv("ENV_NAME")
 
 if ENV_NAME == "prod":
-    pass
+    DB_URL = 'postgresql://ufgbchph:cTqNG9causgSbi-eEXhsDt32FdsWwY4B@kesavan.db.elephantsql.com/ufgbchph'
 elif ENV_NAME == "dev":
-    pass
+    DB_URL = 'postgres://zwvcehpe:1W85KcjdhU7AAs8sbXWlKxbIXlen97dk@kesavan.db.elephantsql.com/zwvcehpe'
 else:
     # Environ variables for local development
     DB_URL = "sqlite:///database.db"
