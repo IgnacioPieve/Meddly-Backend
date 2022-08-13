@@ -5,6 +5,7 @@ from sqlalchemy import (Column, DateTime, Float, ForeignKey, Integer, String,
 from sqlalchemy.orm import relationship
 
 from config import translations
+from models.message import Message, NewSupervisorMessage
 from models.utils import CRUD, generate_code
 
 
@@ -45,11 +46,11 @@ class User(CRUD):
         if supervisor is None:
             raise translations["errors"]["supervisors"]["code_not_valid"]
         already_supervised = (
-            Supervised(
-                self.db,
-                or_(Supervised.supervisor == supervisor, Supervised.supervised == self),
-            ).get()
-            is not None
+                Supervised(
+                    self.db,
+                    or_(Supervised.supervisor == supervisor, Supervised.supervised == self),
+                ).get()
+                is not None
         )
         if already_supervised:
             raise translations["errors"]["supervisors"]["already_supervised"]
@@ -57,6 +58,12 @@ class User(CRUD):
 
         supervisor.save()
         Supervised(self.db, supervisor=supervisor, supervised=self).create()
+
+        message = NewSupervisorMessage(supervisor=supervisor)
+        self.send_notification(message)
+
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
     @property
     def supervised(self):
@@ -78,8 +85,7 @@ class User(CRUD):
     def notification_preferences(self):
         return [str(preference) for preference in self.notification_preferences_list]
 
-    def send_notification(self, message):
-        # TODO: PONER 'message: Message'
+    def send_notification(self, message: Message):
         for notification_preference in self.notification_preferences_list:
             thread = threading.Thread(
                 target=notification_preference.send_notification, args=(message,)

@@ -1,8 +1,11 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
-from config import translations
+import config
+from config import SENDGRID_CONFIG, translations
 from models.utils import CRUD
+from sendgrid.helpers.mail import Mail
+from sendgrid import SendGridAPIClient
 
 
 class NotificationPreference(CRUD):
@@ -28,7 +31,7 @@ class NotificationPreference(CRUD):
             raise translations["errors"]["notifications"]["not_valid"]
 
     def send_notification(self, message):
-        pass
+        raise Exception("NotImplementedException")
 
 
 class WhatsappNotification(NotificationPreference):
@@ -37,6 +40,13 @@ class WhatsappNotification(NotificationPreference):
 
 class EmailNotification(NotificationPreference):
     __mapper_args__ = {"polymorphic_identity": NotificationPreference.EMAIL}
+
+    def send_notification(self, message):
+        message_constructor = Mail(from_email=SENDGRID_CONFIG['email'], to_emails=self.user.email)
+        message_constructor.dynamic_template_data = message.email()['template_data']
+        message_constructor.template_id = message.email()['template_id']
+        sg = SendGridAPIClient(SENDGRID_CONFIG['api_key'])
+        sg.send(message_constructor)
 
 
 class SMSNotification(NotificationPreference):
