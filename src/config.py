@@ -17,8 +17,8 @@ else:
     ENV_NAME = "local-dev"
 
 SENDGRID_CONFIG = {
-    "api_key": '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',
-    "email": 'meddly.health@gmail.com'
+    "api_key": "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",
+    "email": "meddly.health@gmail.com",
 }
 
 FIREBASE_JSON = {

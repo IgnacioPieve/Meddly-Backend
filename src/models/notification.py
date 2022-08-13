@@ -42,10 +42,12 @@ class EmailNotification(NotificationPreference):
     __mapper_args__ = {"polymorphic_identity": NotificationPreference.EMAIL}
 
     def send_notification(self, message):
-        message_constructor = Mail(from_email=SENDGRID_CONFIG['email'], to_emails=self.user.email)
-        message_constructor.dynamic_template_data = message.email()['template_data']
-        message_constructor.template_id = message.email()['template_id']
-        sg = SendGridAPIClient(SENDGRID_CONFIG['api_key'])
+        message_constructor = Mail(
+            from_email=SENDGRID_CONFIG["email"], to_emails=self.user.email
+        )
+        message_constructor.dynamic_template_data = message.email()["template_data"]
+        message_constructor.template_id = message.email()["template_id"]
+        sg = SendGridAPIClient(SENDGRID_CONFIG["api_key"])
         sg.send(message_constructor)
 
 

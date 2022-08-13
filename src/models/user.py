@@ -1,7 +1,6 @@
 import threading
 
-from sqlalchemy import (Column, DateTime, Float, ForeignKey, Integer, String,
-                        or_)
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, or_
 from sqlalchemy.orm import relationship
 
 from config import translations
@@ -46,11 +45,11 @@ class User(CRUD):
         if supervisor is None:
             raise translations["errors"]["supervisors"]["code_not_valid"]
         already_supervised = (
-                Supervised(
-                    self.db,
-                    or_(Supervised.supervisor == supervisor, Supervised.supervised == self),
-                ).get()
-                is not None
+            Supervised(
+                self.db,
+                or_(Supervised.supervisor == supervisor, Supervised.supervised == self),
+            ).get()
+            is not None
         )
         if already_supervised:
             raise translations["errors"]["supervisors"]["already_supervised"]
