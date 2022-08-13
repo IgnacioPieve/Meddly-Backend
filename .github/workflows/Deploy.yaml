@@ -59,9 +59,9 @@ jobs:
       - name: Run container in main
         if: github.ref == 'refs/heads/main'
         run: >
-          ssh staging "docker run -d -p 80:8000 --env MEDDLY_ENV=prod meddly"
+          ssh staging "docker run -d -p 80:8000 --env ENV_NAME=prod meddly"
 
       - name: Run container in dev
         if: github.ref == 'refs/heads/dev'
         run: >
-          ssh staging "docker run -d -p 80:8000 --env MEDDLY_ENV=dev meddly"
+          ssh staging "docker run -d -p 80:8000 --env ENV_NAME=dev meddly"
