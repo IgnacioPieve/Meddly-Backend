@@ -41,7 +41,7 @@ jobs:
         env:
           SSH_USER: ubuntu
           SSH_KEY: ${{ secrets.SSH_KEY }}
-          SSH_HOST: ${{ secrets.SSH_DEV_HOST }}
+          SSH_HOST: ${{ secrets.SSH_HOST_DEV }}
       - name: Pull changes
         run: |
           ssh staging 'cd ~/Meddly && git pull'
