@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 import config
 from database import Base, engine
-from routers import notification, supervisor, test, user
+from routers import notification, supervisor, treatment, test, user
 
 # ----- DATABASE -----
 Base.metadata.create_all(bind=engine)
@@ -13,6 +13,7 @@ app = FastAPI(**config.metadata)
 # ----- ROUTERS -----
 app.include_router(user.router)
 app.include_router(supervisor.router)
+app.include_router(treatment.router)
 app.include_router(notification.router)
 app.include_router(test.router)
 
