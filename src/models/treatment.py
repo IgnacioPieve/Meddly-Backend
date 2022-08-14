@@ -214,7 +214,7 @@ class Treatment(CRUD):
     treatment_indication = relationship(
         TreatmentIndication, backref="treatment", foreign_keys=[treatment_indication_id]
     )
-    user_id = Column(Integer, ForeignKey("user.id"), index=True, nullable=False)
+    user_id = Column(String, ForeignKey("user.id"), index=True, nullable=False)
     user = relationship("User", backref="treatments", foreign_keys=[user_id])
 
     @property
