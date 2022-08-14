@@ -2,8 +2,7 @@ import calendar
 import datetime
 
 from dateutil.relativedelta import relativedelta
-from sqlalchemy import (Column, DateTime, Float, ForeignKey, Integer,
-                        PickleType, String)
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, PickleType, String
 from sqlalchemy.orm import relationship
 
 from config import translations
