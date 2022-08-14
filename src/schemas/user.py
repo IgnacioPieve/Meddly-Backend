@@ -18,7 +18,7 @@ class SupervisorSchema(BaseModel):
             "example": {
                 "id": example_profile.id(),
                 "email": example_profile.email(),
-                "name": f'{example_profile.first_name()} {example_profile.last_name()}',
+                "name": f"{example_profile.first_name()} {example_profile.last_name()}",
                 "avatar": example_profile.avatar(),
             }
         }
@@ -38,12 +38,12 @@ class UserUpdateSchema(BaseModel):
         orm_mode = True
         schema_extra = {
             "example": {
-                "name": f'{example_profile.first_name()} {example_profile.last_name()}',
+                "name": f"{example_profile.first_name()} {example_profile.last_name()}",
                 "height": example_profile.height(),
                 "weight": example_profile.weight(),
                 "sex": example_profile.sex(),
                 "avatar": example_profile.avatar(),
-                "phone": example_profile.phone()
+                "phone": example_profile.phone(),
             }
         }
 

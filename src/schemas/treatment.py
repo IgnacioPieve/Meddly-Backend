@@ -18,10 +18,10 @@ class ConsumptionSchema(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                '2022-08-14': [{'hour': '16:43', 'consumed': False}],
-                '2022-08-17': [{'hour': '16:43', 'consumed': True}],
-                '2022-08-20': [{'hour': '16:43', 'consumed': False}],
-                '2022-08-23': [{'hour': '16:43', 'consumed': True}]
+                "2022-08-14": [{"hour": "16:43", "consumed": False}],
+                "2022-08-17": [{"hour": "16:43", "consumed": True}],
+                "2022-08-20": [{"hour": "16:43", "consumed": False}],
+                "2022-08-23": [{"hour": "16:43", "consumed": True}],
             }
         }
 
@@ -39,7 +39,8 @@ class ConsumptionRuleSchema(BaseModel):
         schema_extra = {
             "example": {
                 "start": datetime.datetime.now(),
-                "end": datetime.datetime.now() + datetime.timedelta(days=random.randint(10, 20)),
+                "end": datetime.datetime.now()
+                + datetime.timedelta(days=random.randint(10, 20)),
             }
         }
 
@@ -86,7 +87,7 @@ class EveryDaySchema(ConsumptionRuleSchema):
                         f"{random.randint(16, 20)}:00",
                         f"{random.randint(21, 23)}:00",
                     ],
-                    random.randint(1, 4)
+                    random.randint(1, 4),
                 ),
                 **ConsumptionRuleSchema.Config.schema_extra["example"],
             }
@@ -139,8 +140,18 @@ class SpecificDaysSchema(ConsumptionRuleSchema):
         schema_extra = {
             "example": {
                 "name": "specific_days",
-                "days": random.sample(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
-                                      random.randint(1, 7)),
+                "days": random.sample(
+                    [
+                        "monday",
+                        "tuesday",
+                        "wednesday",
+                        "thursday",
+                        "friday",
+                        "saturday",
+                        "sunday",
+                    ],
+                    random.randint(1, 7),
+                ),
                 **ConsumptionRuleSchema.Config.schema_extra["example"],
             }
         }
@@ -158,13 +169,13 @@ class MethodSchema(BaseModel):
 
 
 class MedicineDosisSchema(MethodSchema):
-    type: Literal['dosis']
+    type: Literal["dosis"]
     value: float
     unit: str
 
 
 class MedicineApplicationSchema(MethodSchema):
-    type: Literal['application']
+    type: Literal["application"]
     description: str
 
 
@@ -187,15 +198,15 @@ class TreatmentIndicationSchema(BaseModel):
     class Config:
         orm_mode = True
         example_instructions = [
-            'Tomarlo cada 8 horas',
-            'Tomarlo al despertarme',
-            'Inyectar antes de ir a dormir'
+            "Tomarlo cada 8 horas",
+            "Tomarlo al despertarme",
+            "Inyectar antes de ir a dormir",
         ]
         schema_extra = {
             "example": {
                 "consumption_rule": random.choice(
-                    [NeedItSchema, EveryDaySchema, EveryXDaySchema, SpecificDaysSchema]).Config.schema_extra[
-                    "example"],
+                    [NeedItSchema, EveryDaySchema, EveryXDaySchema, SpecificDaysSchema]
+                ).Config.schema_extra["example"],
                 "instructions": random.choice(example_instructions),
             }
         }
@@ -213,7 +224,9 @@ class TreatmentAddUpdateSchema(BaseModel):
         schema_extra = {
             "example": {
                 "medicine": {
-                    "name": random.choice(["Paracetamol", "Ibuprofeno", "Diazepam", "Cafalexina"]),
+                    "name": random.choice(
+                        ["Paracetamol", "Ibuprofeno", "Diazepam", "Cafalexina"]
+                    ),
                     "icon": "https://www.google.com/",
                     "method": {
                         "name": "Pastilla",
@@ -222,7 +235,9 @@ class TreatmentAddUpdateSchema(BaseModel):
                         "unit": "mg",
                     },
                 },
-                "treatment_indication": TreatmentIndicationSchema.Config.schema_extra["example"],
+                "treatment_indication": TreatmentIndicationSchema.Config.schema_extra[
+                    "example"
+                ],
                 "stock": random.randint(15, 50),
                 "stock_warning": random.randint(5, 10),
             }
