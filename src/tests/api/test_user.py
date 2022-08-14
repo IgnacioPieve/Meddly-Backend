@@ -2,8 +2,7 @@ from starlette.status import HTTP_200_OK
 from starlette.testclient import TestClient
 
 body = {
-    "first_name": "John",
-    "last_name": "Doe",
+    "name": "John Doe",
     "height": 1.70,
     "weight": 67,
     "sex": "M",

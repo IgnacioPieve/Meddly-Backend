@@ -63,6 +63,50 @@ metadata = {
 # ----- TRANSLATIONS -----
 translations = {
     "errors": {
+        "treatments": {
+            "treatment_not_found": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "Treatment not found",
+                    "es": "Tratamiento no encontrado",
+                },
+            ),
+            "treatment_expired": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "Treatment expired",
+                    "es": "Tratamiento expirado",
+                },
+            ),
+            "consumption_before_treatment_start": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "Consumption date is before the start of the treatment",
+                    "es": "Fecha de consumo antes de la fecha de inicio del tratamiento",
+                },
+            ),
+            "incorrect_time": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "Consumption date is not on the correct time",
+                    "es": "La fecha de consumo no está en el horario correcto",
+                },
+            ),
+            "incorrect_date": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "Consumption date is not on the correct date",
+                    "es": "La fecha de consumo no está en la fecha correcta",
+                },
+            ),
+            "consumption_already_exists": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "The consumption has already been registered",
+                    "es": "El consumo ya ha sido registrado",
+                },
+            ),
+        },
         "notifications": {
             "not_valid": HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -113,6 +157,13 @@ translations = {
                 detail={
                     "en": "User not found (maybe you are not supervising this user)",
                     "es": "Usuario no encontrado (puede que no estés supervisando este usuario)",
+                },
+            ),
+            "cannot_be_yourself": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "You cannot supervise yourself",
+                    "es": "No puedes supervisarte a ti mismo",
                 },
             ),
         },
