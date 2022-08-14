@@ -1,6 +1,6 @@
 import datetime
 import random
-from typing import Literal, Dict, List
+from typing import Dict, List, Literal
 
 from pydantic import BaseModel
 

@@ -1,20 +1,14 @@
 import datetime
 from typing import List
 
-from sqlalchemy import exc
 from fastapi import APIRouter, Depends
+from sqlalchemy import exc
 
 from config import translations
 from dependencies import auth
-from schemas.treatment import TreatmentSchema, TreatmentAddUpdateSchema
-from models.treatment import (
-    Method,
-    Medicine,
-    ConsumptionRule,
-    TreatmentIndication,
-    Treatment,
-    Consumption,
-)
+from models.treatment import (Consumption, ConsumptionRule, Medicine, Method,
+                              Treatment, TreatmentIndication)
+from schemas.treatment import TreatmentAddUpdateSchema, TreatmentSchema
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
 

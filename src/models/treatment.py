@@ -2,11 +2,12 @@ import calendar
 import datetime
 
 from dateutil.relativedelta import relativedelta
+from sqlalchemy import (Column, DateTime, Float, ForeignKey, Integer,
+                        PickleType, String)
 from sqlalchemy.orm import relationship
 
 from config import translations
 from models.utils import CRUD
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, PickleType
 
 
 # ----- CONSUMPTION -----
