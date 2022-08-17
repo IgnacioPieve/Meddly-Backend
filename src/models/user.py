@@ -1,7 +1,6 @@
 import threading
 
-from sqlalchemy import (Column, DateTime, Float, ForeignKey, Integer, String,
-                        or_)
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, or_, Boolean
 from sqlalchemy.orm import relationship
 
 from config import translations
@@ -26,7 +25,7 @@ class User(CRUD):
     __tablename__ = "user"
 
     id = Column(String, primary_key=True, index=True)
-    email = Column(String, nullable=False, unique=True, index=True)
+    email = Column(String, nullable=False, index=True)
     invitation = Column(String, nullable=False, index=True)
 
     name = Column(String, nullable=True)
@@ -36,6 +35,8 @@ class User(CRUD):
     birth = Column(DateTime, nullable=True)
     avatar = Column(String, nullable=True)
     phone = Column(Integer, nullable=True)
+
+    disabled = Column(Boolean, nullable=False, default=False)
 
     def create(self):
         self.invitation = generate_code()

@@ -5,6 +5,8 @@ from dependencies import auth, database
 from schemas.user import UserSchema, UserUpdateSchema
 from schemas.utils import GenericResponseSchema
 
+import firebase_admin
+
 router = APIRouter(prefix="/user", tags=["User"])
 
 
@@ -41,5 +43,7 @@ async def delete_user(authentication=Depends(auth.authenticate)):
     Elimina completamente a un usuario
     """
     user, _ = authentication
-    user.destroy()
+    user.disabled = True
+    user.save()
+    firebase_admin.auth.delete_user(user.id)
     return {"status_code": 200, "message": "Success"}
