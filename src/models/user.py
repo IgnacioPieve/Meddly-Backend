@@ -1,7 +1,15 @@
 import threading
 
-from sqlalchemy import (Column, DateTime, Float, ForeignKey, Integer, String,
-                        or_)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    or_,
+)
 from sqlalchemy.orm import relationship
 
 from config import translations
@@ -26,16 +34,18 @@ class User(CRUD):
     __tablename__ = "user"
 
     id = Column(String, primary_key=True, index=True)
-    email = Column(String, nullable=False, unique=True, index=True)
+    email = Column(String, nullable=False, index=True)
     invitation = Column(String, nullable=False, index=True)
 
-    first_name = Column(String, nullable=True)
-    last_name = Column(String, nullable=True)
+    name = Column(String, nullable=True)
     height = Column(Float, nullable=True)
     weight = Column(Float, nullable=True)
     sex = Column(String, nullable=True)
     birth = Column(DateTime, nullable=True)
     avatar = Column(String, nullable=True)
+    phone = Column(Integer, nullable=True)
+
+    disabled = Column(Boolean, nullable=False, default=False)
 
     def create(self):
         self.invitation = generate_code()
@@ -45,6 +55,8 @@ class User(CRUD):
         supervisor = User(self.db, User.invitation == invitation_code).get()
         if supervisor is None:
             raise translations["errors"]["supervisors"]["code_not_valid"]
+        if supervisor.id == self.id:
+            raise translations["errors"]["supervisors"]["cannot_be_yourself"]
         already_supervised = (
             Supervised(
                 self.db,
@@ -61,9 +73,6 @@ class User(CRUD):
 
         message = NewSupervisorMessage(supervisor=supervisor)
         self.send_notification(message)
-
-    def full_name(self):
-        return f"{self.first_name} {self.last_name}"
 
     @property
     def supervised(self):

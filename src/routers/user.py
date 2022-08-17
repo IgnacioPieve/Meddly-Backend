@@ -1,7 +1,7 @@
+import firebase_admin
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
-from dependencies import auth, database
+from dependencies import auth
 from schemas.user import UserSchema, UserUpdateSchema
 from schemas.utils import GenericResponseSchema
 
@@ -41,5 +41,7 @@ async def delete_user(authentication=Depends(auth.authenticate)):
     Elimina completamente a un usuario
     """
     user, _ = authentication
-    user.destroy()
+    user.disabled = True
+    user.save()
+    firebase_admin.auth.delete_user(user.id)
     return {"status_code": 200, "message": "Success"}

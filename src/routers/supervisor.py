@@ -9,6 +9,21 @@ from schemas.user import UserSchema
 router = APIRouter(prefix="/supervisors", tags=["Supervisors"])
 
 
+@router.post(
+    "/invitation",
+    response_model=UserSchema,
+    status_code=200,
+    summary="Accept invitation",
+)
+def accept_invitation(code: str, authentication=Depends(auth.authenticate)):
+    """
+    Acepta un código de invitación
+    """
+    user, _ = authentication
+    user.accept_invitation(code)
+    return user
+
+
 @router.delete(
     "/supervisor/{supervisor_id}",
     response_model=UserSchema,
@@ -48,19 +63,4 @@ def delete_supervised(supervised_id: str, authentication=Depends(auth.authentica
     if supervised is None:
         raise translations["errors"]["supervisors"]["supervised_not_found"]
     supervised.destroy()
-    return user
-
-
-@router.post(
-    "/invitation",
-    response_model=UserSchema,
-    status_code=200,
-    summary="Accept invitation",
-)
-def accept_invitation(code: str, authentication=Depends(auth.authenticate)):
-    """
-    Acepta un código de invitación
-    """
-    user, _ = authentication
-    user.accept_invitation(code)
     return user

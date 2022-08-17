@@ -2,8 +2,7 @@ from starlette.status import HTTP_200_OK
 from starlette.testclient import TestClient
 
 body = {
-    "first_name": "John",
-    "last_name": "Doe",
+    "name": "John Doe",
     "height": 1.70,
     "weight": 67,
     "sex": "M",
@@ -32,8 +31,3 @@ def test_update_user(client: TestClient):
     assert response.status_code == HTTP_200_OK
     for value in body:
         assert body[value] == response.json()[value]
-
-
-def test_delete_user(client: TestClient):
-    response = client.delete("/user/", headers={"cred": "test"})
-    assert response.status_code == HTTP_200_OK

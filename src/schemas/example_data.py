@@ -31,3 +31,4 @@ example_profile.weight = lambda: random.randint(50, 80)
 example_profile.notification_preferences = lambda: random.sample(
     possible_preferences, random.randint(1, len(possible_preferences))
 )
+example_profile.phone = lambda: int(f"351{random.randint(1111111, 9999999)}")
