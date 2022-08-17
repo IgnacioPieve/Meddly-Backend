@@ -6,8 +6,14 @@ from sqlalchemy import exc
 
 from config import translations
 from dependencies import auth
-from models.treatment import (Consumption, ConsumptionRule, Medicine, Method,
-                              Treatment, TreatmentIndication)
+from models.treatment import (
+    Consumption,
+    ConsumptionRule,
+    Medicine,
+    Method,
+    Treatment,
+    TreatmentIndication,
+)
 from schemas.treatment import TreatmentAddUpdateSchema, TreatmentSchema
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
