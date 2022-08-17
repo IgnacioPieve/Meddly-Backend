@@ -1,6 +1,15 @@
 import threading
 
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Boolean, or_
+from sqlalchemy import (
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Boolean,
+    or_,
+)
 from sqlalchemy.orm import relationship
 
 from config import translations
