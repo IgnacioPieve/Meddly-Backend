@@ -1,13 +1,13 @@
 import threading
 
 from sqlalchemy import (
+    Boolean,
     Column,
     DateTime,
     Float,
     ForeignKey,
     Integer,
     String,
-    Boolean,
     or_,
 )
 from sqlalchemy.orm import relationship
