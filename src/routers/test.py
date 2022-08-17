@@ -1,5 +1,5 @@
 import requests
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 from config import FIREBASE_JSON
 from schemas.test import UserRequestModel

@@ -1,8 +1,7 @@
 import firebase_admin
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
-from dependencies import auth, database
+from dependencies import auth
 from schemas.user import UserSchema, UserUpdateSchema
 from schemas.utils import GenericResponseSchema
 

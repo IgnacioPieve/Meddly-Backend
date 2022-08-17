@@ -30,7 +30,7 @@ jobs:
           git commit -m "style: 🎨 [Bot] Format Python code with Black" -a || echo "No changes to commit"
       - name: Run isort
         run: |
-          isort .
+          isort . --profile black
           git commit -m "style: 🎨 [Bot] Format Python code with isort" -a || echo "No changes to commit"
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
