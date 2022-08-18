@@ -17,6 +17,14 @@ class Consumption(CRUD):
     treatment_id = Column(Integer, ForeignKey("treatment.id"), primary_key=True)
     treatment = relationship("Treatment", backref="consumption_list")
 
+    def create(self):
+        self.treatment.stock -= 1
+        return super().create()
+
+    def destroy(self):
+        self.treatment.stock += 1
+        return super().destroy()
+
 
 # ----- MEDICINE -----
 class Method(CRUD):

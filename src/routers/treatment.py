@@ -35,7 +35,7 @@ def list_treatments(authentication=Depends(auth.authenticate)):
 
 @router.post(
     "/",
-    response_model=TreatmentSchema,
+    response_model=List[TreatmentSchema],
     status_code=201,
     summary="Add a new treatment",
 )
@@ -80,12 +80,12 @@ def add_treatment(
     treatment = Treatment(db, **treatment)
     treatment.create()
 
-    return treatment
+    return user.treatments
 
 
 @router.post(
     "/consumption",
-    response_model=TreatmentSchema,
+    response_model=List[TreatmentSchema],
     status_code=201,
     summary="Add a new consumption",
 )
@@ -108,4 +108,4 @@ def add_consumption(
     except exc.IntegrityError:
         raise translations["errors"]["treatments"]["consumption_already_exists"]
 
-    return treatment
+    return user.treatments

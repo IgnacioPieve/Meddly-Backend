@@ -111,7 +111,7 @@ class EveryXDaySchema(ConsumptionRuleSchema):
     class Config:
         schema_extra = {
             "example": {
-                "runtimeType": "every_x_day",
+                "runtimeType": "everyXDay",
                 "number": random.randint(2, 5),
                 **ConsumptionRuleSchema.Config.schema_extra["example"],
             }
