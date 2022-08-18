@@ -73,7 +73,7 @@ class ConsumptionRule(CRUD):
 
 
 class NeedIt(ConsumptionRule):
-    __mapper_args__ = {"polymorphic_identity": "need_it"}
+    __mapper_args__ = {"polymorphic_identity": "needIt"}
 
     def validate_consumption(self, consumption: datetime.datetime):
         super().validate_consumption(consumption)
@@ -81,7 +81,7 @@ class NeedIt(ConsumptionRule):
 
 
 class EveryDay(ConsumptionRule):
-    __mapper_args__ = {"polymorphic_identity": "every_day"}
+    __mapper_args__ = {"polymorphic_identity": "everyDay"}
 
     hours = Column(PickleType())
 
@@ -109,7 +109,7 @@ class EveryDay(ConsumptionRule):
 
 
 class EveryXDay(ConsumptionRule):
-    __mapper_args__ = {"polymorphic_identity": "every_x_day"}
+    __mapper_args__ = {"polymorphic_identity": "everyXDay"}
 
     number = Column(Integer)
 
@@ -151,7 +151,7 @@ class EveryXDay(ConsumptionRule):
 
 
 class SpecificDays(ConsumptionRule):
-    __mapper_args__ = {"polymorphic_identity": "specific_days"}
+    __mapper_args__ = {"polymorphic_identity": "specificDays"}
 
     days = Column(PickleType())
 

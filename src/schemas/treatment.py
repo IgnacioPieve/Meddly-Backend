@@ -50,12 +50,12 @@ class NeedItSchema(ConsumptionRuleSchema):
     Esta regla se aplica cuando el usuario indica que necesita consumir el medicamento
     """
 
-    runtimeType: Literal["need_it"]
+    runtimeType: Literal["needIt"]
 
     class Config:
         schema_extra = {
             "example": {
-                "runtimeType": "need_it",
+                "runtimeType": "needIt",
                 **ConsumptionRuleSchema.Config.schema_extra["example"],
             }
         }
@@ -73,13 +73,13 @@ class EveryDaySchema(ConsumptionRuleSchema):
             - etc...
     """
 
-    runtimeType: Literal["every_day"]
+    runtimeType: Literal["everyDay"]
     hours: list[datetime.time]
 
     class Config:
         schema_extra = {
             "example": {
-                "runtimeType": "every_day",
+                "runtimeType": "everyDay",
                 "hours": random.sample(
                     [
                         f"0{random.randint(1, 9)}:00",
@@ -105,7 +105,7 @@ class EveryXDaySchema(ConsumptionRuleSchema):
             - etc...
     """
 
-    runtimeType: Literal["every_x_day"]
+    runtimeType: Literal["everyXDay"]
     number: int
 
     class Config:
@@ -129,7 +129,7 @@ class SpecificDaysSchema(ConsumptionRuleSchema):
             - etc...
     """
 
-    runtimeType: Literal["specific_days"]
+    runtimeType: Literal["specificDays"]
     days: list[
         Literal[
             "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
@@ -139,7 +139,7 @@ class SpecificDaysSchema(ConsumptionRuleSchema):
     class Config:
         schema_extra = {
             "example": {
-                "runtimeType": "specific_days",
+                "runtimeType": "specificDays",
                 "days": random.sample(
                     [
                         "monday",
