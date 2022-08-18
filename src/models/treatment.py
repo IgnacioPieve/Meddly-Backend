@@ -24,8 +24,8 @@ class Method(CRUD):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    type = Column(String, nullable=False)
-    __mapper_args__ = {"polymorphic_on": type}
+    runtimeType = Column(String, nullable=False)
+    __mapper_args__ = {"polymorphic_on": runtimeType}
 
 
 class MedicineApplication(Method):
@@ -57,8 +57,8 @@ class ConsumptionRule(CRUD):
     id = Column(Integer, primary_key=True, index=True)
     start = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=True)
-    name = Column(String, nullable=False)
-    __mapper_args__ = {"polymorphic_on": name}
+    runtimeType = Column(String, nullable=False)
+    __mapper_args__ = {"polymorphic_on": runtimeType}
 
     def validate_consumption(self, consumption: datetime.datetime):
         if consumption < self.start:

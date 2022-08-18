@@ -32,7 +32,7 @@ class ConsumptionSchema(BaseModel):
 class ConsumptionRuleSchema(BaseModel):
     start: datetime.datetime
     end: datetime.datetime | None
-    name: str
+    runtimeType: str
 
     class Config:
         orm_mode = True
@@ -50,12 +50,12 @@ class NeedItSchema(ConsumptionRuleSchema):
     Esta regla se aplica cuando el usuario indica que necesita consumir el medicamento
     """
 
-    name: Literal["need_it"]
+    runtimeType: Literal["need_it"]
 
     class Config:
         schema_extra = {
             "example": {
-                "name": "need_it",
+                "runtimeType": "need_it",
                 **ConsumptionRuleSchema.Config.schema_extra["example"],
             }
         }
@@ -73,13 +73,13 @@ class EveryDaySchema(ConsumptionRuleSchema):
             - etc...
     """
 
-    name: Literal["every_day"]
+    runtimeType: Literal["every_day"]
     hours: list[datetime.time]
 
     class Config:
         schema_extra = {
             "example": {
-                "name": "every_day",
+                "runtimeType": "every_day",
                 "hours": random.sample(
                     [
                         f"0{random.randint(1, 9)}:00",
@@ -105,13 +105,13 @@ class EveryXDaySchema(ConsumptionRuleSchema):
             - etc...
     """
 
-    name: Literal["every_x_day"]
+    runtimeType: Literal["every_x_day"]
     number: int
 
     class Config:
         schema_extra = {
             "example": {
-                "name": "every_x_day",
+                "runtimeType": "every_x_day",
                 "number": random.randint(2, 5),
                 **ConsumptionRuleSchema.Config.schema_extra["example"],
             }
@@ -129,7 +129,7 @@ class SpecificDaysSchema(ConsumptionRuleSchema):
             - etc...
     """
 
-    name: Literal["specific_days"]
+    runtimeType: Literal["specific_days"]
     days: list[
         Literal[
             "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
@@ -139,7 +139,7 @@ class SpecificDaysSchema(ConsumptionRuleSchema):
     class Config:
         schema_extra = {
             "example": {
-                "name": "specific_days",
+                "runtimeType": "specific_days",
                 "days": random.sample(
                     [
                         "monday",
@@ -162,20 +162,20 @@ class SpecificDaysSchema(ConsumptionRuleSchema):
 
 class MethodSchema(BaseModel):
     name: str
-    type: str
+    runtimeType: str
 
     class Config:
         orm_mode = True
 
 
 class MedicineDosisSchema(MethodSchema):
-    type: Literal["dosis"]
+    runtimeType: Literal["dosis"]
     value: float
     unit: str
 
 
 class MedicineApplicationSchema(MethodSchema):
-    type: Literal["application"]
+    runtimeType: Literal["application"]
     description: str
 
 
@@ -230,7 +230,7 @@ class TreatmentAddUpdateSchema(BaseModel):
                     "icon": "https://www.google.com/",
                     "method": {
                         "name": "Pastilla",
-                        "type": "dosis",
+                        "runtimeType": "dosis",
                         "value": 10,
                         "unit": "mg",
                     },

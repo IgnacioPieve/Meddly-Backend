@@ -47,8 +47,8 @@ def add_treatment(
     """
     user, db = authentication
 
-    method_type = treatment.medicine.method.type
-    method_class = Method.__mapper__.polymorphic_map[method_type].class_
+    method_runtimeType = treatment.medicine.method.runtimeType
+    method_class = Method.__mapper__.polymorphic_map[method_runtimeType].class_
     method = method_class(db, **treatment.medicine.method.dict())
     method.create()
 
@@ -57,9 +57,9 @@ def add_treatment(
     medicine = Medicine(db, **medicine)
     medicine.create()
 
-    consumption_rule_name = treatment.treatment_indication.consumption_rule.name
+    consumption_rule_runtimeType = treatment.treatment_indication.consumption_rule.runtimeType
     consumption_rule_class = ConsumptionRule.__mapper__.polymorphic_map[
-        consumption_rule_name
+        consumption_rule_runtimeType
     ].class_
     consumption_rule = consumption_rule_class(
         db, **treatment.treatment_indication.consumption_rule.dict()
