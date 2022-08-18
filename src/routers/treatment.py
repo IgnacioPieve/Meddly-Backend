@@ -57,7 +57,9 @@ def add_treatment(
     medicine = Medicine(db, **medicine)
     medicine.create()
 
-    consumption_rule_runtimeType = treatment.treatment_indication.consumption_rule.runtimeType
+    consumption_rule_runtimeType = (
+        treatment.treatment_indication.consumption_rule.runtimeType
+    )
     consumption_rule_class = ConsumptionRule.__mapper__.polymorphic_map[
         consumption_rule_runtimeType
     ].class_
