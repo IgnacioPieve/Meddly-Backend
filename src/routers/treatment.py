@@ -39,7 +39,7 @@ def list_treatments(authentication=Depends(auth.authenticate)):
     summary="Add a new treatment",
 )
 def add_treatment(
-        treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
+    treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
 ):
     """
     Añande una preferencia de notificación
@@ -83,9 +83,9 @@ def add_treatment(
     summary="Add a new consumption",
 )
 def add_consumption(
-        treatment_id: str,
-        consumption_date: datetime.datetime,
-        authentication=Depends(auth.authenticate),
+    treatment_id: str,
+    consumption_date: datetime.datetime,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
     treatment = Treatment(db, Treatment.id == treatment_id).get()

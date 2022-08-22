@@ -40,7 +40,7 @@ class ConsumptionRuleSchema(BaseModel):
             "example": {
                 "start": datetime.datetime.now(),
                 "end": datetime.datetime.now()
-                       + datetime.timedelta(days=random.randint(10, 20)),
+                + datetime.timedelta(days=random.randint(10, 20)),
             }
         }
 
@@ -172,12 +172,14 @@ class MedicineSchema(BaseModel):
         orm_mode = True
         schema_extra = {
             "example": {
-                "name": random.choice(["Paracetamol", "Ibuprofeno", "Diazepam", "Cafalexina"]),
+                "name": random.choice(
+                    ["Paracetamol", "Ibuprofeno", "Diazepam", "Cafalexina"]
+                ),
                 "icon": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
                 "application": random.choice(["oral", "intravenous", "intramuscular"]),
                 "presentation": random.choice(["pastilla", "solución", "inyección"]),
                 "dosis_unit": random.choice(["mg", "ml", "gr"]),
-                "dosis": random.randint(1, 10)
+                "dosis": random.randint(1, 10),
             }
         }
 

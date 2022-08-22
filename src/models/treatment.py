@@ -115,19 +115,19 @@ class EveryXDay(ConsumptionRule):
     def validate_consumption(self, consumption: datetime.datetime):
         super().validate_consumption(consumption)
         correct_day = (
-                              relativedelta(
-                                  self.start,
-                                  datetime.datetime(
-                                      consumption.year,
-                                      consumption.month,
-                                      consumption.day,
-                                      self.start.hour,
-                                      self.start.minute,
-                                      self.start.second,
-                                  ),
-                              ).days
-                              % self.number
-                      ) == 0
+            relativedelta(
+                self.start,
+                datetime.datetime(
+                    consumption.year,
+                    consumption.month,
+                    consumption.day,
+                    self.start.hour,
+                    self.start.minute,
+                    self.start.second,
+                ),
+            ).days
+            % self.number
+        ) == 0
         if not correct_day:
             raise translations["errors"]["treatments"]["incorrect_date"]
         correct_hour = consumption.hour == self.start.hour
