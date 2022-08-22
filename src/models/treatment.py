@@ -27,35 +27,15 @@ class Consumption(CRUD):
 
 
 # ----- MEDICINE -----
-class Method(CRUD):
-    __tablename__ = "method"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    runtimeType = Column(String, nullable=False)
-    __mapper_args__ = {"polymorphic_on": runtimeType}
-
-
-class MedicineApplication(Method):
-    __mapper_args__ = {"polymorphic_identity": "application"}
-
-    description = Column(String)
-
-
-class MedicineDosis(Method):
-    __mapper_args__ = {"polymorphic_identity": "dosis"}
-
-    value = Column(Float)
-    unit = Column(String)
-
-
 class Medicine(CRUD):
     __tablename__ = "medicine"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     icon = Column(String, nullable=False)
-    method_id = Column(Integer, ForeignKey("method.id"), index=True, nullable=False)
-    method = relationship(Method, backref="medicine", foreign_keys=[method_id])
+    application = Column(String, nullable=True)
+    presentation = Column(String, nullable=True)
+    dosis_unit = Column(String, nullable=True)
+    dosis = Column(Float, nullable=True)
 
 
 # ----- TREATMENT_INDICATION -----
@@ -135,19 +115,19 @@ class EveryXDay(ConsumptionRule):
     def validate_consumption(self, consumption: datetime.datetime):
         super().validate_consumption(consumption)
         correct_day = (
-            relativedelta(
-                self.start,
-                datetime.datetime(
-                    consumption.year,
-                    consumption.month,
-                    consumption.day,
-                    self.start.hour,
-                    self.start.minute,
-                    self.start.second,
-                ),
-            ).days
-            % self.number
-        ) == 0
+                              relativedelta(
+                                  self.start,
+                                  datetime.datetime(
+                                      consumption.year,
+                                      consumption.month,
+                                      consumption.day,
+                                      self.start.hour,
+                                      self.start.minute,
+                                      self.start.second,
+                                  ),
+                              ).days
+                              % self.number
+                      ) == 0
         if not correct_day:
             raise translations["errors"]["treatments"]["incorrect_date"]
         correct_hour = consumption.hour == self.start.hour

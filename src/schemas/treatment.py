@@ -40,7 +40,7 @@ class ConsumptionRuleSchema(BaseModel):
             "example": {
                 "start": datetime.datetime.now(),
                 "end": datetime.datetime.now()
-                + datetime.timedelta(days=random.randint(10, 20)),
+                       + datetime.timedelta(days=random.randint(10, 20)),
             }
         }
 
@@ -160,32 +160,26 @@ class SpecificDaysSchema(ConsumptionRuleSchema):
 """         ----- Medicine -----         """
 
 
-class MethodSchema(BaseModel):
-    name: str
-    runtimeType: str
-
-    class Config:
-        orm_mode = True
-
-
-class MedicineDosisSchema(MethodSchema):
-    runtimeType: Literal["dosis"]
-    value: float
-    unit: str
-
-
-class MedicineApplicationSchema(MethodSchema):
-    runtimeType: Literal["application"]
-    description: str
-
-
 class MedicineSchema(BaseModel):
     name: str
     icon: str
-    method: MedicineDosisSchema | MedicineApplicationSchema
+    application: str
+    presentation: str
+    dosis_unit: str
+    dosis: float
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "example": {
+                "name": random.choice(["Paracetamol", "Ibuprofeno", "Diazepam", "Cafalexina"]),
+                "icon": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+                "application": random.choice(["oral", "intravenous", "intramuscular"]),
+                "presentation": random.choice(["pastilla", "solución", "inyección"]),
+                "dosis_unit": random.choice(["mg", "ml", "gr"]),
+                "dosis": random.randint(1, 10)
+            }
+        }
 
 
 """         ----- Treatment -----         """
@@ -223,18 +217,7 @@ class TreatmentAddUpdateSchema(BaseModel):
         # TODO: Mejorar estos ejemplos
         schema_extra = {
             "example": {
-                "medicine": {
-                    "name": random.choice(
-                        ["Paracetamol", "Ibuprofeno", "Diazepam", "Cafalexina"]
-                    ),
-                    "icon": "https://www.google.com/",
-                    "method": {
-                        "name": "Pastilla",
-                        "runtimeType": "dosis",
-                        "value": 10,
-                        "unit": "mg",
-                    },
-                },
+                "medicine": MedicineSchema.Config.schema_extra["example"],
                 "treatment_indication": TreatmentIndicationSchema.Config.schema_extra[
                     "example"
                 ],

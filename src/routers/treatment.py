@@ -10,7 +10,6 @@ from models.treatment import (
     Consumption,
     ConsumptionRule,
     Medicine,
-    Method,
     Treatment,
     TreatmentIndication,
 )
@@ -40,20 +39,14 @@ def list_treatments(authentication=Depends(auth.authenticate)):
     summary="Add a new treatment",
 )
 def add_treatment(
-    treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
+        treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
 ):
     """
     Añande una preferencia de notificación
     """
     user, db = authentication
 
-    method_runtimeType = treatment.medicine.method.runtimeType
-    method_class = Method.__mapper__.polymorphic_map[method_runtimeType].class_
-    method = method_class(db, **treatment.medicine.method.dict())
-    method.create()
-
     medicine = treatment.medicine.dict()
-    medicine["method"] = method
     medicine = Medicine(db, **medicine)
     medicine.create()
 
@@ -90,9 +83,9 @@ def add_treatment(
     summary="Add a new consumption",
 )
 def add_consumption(
-    treatment_id: str,
-    consumption_date: datetime.datetime,
-    authentication=Depends(auth.authenticate),
+        treatment_id: str,
+        consumption_date: datetime.datetime,
+        authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
     treatment = Treatment(db, Treatment.id == treatment_id).get()
