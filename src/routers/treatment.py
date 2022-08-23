@@ -2,7 +2,7 @@ import datetime
 from typing import List
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import exc
+from sqlalchemy import exc, and_
 
 from config import translations
 from dependencies import auth
@@ -39,7 +39,7 @@ def list_treatments(authentication=Depends(auth.authenticate)):
     summary="Add a new treatment",
 )
 def add_treatment(
-    treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
+        treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
 ):
     """
     Añande una preferencia de notificación
@@ -83,9 +83,9 @@ def add_treatment(
     summary="Add a new consumption",
 )
 def add_consumption(
-    treatment_id: str,
-    consumption_date: datetime.datetime,
-    authentication=Depends(auth.authenticate),
+        treatment_id: str,
+        consumption_date: datetime.datetime,
+        authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
     treatment = Treatment(db, Treatment.id == treatment_id).get()
@@ -100,5 +100,28 @@ def add_consumption(
         consumption.create()
     except exc.IntegrityError:
         raise translations["errors"]["treatments"]["consumption_already_exists"]
+
+    return user.treatments
+
+
+@router.delete(
+    "/consumption",
+    response_model=List[TreatmentSchema],
+    status_code=200,
+    summary="Delete consumption",
+)
+def add_consumption(
+        treatment_id: str,
+        consumption_date: datetime.datetime,
+        authentication=Depends(auth.authenticate),
+):
+    user, db = authentication
+
+    consumption = Consumption(db, and_(Consumption.treatment_id == treatment_id,
+                                       Consumption.datetime.between(
+                                           consumption_date - datetime.timedelta(seconds=5),
+                                           consumption_date + datetime.timedelta(seconds=5)
+                                       ))).get()
+    consumption.destroy()
 
     return user.treatments
