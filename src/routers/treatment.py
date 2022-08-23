@@ -2,7 +2,7 @@ import datetime
 from typing import List
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import exc, and_
+from sqlalchemy import and_, exc
 
 from config import translations
 from dependencies import auth
