@@ -109,8 +109,9 @@ class EveryXDay(ConsumptionRule):
             start + datetime.timedelta(days=x) for x in range((end - start).days + 1)
         ]
         for day in days:
-            correct_day = ((relativedelta(self.start, day).days % self.number) == 0 and
-                           self.start.date() <= day.date() <= self.end.date())
+            correct_day = (
+                relativedelta(self.start, day).days % self.number
+            ) == 0 and self.start.date() <= day.date() <= self.end.date()
             if correct_day:
                 proyections[day.strftime("%Y-%m-%d")] = [self.start.strftime("%H:%M")]
         return proyections
@@ -118,19 +119,19 @@ class EveryXDay(ConsumptionRule):
     def validate_consumption(self, consumption: datetime.datetime):
         super().validate_consumption(consumption)
         correct_day = (
-                              relativedelta(
-                                  self.start,
-                                  datetime.datetime(
-                                      consumption.year,
-                                      consumption.month,
-                                      consumption.day,
-                                      self.start.hour,
-                                      self.start.minute,
-                                      self.start.second,
-                                  ),
-                              ).days
-                              % self.number
-                      ) == 0
+            relativedelta(
+                self.start,
+                datetime.datetime(
+                    consumption.year,
+                    consumption.month,
+                    consumption.day,
+                    self.start.hour,
+                    self.start.minute,
+                    self.start.second,
+                ),
+            ).days
+            % self.number
+        ) == 0
         if not correct_day:
             raise translations["errors"]["treatments"]["incorrect_date"]
         correct_hour = consumption.hour == self.start.hour
@@ -152,8 +153,10 @@ class SpecificDays(ConsumptionRule):
             start + datetime.timedelta(days=x) for x in range((end - start).days + 1)
         ]
         for day in days:
-            correct_day = (calendar.day_name[day.weekday()].lower() in self.days and
-                           self.start.date() <= day.date() <= self.end.date())
+            correct_day = (
+                calendar.day_name[day.weekday()].lower() in self.days
+                and self.start.date() <= day.date() <= self.end.date()
+            )
             if correct_day:
                 proyections[day.strftime("%Y-%m-%d")] = [self.start.strftime("%H:%M")]
         return proyections
