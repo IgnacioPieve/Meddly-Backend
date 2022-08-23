@@ -234,4 +234,16 @@ class Treatment(CRUD):
                     {"hour": hour, "consumed": consumed}
                 )
 
-        return proyection_with_consumptions
+        proyections_array = []
+        for day in proyection_with_consumptions:
+            for consumption in proyection_with_consumptions[day]:
+                proyections_array.append(
+                    {
+                        "datetime": datetime.datetime.strptime(
+                            day + " " + consumption["hour"], "%Y-%m-%d %H:%M"
+                        ),
+                        "consumed": consumption["consumed"],
+                    }
+                )
+
+        return proyections_array

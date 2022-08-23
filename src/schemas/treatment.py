@@ -7,21 +7,15 @@ from pydantic import BaseModel
 """         ----- Consumption -----         """
 
 
-class ConsumptionHourSchema(BaseModel):
-    hour: str
-    consumed: bool
-
-
 class ConsumptionSchema(BaseModel):
-    __root__: Dict[str, List[ConsumptionHourSchema]]
+    datetime: datetime.datetime
+    consumed: bool
 
     class Config:
         schema_extra = {
             "example": {
-                "2022-08-14": [{"hour": "16:43", "consumed": False}],
-                "2022-08-17": [{"hour": "16:43", "consumed": True}],
-                "2022-08-20": [{"hour": "16:43", "consumed": False}],
-                "2022-08-23": [{"hour": "16:43", "consumed": True}],
+                "datetime": datetime.datetime.now(),
+                "consumed": True,
             }
         }
 
@@ -40,7 +34,7 @@ class ConsumptionRuleSchema(BaseModel):
             "example": {
                 "start": datetime.datetime.now(),
                 "end": datetime.datetime.now()
-                + datetime.timedelta(days=random.randint(10, 20)),
+                       + datetime.timedelta(days=random.randint(10, 20)),
             }
         }
 
@@ -231,7 +225,7 @@ class TreatmentAddUpdateSchema(BaseModel):
 
 class TreatmentSchema(TreatmentAddUpdateSchema):
     id: int
-    consumptions: ConsumptionSchema
+    consumptions: List[ConsumptionSchema]
 
     class Config:
         orm_mode = True
