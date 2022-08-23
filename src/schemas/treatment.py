@@ -34,7 +34,7 @@ class ConsumptionRuleSchema(BaseModel):
             "example": {
                 "start": datetime.datetime.now(),
                 "end": datetime.datetime.now()
-                       + datetime.timedelta(days=random.randint(10, 20)),
+                + datetime.timedelta(days=random.randint(10, 20)),
             }
         }
 
