@@ -20,11 +20,15 @@ from models.utils import CRUD, generate_code
 class Supervised(CRUD):
     __tablename__ = "supervised"
     id = Column(Integer, primary_key=True, index=True)
-    supervisor_id = Column(String(255), ForeignKey("user.id"), nullable=False, index=True)
+    supervisor_id = Column(
+        String(255), ForeignKey("user.id"), nullable=False, index=True
+    )
     supervisor = relationship(
         "User", backref="supervised_list", foreign_keys=[supervisor_id]
     )
-    supervised_id = Column(String(255), ForeignKey("user.id"), nullable=False, index=True)
+    supervised_id = Column(
+        String(255), ForeignKey("user.id"), nullable=False, index=True
+    )
     supervised = relationship(
         "User", backref="supervisors_list", foreign_keys=[supervised_id]
     )
