@@ -28,14 +28,14 @@ async def catch_exceptions_middleware(request: Request, call_next):
         return await call_next(request)
     except Exception as e:
         body = {
-            'message': 'Internal server error',
-            'error': str(e),
-            'traceback': traceback.format_exc()
+            "message": "Internal server error",
+            "error": str(e),
+            "traceback": traceback.format_exc(),
         }
         return Response(body, status_code=500)
 
 
-app.middleware('http')(catch_exceptions_middleware)
+app.middleware("http")(catch_exceptions_middleware)
 
 if __name__ == "__main__":
     import uvicorn
