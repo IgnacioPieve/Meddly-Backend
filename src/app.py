@@ -4,7 +4,7 @@ import traceback
 from typing import Callable
 
 from fastapi import FastAPI
-from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.routing import APIRoute
 from starlette.requests import Request
 from starlette.responses import Response
