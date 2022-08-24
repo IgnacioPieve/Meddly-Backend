@@ -30,11 +30,11 @@ class Consumption(CRUD):
 class Medicine(CRUD):
     __tablename__ = "medicine"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    icon = Column(String, nullable=False)
-    application = Column(String, nullable=True)
-    presentation = Column(String, nullable=True)
-    dosis_unit = Column(String, nullable=True)
+    name = Column(String(255), nullable=False)
+    icon = Column(String(255), nullable=False)
+    application = Column(String(255), nullable=True)
+    presentation = Column(String(255), nullable=True)
+    dosis_unit = Column(String(255), nullable=True)
     dosis = Column(Float, nullable=True)
 
 
@@ -45,7 +45,7 @@ class ConsumptionRule(CRUD):
     id = Column(Integer, primary_key=True, index=True)
     start = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=True)
-    runtimeType = Column(String, nullable=False)
+    runtimeType = Column(String(255), nullable=False)
     __mapper_args__ = {"polymorphic_on": runtimeType}
 
     def validate_consumption(self, consumption: datetime.datetime):
@@ -191,7 +191,7 @@ class TreatmentIndication(CRUD):
         backref="treatment_indication",
         foreign_keys=[consumption_rule_id],
     )
-    instructions = Column(String, nullable=True)
+    instructions = Column(String(255), nullable=True)
 
 
 class Treatment(CRUD):
@@ -208,7 +208,7 @@ class Treatment(CRUD):
     treatment_indication = relationship(
         TreatmentIndication, backref="treatment", foreign_keys=[treatment_indication_id]
     )
-    user_id = Column(String, ForeignKey("user.id"), index=True, nullable=False)
+    user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=False)
     user = relationship("User", backref="treatments", foreign_keys=[user_id])
 
     @property

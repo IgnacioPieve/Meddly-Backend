@@ -9,11 +9,11 @@ from models.utils import CRUD
 
 class NotificationPreference(CRUD):
     __tablename__ = "notification_preference"
-    user_id = Column(String, ForeignKey("user.id"), primary_key=True, index=True)
+    user_id = Column(String(255), ForeignKey("user.id"), primary_key=True, index=True)
     user = relationship(
         "User", backref="notification_preferences_list", foreign_keys=[user_id]
     )
-    notification_preference = Column(String, primary_key=True, index=True)
+    notification_preference = Column(String(255), primary_key=True, index=True)
     __mapper_args__ = {"polymorphic_on": notification_preference}
 
     EMAIL = "email"
