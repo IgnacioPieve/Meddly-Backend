@@ -1,4 +1,8 @@
+import traceback
+
 from fastapi import FastAPI
+from starlette.requests import Request
+from starlette.responses import Response
 
 import config
 from database import Base, engine
@@ -16,6 +20,22 @@ app.include_router(supervisor.router)
 app.include_router(treatment.router)
 app.include_router(notification.router)
 app.include_router(test.router)
+
+
+# ----- EXCEPTIONS MIDDLEWARE -----
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        body = {
+            'message': 'Internal server error',
+            'error': str(e),
+            'traceback': traceback.format_exc()
+        }
+        return Response(body, status_code=500)
+
+
+app.middleware('http')(catch_exceptions_middleware)
 
 if __name__ == "__main__":
     import uvicorn
