@@ -33,6 +33,7 @@ def register(user: UserRequestModel):
 @router.post("/reset-database")
 def reset_database():
     from database import Base, engine
+
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     return {"status": "ok"}
