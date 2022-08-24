@@ -9,11 +9,13 @@ ENV_NAME = os.getenv("ENV_NAME")
 if ENV_NAME == "prod":
     DB_URL = "postgresql://ufgbchph:cTqNG9causgSbi-eEXhsDt32FdsWwY4B@kesavan.db.elephantsql.com/ufgbchph"
 elif ENV_NAME == "dev":
-    DB_URL = "mysql+pymysql://" \
-             "meddly:EB2UV23zwfxfjL23QVG%40h5&KmfpjJ%*rSxiNZE" \
-             "@" \
-             "meddly-database.mysql.database.azure.com:3306/" \
-             "meddly-dev"
+    DB_URL = (
+        "mysql+pymysql://"
+        "meddly:EB2UV23zwfxfjL23QVG%40h5&KmfpjJ%*rSxiNZE"
+        "@"
+        "meddly-database.mysql.database.azure.com:3306/"
+        "meddly-dev"
+    )
 else:
     # Environ variables for local development
     DB_URL = "sqlite:///database.db"
