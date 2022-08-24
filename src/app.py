@@ -29,7 +29,7 @@ async def add_process_time_header(request: Request, call_next):
         body = {
             "message": "An error occurred while handling the request",
             "error": str(e),
-            "traceback": traceback.format_exc()
+            "traceback": traceback.format_exc(),
         }
         return Response(
             status_code=500, content=json.dumps(body), media_type="application/json"
