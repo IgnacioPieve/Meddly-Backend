@@ -32,7 +32,7 @@ class UserUpdateSchema(BaseModel):
     sex: str | None
     birth: datetime.datetime | None
     avatar: str | None
-    phone: int | None
+    phone: str | None
 
     class Config:
         orm_mode = True
