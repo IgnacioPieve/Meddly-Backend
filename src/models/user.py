@@ -47,7 +47,7 @@ class User(CRUD):
     sex = Column(String(255), nullable=True)
     birth = Column(DateTime, nullable=True)
     avatar = Column(String(255), nullable=True)
-    phone = Column(Integer, nullable=True)
+    phone = Column(String(20), nullable=True)
 
     disabled = Column(Boolean, nullable=False, default=False)
 
