@@ -11,10 +11,10 @@ if ENV_NAME == "prod":
 elif ENV_NAME == "dev":
     DB_URL = (
         "mysql+pymysql://"
-        "meddly:EB2UV23zwfxfjL23QVG%40h5&KmfpjJ%*rSxiNZE"
+        "meddly:MeddlyPassword123."
         "@"
-        "meddly-database.mysql.database.azure.com:3306/"
-        "meddly-dev"
+        "3.238.163.234:3306/"
+        "dev"
     )
 else:
     # Environ variables for local development
