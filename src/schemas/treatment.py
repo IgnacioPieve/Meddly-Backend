@@ -1,10 +1,30 @@
 import datetime
 import random
-from typing import Dict, List, Literal
+from typing import List, Literal
 
 from pydantic import BaseModel
 
 """         ----- Consumption -----         """
+
+
+class ConsumptionRule(BaseModel):
+    start: datetime.datetime
+    end: datetime.datetime
+    hours: List[str] | None
+    days: List[Literal["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]] | None
+    everyxdays: int | None
+
+    class Config:
+        orm_mode = True
+        schema_extra = {
+            "example": {
+                "start": "2021-01-01 00:00:00",
+                "end": "2021-01-31 00:00:00",
+                "hours": ["00:00", "12:00"],
+                "days": ["monday", "tuesday", "wednesday", "thursday"],
+                "everyxdays": None
+            }
+        }
 
 
 class ConsumptionSchema(BaseModel):
@@ -16,137 +36,6 @@ class ConsumptionSchema(BaseModel):
             "example": {
                 "datetime": datetime.datetime.now(),
                 "consumed": True,
-            }
-        }
-
-
-"""         ----- Consumption Rules -----         """
-
-
-class ConsumptionRuleSchema(BaseModel):
-    start: datetime.datetime
-    end: datetime.datetime | None
-    runtimeType: str
-
-    class Config:
-        orm_mode = True
-        schema_extra = {
-            "example": {
-                "start": datetime.datetime.now(),
-                "end": datetime.datetime.now()
-                + datetime.timedelta(days=random.randint(10, 20)),
-            }
-        }
-
-
-class NeedItSchema(ConsumptionRuleSchema):
-    """
-    Esta regla se aplica cuando el usuario indica que necesita consumir el medicamento
-    """
-
-    runtimeType: Literal["needIt"]
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "runtimeType": "needIt",
-                **ConsumptionRuleSchema.Config.schema_extra["example"],
-            }
-        }
-
-
-class EveryDaySchema(ConsumptionRuleSchema):
-    """
-    Esta regla de consumo se aplica todos los días, por ejemplo:
-        Si el medicamento se debe aplicar todos los días a las 11.00 y a las 23.00 (hours = [11.00, 23.00]),
-        a partir del Lunes 1 de Junio, las próximas fechas válidas para aplicar el medicamento son:
-            - Martes 2 de Junio a las 11.00 y luego las 23.00
-            - Miércoles 3 de Junio a las 11.00 y luego las 23.00
-            - Jueves 4 de Junio a las 11.00 y luego las 23.00
-            - Viernes 5 de Junio a las 11.00 y luego las 23.00
-            - etc...
-    """
-
-    runtimeType: Literal["everyDay"]
-    hours: list[datetime.time]
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "runtimeType": "everyDay",
-                "hours": random.sample(
-                    [
-                        f"0{random.randint(1, 9)}:00",
-                        f"{random.randint(10, 15)}:00",
-                        f"{random.randint(16, 20)}:00",
-                        f"{random.randint(21, 23)}:00",
-                    ],
-                    random.randint(1, 4),
-                ),
-                **ConsumptionRuleSchema.Config.schema_extra["example"],
-            }
-        }
-
-
-class EveryXDaySchema(ConsumptionRuleSchema):
-    """
-    Esta regla de consumos se aplica cada x días, por ejemplo:
-        Si el medicamento se debe aplicar cada 2 días (number = 2), a partir del Lunes 1 de Junio a las 17.30,
-        las próximas fechas válidas para aplicar el medicamento son:
-            - Miércoles 3 de Junio a las 17.30
-            - Viernes 5 de Junio a las 17.30
-            - Domingo 7 de Junio a las 17.30
-            - etc...
-    """
-
-    runtimeType: Literal["everyXDay"]
-    number: int
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "runtimeType": "everyXDay",
-                "number": random.randint(2, 5),
-                **ConsumptionRuleSchema.Config.schema_extra["example"],
-            }
-        }
-
-
-class SpecificDaysSchema(ConsumptionRuleSchema):
-    """
-    Esta regla de consumo se aplica en días específicos, por ejemplo:
-        Si el medicamento se debe aplicar los días Martes, Jueves y Sábado (days = ["tuesday", "thursday", "saturday"]), a partir del Martes 2 de Junio a las 17.30,
-        las próximas fechas válidas para aplicar el medicamento son:
-            - Jueves 4 de Junio a las 17.30
-            - Sábado 6 de Junio a las 17.30
-            - Martes 9 de Junio a las 17.30
-            - etc...
-    """
-
-    runtimeType: Literal["specificDays"]
-    days: list[
-        Literal[
-            "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
-        ]
-    ]
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "runtimeType": "specificDays",
-                "days": random.sample(
-                    [
-                        "monday",
-                        "tuesday",
-                        "wednesday",
-                        "thursday",
-                        "friday",
-                        "saturday",
-                        "sunday",
-                    ],
-                    random.randint(1, 7),
-                ),
-                **ConsumptionRuleSchema.Config.schema_extra["example"],
             }
         }
 
@@ -182,7 +71,7 @@ class MedicineSchema(BaseModel):
 
 
 class TreatmentIndicationSchema(BaseModel):
-    consumption_rule: NeedItSchema | EveryDaySchema | EveryXDaySchema | SpecificDaysSchema
+    consumption_rule: ConsumptionRule
     instructions: str | None
 
     class Config:
@@ -194,9 +83,7 @@ class TreatmentIndicationSchema(BaseModel):
         ]
         schema_extra = {
             "example": {
-                "consumption_rule": random.choice(
-                    [NeedItSchema, EveryDaySchema, EveryXDaySchema, SpecificDaysSchema]
-                ).Config.schema_extra["example"],
+                "consumption_rule": ConsumptionRule.Config.schema_extra["example"],
                 "instructions": random.choice(example_instructions),
             }
         }

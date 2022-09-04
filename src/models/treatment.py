@@ -45,81 +45,23 @@ class ConsumptionRule(CRUD):
     id = Column(Integer, primary_key=True, index=True)
     start = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=True)
-    runtimeType = Column(String(255), nullable=False)
-    __mapper_args__ = {"polymorphic_on": runtimeType}
+    hours = Column(PickleType(), nullable=True)
+    days = Column(PickleType(), nullable=True)
+    everyxdays = Column(Integer, nullable=True)
 
     def validate_consumption(self, consumption: datetime.datetime):
-        if consumption < self.start:
-            raise translations["errors"]["treatments"][
-                "consumption_before_treatment_start"
-            ]
-        if self.end is not None and consumption > self.end:
+        if self.validate_date_range(consumption) == 'start':
+            raise translations["errors"]["treatments"]["consumption_before_treatment_start"]
+        elif self.validate_date_range(consumption) == 'end':
             raise translations["errors"]["treatments"]["treatment_expired"]
+        if not self.validate_day(consumption):
+            raise translations["errors"]["treatments"]["incorrect_date"]
+        if not self.validate_hour(consumption):
+            raise translations["errors"]["treatments"]["incorrect_time"]
 
-    def get_proyections(self, start: datetime.datetime, end: datetime.datetime):
-        return {}
-
-
-class NeedIt(ConsumptionRule):
-    __mapper_args__ = {"polymorphic_identity": "needIt"}
-
-    def validate_consumption(self, consumption: datetime.datetime):
-        super().validate_consumption(consumption)
-        return
-
-
-class EveryDay(ConsumptionRule):
-    __mapper_args__ = {"polymorphic_identity": "everyDay"}
-
-    hours = Column(PickleType())
-
-    def get_proyections(self, start: datetime.datetime, end: datetime.datetime):
-        proyections = {}
-        days = [
-            start + datetime.timedelta(days=x) for x in range((end - start).days + 1)
-        ]
-        for day in days:
-            proyections[day.strftime("%Y-%m-%d")] = []
-            for hour in self.hours:
-                combined = datetime.datetime.combine(day, hour)
-                if self.start <= combined <= self.end:
-                    proyections[day.strftime("%Y-%m-%d")].append(hour.strftime("%H:%M"))
-        return proyections
-
-    def validate_consumption(self, consumption: datetime.datetime):
-        super().validate_consumption(consumption)
-
-        for hour in self.hours:
-            correct_hour = consumption.hour == hour.hour
-            correct_minute = consumption.minute == hour.minute
-            correct_time = correct_hour and correct_minute
-            if correct_time:
-                return
-        raise translations["errors"]["treatments"]["incorrect_time"]
-
-
-class EveryXDay(ConsumptionRule):
-    __mapper_args__ = {"polymorphic_identity": "everyXDay"}
-
-    number = Column(Integer)
-
-    def get_proyections(self, start: datetime.datetime, end: datetime.datetime):
-        proyections = {}
-        days = [
-            start + datetime.timedelta(days=x) for x in range((end - start).days + 1)
-        ]
-        for day in days:
-            correct_day = (
-                relativedelta(self.start, day).days % self.number
-            ) == 0 and self.start.date() <= day.date() <= self.end.date()
-            if correct_day:
-                proyections[day.strftime("%Y-%m-%d")] = [self.start.strftime("%H:%M")]
-        return proyections
-
-    def validate_consumption(self, consumption: datetime.datetime):
-        super().validate_consumption(consumption)
-        correct_day = (
-            relativedelta(
+    def validate_day(self, consumption: datetime.datetime):
+        if self.everyxdays is not None:
+            correct_day = (relativedelta(
                 self.start,
                 datetime.datetime(
                     consumption.year,
@@ -128,24 +70,25 @@ class EveryXDay(ConsumptionRule):
                     self.start.hour,
                     self.start.minute,
                     self.start.second,
-                ),
-            ).days
-            % self.number
-        ) == 0
-        if not correct_day:
-            raise translations["errors"]["treatments"]["incorrect_date"]
-        correct_hour = consumption.hour == self.start.hour
-        correct_minute = consumption.minute == self.start.minute
-        correct_time = correct_hour and correct_minute
-        if not correct_time:
-            raise translations["errors"]["treatments"]["incorrect_time"]
-        return
+                )).days % self.everyxdays) == 0
+        else:
+            correct_day = calendar.day_name[consumption.weekday()].lower() in self.days
+        return correct_day
 
+    def validate_hour(self, consumption: datetime.datetime):
+        hour = f'{consumption.hour:02d}:{consumption.minute:02d}'
+        correct_hour = hour in self.hours
+        # TODO: el if y return se puede hacer en una sola linea
+        if not correct_hour:
+            return False
+        return True
 
-class SpecificDays(ConsumptionRule):
-    __mapper_args__ = {"polymorphic_identity": "specificDays"}
-
-    days = Column(PickleType())
+    def validate_date_range(self, consumption: datetime.datetime):
+        if consumption < self.start:
+            return 'start'
+        if self.end is not None and consumption > self.end:
+            return 'end'
+        return True
 
     def get_proyections(self, start: datetime.datetime, end: datetime.datetime):
         proyections = {}
@@ -153,29 +96,11 @@ class SpecificDays(ConsumptionRule):
             start + datetime.timedelta(days=x) for x in range((end - start).days + 1)
         ]
         for day in days:
-            correct_day = (
-                calendar.day_name[day.weekday()].lower() in self.days
-                and self.start.date() <= day.date() <= self.end.date()
-            )
+            correct_day = self.validate_day(day)
             if correct_day:
-                proyections[day.strftime("%Y-%m-%d")] = [self.start.strftime("%H:%M")]
+                proyections[day.strftime("%Y-%m-%d")] = self.hours
+
         return proyections
-
-    def validate_consumption(self, consumption: datetime.datetime):
-        super().validate_consumption(consumption)
-
-        correct_day = calendar.day_name[consumption.weekday()].lower() in self.days
-
-        if not correct_day:
-            raise translations["errors"]["treatments"]["incorrect_date"]
-
-        correct_hour = consumption.hour == self.start.hour
-        correct_minute = consumption.minute == self.start.minute
-        correct_time = correct_hour and correct_minute
-        if not correct_time:
-            raise translations["errors"]["treatments"]["incorrect_time"]
-
-        return
 
 
 # ----- TREATMENT -----
@@ -252,5 +177,4 @@ class Treatment(CRUD):
                         "consumed": consumption["consumed"],
                     }
                 )
-
         return proyections_array
