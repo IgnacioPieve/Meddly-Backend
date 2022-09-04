@@ -10,11 +10,7 @@ if ENV_NAME == "prod":
     DB_URL = "postgresql://ufgbchph:cTqNG9causgSbi-eEXhsDt32FdsWwY4B@kesavan.db.elephantsql.com/ufgbchph"
 elif ENV_NAME == "dev":
     DB_URL = (
-        "mysql+pymysql://"
-        "meddly:MeddlyPassword123."
-        "@"
-        "3.238.163.234:3306/"
-        "dev"
+        "mysql+pymysql://" "meddly:MeddlyPassword123." "@" "3.238.163.234:3306/" "dev"
     )
 else:
     # Environ variables for local development
