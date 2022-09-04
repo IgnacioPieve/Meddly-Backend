@@ -50,9 +50,11 @@ class ConsumptionRule(CRUD):
     everyxdays = Column(Integer, nullable=True)
 
     def validate_consumption(self, consumption: datetime.datetime):
-        if self.validate_date_range(consumption) == 'start':
-            raise translations["errors"]["treatments"]["consumption_before_treatment_start"]
-        elif self.validate_date_range(consumption) == 'end':
+        if self.validate_date_range(consumption) == "start":
+            raise translations["errors"]["treatments"][
+                "consumption_before_treatment_start"
+            ]
+        elif self.validate_date_range(consumption) == "end":
             raise translations["errors"]["treatments"]["treatment_expired"]
         if not self.validate_day(consumption):
             raise translations["errors"]["treatments"]["incorrect_date"]
@@ -61,22 +63,26 @@ class ConsumptionRule(CRUD):
 
     def validate_day(self, consumption: datetime.datetime):
         if self.everyxdays is not None:
-            correct_day = (relativedelta(
-                self.start,
-                datetime.datetime(
-                    consumption.year,
-                    consumption.month,
-                    consumption.day,
-                    self.start.hour,
-                    self.start.minute,
-                    self.start.second,
-                )).days % self.everyxdays) == 0
+            correct_day = (
+                relativedelta(
+                    self.start,
+                    datetime.datetime(
+                        consumption.year,
+                        consumption.month,
+                        consumption.day,
+                        self.start.hour,
+                        self.start.minute,
+                        self.start.second,
+                    ),
+                ).days
+                % self.everyxdays
+            ) == 0
         else:
             correct_day = calendar.day_name[consumption.weekday()].lower() in self.days
         return correct_day
 
     def validate_hour(self, consumption: datetime.datetime):
-        hour = f'{consumption.hour:02d}:{consumption.minute:02d}'
+        hour = f"{consumption.hour:02d}:{consumption.minute:02d}"
         correct_hour = hour in self.hours
         # TODO: el if y return se puede hacer en una sola linea
         if not correct_hour:
@@ -85,9 +91,9 @@ class ConsumptionRule(CRUD):
 
     def validate_date_range(self, consumption: datetime.datetime):
         if consumption < self.start:
-            return 'start'
+            return "start"
         if self.end is not None and consumption > self.end:
-            return 'end'
+            return "end"
         return True
 
     def get_proyections(self, start: datetime.datetime, end: datetime.datetime):
