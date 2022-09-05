@@ -7,15 +7,18 @@ from starlette import status
 ENV_NAME = os.getenv("ENV_NAME")
 
 if ENV_NAME == "prod":
-    DB_URL = "postgresql://ufgbchph:cTqNG9causgSbi-eEXhsDt32FdsWwY4B@kesavan.db.elephantsql.com/ufgbchph"
+    # DB_URL = "postgresql://ufgbchph:cTqNG9causgSbi-eEXhsDt32FdsWwY4B@kesavan.db.elephantsql.com/ufgbchph"
+    pass
 elif ENV_NAME == "dev":
-    DB_URL = (
-        "mysql+pymysql://" "meddly:MeddlyPassword123." "@" "3.238.163.234:3306/" "dev"
-    )
+    # DB_URL = (
+    #     "mysql+pymysql://" "meddly:MeddlyPassword123." "@" "3.238.163.234:3306/" "dev"
+    # )
+    pass
 else:
     # Environ variables for local development
-    DB_URL = "sqlite:///database.db"
+    # DB_URL = "sqlite:///database.db"
     ENV_NAME = "local-dev"
+DB_URL = "sqlite:///database.db"
 
 
 SENDGRID_CONFIG = {
