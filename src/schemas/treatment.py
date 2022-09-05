@@ -90,7 +90,7 @@ class TreatmentAddUpdateSchema(BaseModel):
                 "consumption_rule": ConsumptionRule.Config.schema_extra["example"],
                 "stock": random.randint(15, 50),
                 "stock_warning": random.randint(5, 10),
-                "instructions": "Tomarlo cada 8 hs"
+                "instructions": "Tomarlo cada 8 hs",
             }
         }
 

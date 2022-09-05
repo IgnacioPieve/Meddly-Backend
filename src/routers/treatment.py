@@ -6,12 +6,7 @@ from sqlalchemy import and_, exc
 
 from config import translations
 from dependencies import auth
-from models.treatment import (
-    Consumption,
-    ConsumptionRule,
-    Medicine,
-    Treatment
-)
+from models.treatment import Consumption, ConsumptionRule, Medicine, Treatment
 from schemas.treatment import TreatmentAddUpdateSchema, TreatmentSchema
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
