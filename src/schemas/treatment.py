@@ -74,42 +74,23 @@ class MedicineSchema(BaseModel):
 """         ----- Treatment -----         """
 
 
-class TreatmentIndicationSchema(BaseModel):
-    consumption_rule: ConsumptionRule
-    instructions: str | None
-
-    class Config:
-        orm_mode = True
-        example_instructions = [
-            "Tomarlo cada 8 horas",
-            "Tomarlo al despertarme",
-            "Inyectar antes de ir a dormir",
-        ]
-        schema_extra = {
-            "example": {
-                "consumption_rule": ConsumptionRule.Config.schema_extra["example"],
-                "instructions": random.choice(example_instructions),
-            }
-        }
-
-
 class TreatmentAddUpdateSchema(BaseModel):
     medicine: MedicineSchema
-    treatment_indication: TreatmentIndicationSchema
+    consumption_rule: ConsumptionRule
 
     stock: int | None
     stock_warning: int | None
+    instructions: str | None
 
     class Config:
         # TODO: Mejorar estos ejemplos
         schema_extra = {
             "example": {
                 "medicine": MedicineSchema.Config.schema_extra["example"],
-                "treatment_indication": TreatmentIndicationSchema.Config.schema_extra[
-                    "example"
-                ],
+                "consumption_rule": ConsumptionRule.Config.schema_extra["example"],
                 "stock": random.randint(15, 50),
                 "stock_warning": random.randint(5, 10),
+                "instructions": "Tomarlo cada 8 hs"
             }
         }
 

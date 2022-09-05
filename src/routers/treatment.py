@@ -10,8 +10,7 @@ from models.treatment import (
     Consumption,
     ConsumptionRule,
     Medicine,
-    Treatment,
-    TreatmentIndication,
+    Treatment
 )
 from schemas.treatment import TreatmentAddUpdateSchema, TreatmentSchema
 
@@ -50,18 +49,13 @@ def add_treatment(
     medicine = Medicine(db, **medicine)
     medicine.create()
 
-    consumption_rule = treatment.treatment_indication.consumption_rule.dict()
+    consumption_rule = treatment.consumption_rule.dict()
     consumption_rule = ConsumptionRule(db, **consumption_rule)
     consumption_rule.create()
 
-    treatment_indication = treatment.treatment_indication.dict()
-    treatment_indication["consumption_rule"] = consumption_rule
-    treatment_indication = TreatmentIndication(db, **treatment_indication)
-    treatment_indication.create()
-
     treatment = treatment.dict()
     treatment["medicine"] = medicine
-    treatment["treatment_indication"] = treatment_indication
+    treatment["consumption_rule"] = consumption_rule
     treatment["user"] = user
     treatment = Treatment(db, **treatment)
     treatment.create()

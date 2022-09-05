@@ -38,7 +38,7 @@ class Medicine(CRUD):
     dosis = Column(Float, nullable=True)
 
 
-# ----- TREATMENT_INDICATION -----
+# ----- CONSUMPTION RULE -----
 class ConsumptionRule(CRUD):
     __tablename__ = "consumption_rule"
 
@@ -110,21 +110,6 @@ class ConsumptionRule(CRUD):
 
 
 # ----- TREATMENT -----
-class TreatmentIndication(CRUD):
-    __tablename__ = "treatment_indication"
-
-    id = Column(Integer, primary_key=True, index=True)
-    consumption_rule_id = Column(
-        Integer, ForeignKey("consumption_rule.id"), index=True, nullable=False
-    )
-    consumption_rule = relationship(
-        ConsumptionRule,
-        backref="treatment_indication",
-        foreign_keys=[consumption_rule_id],
-    )
-    instructions = Column(String(255), nullable=True)
-
-
 class Treatment(CRUD):
     __tablename__ = "treatment"
     id = Column(Integer, primary_key=True, index=True)
@@ -133,21 +118,22 @@ class Treatment(CRUD):
 
     medicine_id = Column(Integer, ForeignKey("medicine.id"), index=True, nullable=False)
     medicine = relationship(Medicine, backref="treatment", foreign_keys=[medicine_id])
-    treatment_indication_id = Column(
-        Integer, ForeignKey("treatment_indication.id"), index=True, nullable=False
+    consumption_rule_id = Column(
+        Integer, ForeignKey("consumption_rule.id"), index=True, nullable=False
     )
-    treatment_indication = relationship(
-        TreatmentIndication, backref="treatment", foreign_keys=[treatment_indication_id]
+    consumption_rule = relationship(
+        ConsumptionRule, backref="treatment", foreign_keys=[consumption_rule_id]
     )
     user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=False)
     user = relationship("User", backref="treatments", foreign_keys=[user_id])
+    instructions = Column(String(255), nullable=True)
 
     @property
     def consumptions(self):
         start_datetime = datetime.datetime.now() - datetime.timedelta(days=15)
         end_datetime = datetime.datetime.now() + datetime.timedelta(days=15)
 
-        proyections = self.treatment_indication.consumption_rule.get_proyections(
+        proyections = self.consumption_rule.get_proyections(
             start=start_datetime, end=end_datetime
         )
 
