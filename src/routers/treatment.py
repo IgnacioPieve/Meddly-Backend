@@ -74,7 +74,7 @@ def add_consumption(
     if treatment is None:
         raise translations["errors"]["treatments"]["treatment_not_found"]
 
-    consumption_rule = treatment.treatment_indication.consumption_rule
+    consumption_rule = treatment.consumption_rule
     consumption_rule.validate_consumption(consumption_date)
 
     consumption = Consumption(db, treatment=treatment, datetime=consumption_date)
