@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 
 from config import SENDGRID_CONFIG, WHATSAPP_API_KEY, translations
 from models.utils import CRUD
+from firebase_admin import firestore, messaging
 
 
 class NotificationPreference(CRUD):
@@ -80,3 +81,19 @@ class SMSNotification(NotificationPreference):
 
 class PushNotification(NotificationPreference):
     __mapper_args__ = {"polymorphic_identity": NotificationPreference.PUSH}
+
+    def send_notification(self, message):
+        db = firestore.client()
+        doc_ref = db.collection('user').document(self.user_id)
+        doc = doc_ref.get()
+        if doc.exists:
+            device = doc.to_dict().get('device', None)
+            if device:
+                message = messaging.Message(
+                    notification=messaging.Notification(
+                        title=message.push()['title'],
+                        body=message.push()['body'],
+                    ),
+                    token=device,
+                )
+                messaging.send(message)

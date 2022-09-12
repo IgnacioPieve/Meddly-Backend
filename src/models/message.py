@@ -5,6 +5,7 @@ class Message:
     def whatsapp(self):
         """
         Returns a message (str)
+        TODO: Complete this description
         """
         raise Exception("NotImplementedException")
 
@@ -23,10 +24,18 @@ class Message:
     def sms(self):
         """
         Returns a message (str)
+        TODO: Complete this description
         """
         raise Exception("NotImplementedException")
 
     def push(self):
+        """
+            Returns the title and the body (dict).
+            {
+                "title": "Push Title",
+                "body": "Push Body"
+            }
+        """
         raise Exception("NotImplementedException")
 
 
@@ -63,4 +72,7 @@ class NewSupervisorMessage(Message):
         return f"Has añadido a {self.supervisor.name} como supervisor."
 
     def push(self):
-        raise Exception("NotImplementedException")
+        return {
+            'title': 'Nuevo supervisor',
+            'body': f'Has añadido a {self.supervisor.name} como supervisor.'
+        }
