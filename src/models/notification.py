@@ -1,4 +1,5 @@
 import requests
+from firebase_admin import firestore, messaging
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from sqlalchemy import Column, ForeignKey, String
@@ -6,7 +7,6 @@ from sqlalchemy.orm import relationship
 
 from config import SENDGRID_CONFIG, WHATSAPP_API_KEY, translations
 from models.utils import CRUD
-from firebase_admin import firestore, messaging
 
 
 class NotificationPreference(CRUD):
