@@ -1,9 +1,10 @@
+import requests
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
-from config import SENDGRID_CONFIG, translations
+from config import SENDGRID_CONFIG, WHATSAPP_API_KEY, translations
 from models.utils import CRUD
 
 
@@ -35,6 +36,28 @@ class NotificationPreference(CRUD):
 
 class WhatsappNotification(NotificationPreference):
     __mapper_args__ = {"polymorphic_identity": NotificationPreference.WHATSAPP}
+
+    def send_notification(self, message):
+        headers = {
+            'Authorization': f'Bearer {WHATSAPP_API_KEY}',
+            'Content-Type': 'application/json'
+        }
+        body = {
+            'messaging_product': 'whatsapp',
+            'to': self.user.phone,
+            'type': 'template',
+            'template': {
+                'name': message.whatsapp()['template_id'],
+                'language': {'code': 'en'},
+                "components": [
+                    {
+                        "type": "body",
+                        "parameters": message.whatsapp()['template_data']
+                    }
+                ]
+            }
+        }
+        requests.post('https://graph.facebook.com/v13.0/100370432826961/messages', headers=headers, json=body)
 
 
 class EmailNotification(NotificationPreference):

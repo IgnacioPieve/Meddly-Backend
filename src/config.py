@@ -40,6 +40,8 @@ FIREBASE_JSON = {
     "key": "AIzaSyBWeIdwEe2rS3fMvrbayV0gQeWY9zpnAxo",
 }
 
+WHATSAPP_API_KEY = 'EAAIZAuL7Po9kBABNLP30eVWiW8xQup6JJvrshPMXfZC8dHPCORXm5qhJGKzrCjFV4GmcIK9JCEyglmAispSdAz4JJYmaiXrZA85aQI5nlZAWerlCH4RDpbATfuhy4tDolwMuayYQLwRuJABQamIVrWZAC1UraFpgQXMiWqYg9NwZDZD'
+
 # ---------- METADATA ----------
 title = "Meddly"
 version = 0.1
