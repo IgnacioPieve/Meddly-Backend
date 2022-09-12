@@ -84,15 +84,15 @@ class PushNotification(NotificationPreference):
 
     def send_notification(self, message):
         db = firestore.client()
-        doc_ref = db.collection('user').document(self.user_id)
+        doc_ref = db.collection("user").document(self.user_id)
         doc = doc_ref.get()
         if doc.exists:
-            device = doc.to_dict().get('device', None)
+            device = doc.to_dict().get("device", None)
             if device:
                 message = messaging.Message(
                     notification=messaging.Notification(
-                        title=message.push()['title'],
-                        body=message.push()['body'],
+                        title=message.push()["title"],
+                        body=message.push()["body"],
                     ),
                     token=device,
                 )

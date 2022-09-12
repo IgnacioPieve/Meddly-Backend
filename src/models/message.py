@@ -30,11 +30,11 @@ class Message:
 
     def push(self):
         """
-            Returns the title and the body (dict).
-            {
-                "title": "Push Title",
-                "body": "Push Body"
-            }
+        Returns the title and the body (dict).
+        {
+            "title": "Push Title",
+            "body": "Push Body"
+        }
         """
         raise Exception("NotImplementedException")
 
@@ -73,6 +73,6 @@ class NewSupervisorMessage(Message):
 
     def push(self):
         return {
-            'title': 'Nuevo supervisor',
-            'body': f'Has añadido a {self.supervisor.name} como supervisor.'
+            "title": "Nuevo supervisor",
+            "body": f"Has añadido a {self.supervisor.name} como supervisor.",
         }
