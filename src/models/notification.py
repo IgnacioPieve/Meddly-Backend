@@ -39,25 +39,26 @@ class WhatsappNotification(NotificationPreference):
 
     def send_notification(self, message):
         headers = {
-            'Authorization': f'Bearer {WHATSAPP_API_KEY}',
-            'Content-Type': 'application/json'
+            "Authorization": f"Bearer {WHATSAPP_API_KEY}",
+            "Content-Type": "application/json",
         }
         body = {
-            'messaging_product': 'whatsapp',
-            'to': self.user.phone,
-            'type': 'template',
-            'template': {
-                'name': message.whatsapp()['template_id'],
-                'language': {'code': 'en'},
+            "messaging_product": "whatsapp",
+            "to": self.user.phone,
+            "type": "template",
+            "template": {
+                "name": message.whatsapp()["template_id"],
+                "language": {"code": "en"},
                 "components": [
-                    {
-                        "type": "body",
-                        "parameters": message.whatsapp()['template_data']
-                    }
-                ]
-            }
+                    {"type": "body", "parameters": message.whatsapp()["template_data"]}
+                ],
+            },
         }
-        requests.post('https://graph.facebook.com/v13.0/100370432826961/messages', headers=headers, json=body)
+        requests.post(
+            "https://graph.facebook.com/v13.0/100370432826961/messages",
+            headers=headers,
+            json=body,
+        )
 
 
 class EmailNotification(NotificationPreference):

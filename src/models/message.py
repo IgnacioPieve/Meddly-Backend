@@ -44,14 +44,14 @@ class NewSupervisorMessage(Message):
                     "type": "text",
                     "text": self.supervisor.name
                     if hasattr(self.supervisor, "name")
-                    else ""
+                    else "",
                 }
             ],
         }
 
     def email(self):
         return {
-            "template_id": 'd-5e634cd5cd6548b4b440f188c1d2a40a',
+            "template_id": "d-5e634cd5cd6548b4b440f188c1d2a40a",
             "template_data": {
                 "supervisor_name": self.supervisor.name
                 if hasattr(self.supervisor, "name")
