@@ -7,13 +7,19 @@ from starlette import status
 ENV_NAME = os.getenv("ENV_NAME")
 
 if ENV_NAME == "prod":
-    DB_URL = "postgresql://ufgbchph:cTqNG9causgSbi-eEXhsDt32FdsWwY4B@kesavan.db.elephantsql.com/ufgbchph"
+    # DB_URL = "postgresql://ufgbchph:cTqNG9causgSbi-eEXhsDt32FdsWwY4B@kesavan.db.elephantsql.com/ufgbchph"
+    pass
 elif ENV_NAME == "dev":
-    DB_URL = "postgresql://ctxaqxhnjfmpyy:b9a6fc62add6152b85cfac8610d701976e8dd9941a60ebad567ce54ef14a1d95@ec2-3-223-242-224.compute-1.amazonaws.com:5432/df7308sosin3of"
+    # DB_URL = (
+    #     "mysql+pymysql://" "meddly:MeddlyPassword123." "@" "3.238.163.234:3306/" "dev"
+    # )
+    pass
 else:
     # Environ variables for local development
-    DB_URL = "sqlite:///database.db"
+    # DB_URL = "sqlite:///database.db"
     ENV_NAME = "local-dev"
+DB_URL = "sqlite:///database.db"
+
 
 SENDGRID_CONFIG = {
     "api_key": "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",
@@ -33,6 +39,8 @@ FIREBASE_JSON = {
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-g73bu%40meddly-fbcf7.iam.gserviceaccount.com",
     "key": "AIzaSyBWeIdwEe2rS3fMvrbayV0gQeWY9zpnAxo",
 }
+
+WHATSAPP_API_KEY = "EAAIZAuL7Po9kBABNLP30eVWiW8xQup6JJvrshPMXfZC8dHPCORXm5qhJGKzrCjFV4GmcIK9JCEyglmAispSdAz4JJYmaiXrZA85aQI5nlZAWerlCH4RDpbATfuhy4tDolwMuayYQLwRuJABQamIVrWZAC1UraFpgQXMiWqYg9NwZDZD"
 
 # ---------- METADATA ----------
 title = "Meddly"

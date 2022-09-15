@@ -1,19 +1,21 @@
+import requests
+from firebase_admin import firestore, messaging
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
-from config import SENDGRID_CONFIG, translations
+from config import SENDGRID_CONFIG, WHATSAPP_API_KEY, translations
 from models.utils import CRUD
 
 
 class NotificationPreference(CRUD):
     __tablename__ = "notification_preference"
-    user_id = Column(String, ForeignKey("user.id"), primary_key=True, index=True)
+    user_id = Column(String(255), ForeignKey("user.id"), primary_key=True, index=True)
     user = relationship(
         "User", backref="notification_preferences_list", foreign_keys=[user_id]
     )
-    notification_preference = Column(String, primary_key=True, index=True)
+    notification_preference = Column(String(255), primary_key=True, index=True)
     __mapper_args__ = {"polymorphic_on": notification_preference}
 
     EMAIL = "email"
@@ -36,6 +38,29 @@ class NotificationPreference(CRUD):
 class WhatsappNotification(NotificationPreference):
     __mapper_args__ = {"polymorphic_identity": NotificationPreference.WHATSAPP}
 
+    def send_notification(self, message):
+        headers = {
+            "Authorization": f"Bearer {WHATSAPP_API_KEY}",
+            "Content-Type": "application/json",
+        }
+        body = {
+            "messaging_product": "whatsapp",
+            "to": self.user.phone,
+            "type": "template",
+            "template": {
+                "name": message.whatsapp()["template_id"],
+                "language": {"code": "en"},
+                "components": [
+                    {"type": "body", "parameters": message.whatsapp()["template_data"]}
+                ],
+            },
+        }
+        requests.post(
+            "https://graph.facebook.com/v13.0/100370432826961/messages",
+            headers=headers,
+            json=body,
+        )
+
 
 class EmailNotification(NotificationPreference):
     __mapper_args__ = {"polymorphic_identity": NotificationPreference.EMAIL}
@@ -56,3 +81,19 @@ class SMSNotification(NotificationPreference):
 
 class PushNotification(NotificationPreference):
     __mapper_args__ = {"polymorphic_identity": NotificationPreference.PUSH}
+
+    def send_notification(self, message):
+        db = firestore.client()
+        doc_ref = db.collection("user").document(self.user_id)
+        doc = doc_ref.get()
+        if doc.exists:
+            device = doc.to_dict().get("device", None)
+            if device:
+                message = messaging.Message(
+                    notification=messaging.Notification(
+                        title=message.push()["title"],
+                        body=message.push()["body"],
+                    ),
+                    token=device,
+                )
+                messaging.send(message)

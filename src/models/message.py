@@ -5,6 +5,7 @@ class Message:
     def whatsapp(self):
         """
         Returns a message (str)
+        TODO: Complete this description
         """
         raise Exception("NotImplementedException")
 
@@ -23,10 +24,18 @@ class Message:
     def sms(self):
         """
         Returns a message (str)
+        TODO: Complete this description
         """
         raise Exception("NotImplementedException")
 
     def push(self):
+        """
+        Returns the title and the body (dict).
+        {
+            "title": "Push Title",
+            "body": "Push Body"
+        }
+        """
         raise Exception("NotImplementedException")
 
 
@@ -36,15 +45,22 @@ class NewSupervisorMessage(Message):
         super().__init__(**kwargs)
 
     def whatsapp(self):
-        if hasattr(self.supervisor, "name"):
-            return f"Has añadido a {self.supervisor.name} como supervisor."
-        else:
-            return f"Has añadido a un nuevo supervisor."
-
-    def email(self):
-        template_id = "d-5e634cd5cd6548b4b440f188c1d2a40a"
+        template_id = "new_supervisor"
         return {
             "template_id": template_id,
+            "template_data": [
+                {
+                    "type": "text",
+                    "text": self.supervisor.name
+                    if hasattr(self.supervisor, "name")
+                    else "",
+                }
+            ],
+        }
+
+    def email(self):
+        return {
+            "template_id": "d-5e634cd5cd6548b4b440f188c1d2a40a",
             "template_data": {
                 "supervisor_name": self.supervisor.name
                 if hasattr(self.supervisor, "name")
@@ -56,4 +72,7 @@ class NewSupervisorMessage(Message):
         return f"Has añadido a {self.supervisor.name} como supervisor."
 
     def push(self):
-        raise Exception("NotImplementedException")
+        return {
+            "title": "Nuevo supervisor",
+            "body": f"Has añadido a {self.supervisor.name} como supervisor.",
+        }

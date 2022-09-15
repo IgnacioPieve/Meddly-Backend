@@ -20,11 +20,15 @@ from models.utils import CRUD, generate_code
 class Supervised(CRUD):
     __tablename__ = "supervised"
     id = Column(Integer, primary_key=True, index=True)
-    supervisor_id = Column(String, ForeignKey("user.id"), nullable=False, index=True)
+    supervisor_id = Column(
+        String(255), ForeignKey("user.id"), nullable=False, index=True
+    )
     supervisor = relationship(
         "User", backref="supervised_list", foreign_keys=[supervisor_id]
     )
-    supervised_id = Column(String, ForeignKey("user.id"), nullable=False, index=True)
+    supervised_id = Column(
+        String(255), ForeignKey("user.id"), nullable=False, index=True
+    )
     supervised = relationship(
         "User", backref="supervisors_list", foreign_keys=[supervised_id]
     )
@@ -33,17 +37,17 @@ class Supervised(CRUD):
 class User(CRUD):
     __tablename__ = "user"
 
-    id = Column(String, primary_key=True, index=True)
-    email = Column(String, nullable=False, index=True)
-    invitation = Column(String, nullable=False, index=True)
+    id = Column(String(255), primary_key=True, index=True)
+    email = Column(String(255), nullable=False, index=True)
+    invitation = Column(String(255), nullable=False, index=True)
 
-    name = Column(String, nullable=True)
+    name = Column(String(255), nullable=True)
     height = Column(Float, nullable=True)
     weight = Column(Float, nullable=True)
-    sex = Column(String, nullable=True)
+    sex = Column(String(255), nullable=True)
     birth = Column(DateTime, nullable=True)
-    avatar = Column(String, nullable=True)
-    phone = Column(Integer, nullable=True)
+    avatar = Column(String(255), nullable=True)
+    phone = Column(String(20), nullable=True)
 
     disabled = Column(Boolean, nullable=False, default=False)
 
