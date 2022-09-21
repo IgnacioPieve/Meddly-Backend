@@ -9,15 +9,15 @@ from dependencies import auth
 from models.treatment import (
     Consumption,
     ConsumptionRule,
+    Measurement,
     Medicine,
     Treatment,
-    Measurement,
 )
 from schemas.treatment import (
+    MeasurementAddUpdateSchema,
+    MeasurementSchema,
     TreatmentAddUpdateSchema,
     TreatmentSchema,
-    MeasurementSchema,
-    MeasurementAddUpdateSchema,
 )
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
