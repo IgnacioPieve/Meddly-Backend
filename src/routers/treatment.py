@@ -6,8 +6,8 @@ from sqlalchemy import and_, exc
 
 from config import translations
 from dependencies import auth
-from models.treatment import Consumption, ConsumptionRule, Medicine, Treatment
-from schemas.treatment import TreatmentAddUpdateSchema, TreatmentSchema
+from models.treatment import Consumption, ConsumptionRule, Medicine, Treatment, Measurement
+from schemas.treatment import TreatmentAddUpdateSchema, TreatmentSchema, MeasurementSchema, MeasurementAddUpdateSchema
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
 
@@ -33,7 +33,7 @@ def list_treatments(authentication=Depends(auth.authenticate)):
     summary="Add a new treatment",
 )
 def add_treatment(
-    treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
+        treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
 ):
     """
     Añande una preferencia de notificación
@@ -65,9 +65,9 @@ def add_treatment(
     summary="Add a new consumption",
 )
 def add_consumption(
-    treatment_id: str,
-    consumption_date: datetime.datetime,
-    authentication=Depends(auth.authenticate),
+        treatment_id: str,
+        consumption_date: datetime.datetime,
+        authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
     treatment = Treatment(db, Treatment.id == treatment_id).get()
@@ -93,9 +93,9 @@ def add_consumption(
     summary="Delete consumption",
 )
 def add_consumption(
-    treatment_id: str,
-    consumption_date: datetime.datetime,
-    authentication=Depends(auth.authenticate),
+        treatment_id: str,
+        consumption_date: datetime.datetime,
+        authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
 
@@ -112,3 +112,54 @@ def add_consumption(
     consumption.destroy()
 
     return user.treatments
+
+
+@router.get(
+    "/measurement",
+    response_model=List[MeasurementSchema],
+    status_code=200,
+    summary="Get measurements",
+)
+def get_measurements(authentication=Depends(auth.authenticate)):
+    user, _ = authentication
+
+    return user.measurements
+
+
+@router.post(
+    "/measurement",
+    response_model=List[MeasurementSchema],
+    status_code=201,
+    summary="Add a new measurement",
+)
+def add_measurement(
+        measurement: MeasurementAddUpdateSchema,
+        authentication=Depends(auth.authenticate),
+):
+    user, db = authentication
+
+    measurement = measurement.dict()
+    measurement["user"] = user
+    measurement = Measurement(db, **measurement)
+    measurement.create()
+
+    return user.measurements
+
+
+@router.delete(
+    "/measurement",
+    response_model=List[MeasurementSchema],
+    status_code=200,
+    summary="Delete measurement",
+)
+def delete_measurement(
+        measurement_id: str,
+        authentication=Depends(auth.authenticate),
+):
+    user, db = authentication
+
+    # TODO: Add security
+    measurement = Measurement(db, Measurement.id == measurement_id).get()
+    measurement.destroy()
+
+    return user.measurements

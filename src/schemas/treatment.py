@@ -4,6 +4,37 @@ from typing import List, Literal
 
 from pydantic import BaseModel
 
+"""         ----- Measurements -----         """
+
+
+class MeasurementAddUpdateSchema(BaseModel):
+    date: datetime.datetime
+    type: str
+    value: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "date": "2021-01-01T00:00:00",
+                "type": "Glucosa",
+                "value": "120",
+            }
+        }
+
+
+class MeasurementSchema(MeasurementAddUpdateSchema):
+    id: int
+
+    class Config:
+        orm_mode = True
+        schema_extra = {
+            "example": {
+                "id": random.randint(1000, 10000),
+                **MeasurementAddUpdateSchema.Config.schema_extra["example"],
+            }
+        }
+
+
 """         ----- Consumption -----         """
 
 
@@ -12,10 +43,10 @@ class ConsumptionRule(BaseModel):
     end: datetime.datetime
     hours: List[str] | None
     days: List[
-        Literal[
-            "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
-        ]
-    ] | None
+              Literal[
+                  "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
+              ]
+          ] | None
     everyxdays: int | None
 
     class Config:
