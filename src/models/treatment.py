@@ -9,6 +9,17 @@ from config import translations
 from models.utils import CRUD
 
 
+class Measurement(CRUD):
+    __tablename__ = "measurement"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(DateTime, nullable=False)
+    type = Column(String, nullable=False)
+    value = Column(String, nullable=False)
+    user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=False)
+    user = relationship("User", backref="measurements", foreign_keys=[user_id])
+
+
 # ----- CONSUMPTION -----
 class Consumption(CRUD):
     __tablename__ = "consumption"

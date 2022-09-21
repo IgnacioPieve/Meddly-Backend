@@ -6,8 +6,19 @@ from sqlalchemy import and_, exc
 
 from config import translations
 from dependencies import auth
-from models.treatment import Consumption, ConsumptionRule, Medicine, Treatment
-from schemas.treatment import TreatmentAddUpdateSchema, TreatmentSchema
+from models.treatment import (
+    Consumption,
+    ConsumptionRule,
+    Measurement,
+    Medicine,
+    Treatment,
+)
+from schemas.treatment import (
+    MeasurementAddUpdateSchema,
+    MeasurementSchema,
+    TreatmentAddUpdateSchema,
+    TreatmentSchema,
+)
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
 
@@ -112,3 +123,54 @@ def add_consumption(
     consumption.destroy()
 
     return user.treatments
+
+
+@router.get(
+    "/measurement",
+    response_model=List[MeasurementSchema],
+    status_code=200,
+    summary="Get measurements",
+)
+def get_measurements(authentication=Depends(auth.authenticate)):
+    user, _ = authentication
+
+    return user.measurements
+
+
+@router.post(
+    "/measurement",
+    response_model=List[MeasurementSchema],
+    status_code=201,
+    summary="Add a new measurement",
+)
+def add_measurement(
+    measurement: MeasurementAddUpdateSchema,
+    authentication=Depends(auth.authenticate),
+):
+    user, db = authentication
+
+    measurement = measurement.dict()
+    measurement["user"] = user
+    measurement = Measurement(db, **measurement)
+    measurement.create()
+
+    return user.measurements
+
+
+@router.delete(
+    "/measurement",
+    response_model=List[MeasurementSchema],
+    status_code=200,
+    summary="Delete measurement",
+)
+def delete_measurement(
+    measurement_id: str,
+    authentication=Depends(auth.authenticate),
+):
+    user, db = authentication
+
+    # TODO: Add security
+    measurement = Measurement(db, Measurement.id == measurement_id).get()
+    measurement.destroy()
+
+    return user.measurements
