@@ -43,10 +43,10 @@ class ConsumptionRule(BaseModel):
     end: datetime.datetime
     hours: List[str] | None
     days: List[
-              Literal[
-                  "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
-              ]
-          ] | None
+        Literal[
+            "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
+        ]
+    ] | None
     everyxdays: int | None
 
     class Config:

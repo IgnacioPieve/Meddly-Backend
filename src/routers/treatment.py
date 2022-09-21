@@ -6,8 +6,19 @@ from sqlalchemy import and_, exc
 
 from config import translations
 from dependencies import auth
-from models.treatment import Consumption, ConsumptionRule, Medicine, Treatment, Measurement
-from schemas.treatment import TreatmentAddUpdateSchema, TreatmentSchema, MeasurementSchema, MeasurementAddUpdateSchema
+from models.treatment import (
+    Consumption,
+    ConsumptionRule,
+    Medicine,
+    Treatment,
+    Measurement,
+)
+from schemas.treatment import (
+    TreatmentAddUpdateSchema,
+    TreatmentSchema,
+    MeasurementSchema,
+    MeasurementAddUpdateSchema,
+)
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
 
@@ -33,7 +44,7 @@ def list_treatments(authentication=Depends(auth.authenticate)):
     summary="Add a new treatment",
 )
 def add_treatment(
-        treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
+    treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
 ):
     """
     Añande una preferencia de notificación
@@ -65,9 +76,9 @@ def add_treatment(
     summary="Add a new consumption",
 )
 def add_consumption(
-        treatment_id: str,
-        consumption_date: datetime.datetime,
-        authentication=Depends(auth.authenticate),
+    treatment_id: str,
+    consumption_date: datetime.datetime,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
     treatment = Treatment(db, Treatment.id == treatment_id).get()
@@ -93,9 +104,9 @@ def add_consumption(
     summary="Delete consumption",
 )
 def add_consumption(
-        treatment_id: str,
-        consumption_date: datetime.datetime,
-        authentication=Depends(auth.authenticate),
+    treatment_id: str,
+    consumption_date: datetime.datetime,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
 
@@ -133,8 +144,8 @@ def get_measurements(authentication=Depends(auth.authenticate)):
     summary="Add a new measurement",
 )
 def add_measurement(
-        measurement: MeasurementAddUpdateSchema,
-        authentication=Depends(auth.authenticate),
+    measurement: MeasurementAddUpdateSchema,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
 
@@ -153,8 +164,8 @@ def add_measurement(
     summary="Delete measurement",
 )
 def delete_measurement(
-        measurement_id: str,
-        authentication=Depends(auth.authenticate),
+    measurement_id: str,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
 
