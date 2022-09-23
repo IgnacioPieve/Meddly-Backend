@@ -7,10 +7,7 @@ from sqlalchemy import and_, exc
 from config import translations
 from dependencies import auth
 from models.appointments import Appointment
-from schemas.appointments import (
-    AppointmentAddUpdateSchema,
-    AppointmentSchema,
-)
+from schemas.appointments import AppointmentAddUpdateSchema, AppointmentSchema
 
 router = APIRouter(prefix="/appointment", tags=["Appointment"])
 

@@ -6,7 +6,6 @@ from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, PickleType,
 from sqlalchemy.orm import backref, relationship
 
 from config import translations
-
 from models.utils import CRUD
 
 
