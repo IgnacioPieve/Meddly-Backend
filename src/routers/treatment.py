@@ -47,7 +47,7 @@ def add_treatment(
     treatment: TreatmentAddUpdateSchema, authentication=Depends(auth.authenticate)
 ):
     """
-    Añande una preferencia de notificación
+    Añande un tratamiento
     """
     user, db = authentication
 
@@ -65,6 +65,47 @@ def add_treatment(
     treatment["user"] = user
     treatment = Treatment(db, **treatment)
     treatment.create()
+
+    return user.treatments
+
+@router.post(
+    "/{treatment_id}",
+    response_model=List[TreatmentSchema],
+    status_code=200,
+    summary="Update a treatment",
+)
+def update_treatment(
+    treatment_id: int,
+    treatment: TreatmentAddUpdateSchema,
+    authentication=Depends(auth.authenticate),
+):
+    """
+    Actualiza un tratamiento
+    """
+    user, db = authentication
+
+    original_treatment = Treatment(db, Treatment.id == treatment_id).get()
+
+    medicine_data = treatment.medicine.dict()
+    medicine = original_treatment.medicine
+    for key, value in medicine_data.items():
+        setattr(medicine, key, value)
+    medicine.db = db
+    medicine.save()
+
+    consumption_rule_data = treatment.consumption_rule.dict()
+    consumption_rule = original_treatment.consumption_rule
+    for key, value in consumption_rule_data.items():
+        setattr(consumption_rule, key, value)
+    consumption_rule.db = db
+    consumption_rule.save()
+
+    treatment_data = treatment.dict()
+    del treatment_data["medicine"]
+    del treatment_data["consumption_rule"]
+    for key, value in treatment_data.items():
+        setattr(original_treatment, key, value)
+    original_treatment.save()
 
     return user.treatments
 
