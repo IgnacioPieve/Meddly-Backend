@@ -68,6 +68,7 @@ def add_treatment(
 
     return user.treatments
 
+
 @router.post(
     "/{treatment_id}",
     response_model=List[TreatmentSchema],
