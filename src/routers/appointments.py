@@ -6,9 +6,7 @@ from sqlalchemy import and_, exc
 
 from config import translations
 from dependencies import auth
-from models.appointments import (
-    Appointment
-)
+from models.appointments import Appointment
 from schemas.appointments import (
     AppointmentAddUpdateSchema,
     AppointmentSchema,
@@ -24,7 +22,7 @@ router = APIRouter(prefix="/appointment", tags=["Appointment"])
     summary="Get all appointments",
 )
 def get_appointments(
-        authentication=Depends(auth.authenticate),
+    authentication=Depends(auth.authenticate),
 ):
     user, _ = authentication
     return user.appointments
@@ -37,8 +35,8 @@ def get_appointments(
     summary="Add a new appointment",
 )
 def add_appointment(
-        appointment: AppointmentAddUpdateSchema,
-        authentication=Depends(auth.authenticate),
+    appointment: AppointmentAddUpdateSchema,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
 
@@ -57,9 +55,9 @@ def add_appointment(
     summary="Edit a measurement",
 )
 def update_appointment(
-        appointment_id: str,
-        appointment: AppointmentAddUpdateSchema,
-        authentication=Depends(auth.authenticate),
+    appointment_id: str,
+    appointment: AppointmentAddUpdateSchema,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
 
@@ -83,8 +81,8 @@ def update_appointment(
     summary="Delete appointment",
 )
 def delete_appointment(
-        appointment_id: str,
-        authentication=Depends(auth.authenticate),
+    appointment_id: str,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
 

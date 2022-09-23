@@ -22,4 +22,3 @@ class Appointment(CRUD):
     speciality = Column(String(255), nullable=True)
     location = Column(String(255), nullable=True)
     notes = Column(String(2048), nullable=True)
-
