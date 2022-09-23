@@ -208,7 +208,7 @@ def update_measurement(
     summary="Delete measurement",
 )
 def delete_measurement(
-    measurement_id: str,
+    measurement_id: int,
     authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
