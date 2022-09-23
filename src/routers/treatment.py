@@ -202,13 +202,13 @@ def update_measurement(
 
 
 @router.delete(
-    "/measurement",
+    "/measurement/{measurement_id}",
     response_model=List[MeasurementSchema],
     status_code=200,
     summary="Delete measurement",
 )
 def delete_measurement(
-    measurement_id: int,
+    measurement_id: str,
     authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
