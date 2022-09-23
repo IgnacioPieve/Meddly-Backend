@@ -3,7 +3,7 @@ import datetime
 
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, PickleType, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from config import translations
 from models.utils import CRUD
@@ -26,7 +26,7 @@ class Consumption(CRUD):
 
     datetime = Column(DateTime, primary_key=True)
     treatment_id = Column(Integer, ForeignKey("treatment.id"), primary_key=True)
-    treatment = relationship("Treatment", backref="consumption_list")
+    treatment = relationship("Treatment", backref=backref("consumption_list", cascade="all, delete-orphan"))
 
     def create(self):
         self.treatment.stock -= 1 if self.treatment.stock > 0 else 0

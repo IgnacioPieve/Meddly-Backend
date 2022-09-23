@@ -113,6 +113,13 @@ translations = {
                     "es": "El consumo ya ha sido registrado",
                 },
             ),
+            "measurement_not_found": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "Measurement not found",
+                    "es": "Medición no encontrada",
+                },
+            ),
         },
         "notifications": {
             "not_valid": HTTPException(
