@@ -3,7 +3,7 @@ import datetime
 
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, PickleType, String
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import backref, relationship
 
 from config import translations
 from models.utils import CRUD
