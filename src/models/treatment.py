@@ -26,7 +26,9 @@ class Consumption(CRUD):
 
     datetime = Column(DateTime, primary_key=True)
     treatment_id = Column(Integer, ForeignKey("treatment.id"), primary_key=True)
-    treatment = relationship("Treatment", backref=backref("consumption_list", cascade="all, delete-orphan"))
+    treatment = relationship(
+        "Treatment", backref=backref("consumption_list", cascade="all, delete-orphan")
+    )
 
     def create(self):
         self.treatment.stock -= 1 if self.treatment.stock > 0 else 0
