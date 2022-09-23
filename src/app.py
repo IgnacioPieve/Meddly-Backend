@@ -11,7 +11,7 @@ from starlette.responses import Response
 
 import config
 from database import Base, engine
-from routers import notification, supervisor, test, treatment, user
+from routers import notification, supervisor, test, treatment, appointments, user
 
 # ----- DATABASE -----
 Base.metadata.create_all(bind=engine)
@@ -41,6 +41,7 @@ app.include_router(user.router)
 app.include_router(supervisor.router)
 app.include_router(treatment.router)
 app.include_router(notification.router)
+app.include_router(appointments.router)
 app.include_router(test.router)
 
 if __name__ == "__main__":

@@ -20,7 +20,6 @@ else:
     ENV_NAME = "local-dev"
 DB_URL = "sqlite:///database.db"
 
-
 SENDGRID_CONFIG = {
     "api_key": "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",
     "email": "meddly.health@gmail.com",
@@ -114,6 +113,13 @@ translations = {
                 },
             ),
             "measurement_not_found": HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "en": "Measurement not found",
+                    "es": "Medición no encontrada",
+                },
+            ),
+            "appointment_not_found": HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail={
                     "en": "Measurement not found",
