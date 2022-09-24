@@ -46,9 +46,11 @@ def delete_notification_preference(
     Elimina una preferencia de notificación
     """
     user, db = authentication
+    print(notification_preference)
     notification_preference = NotificationPreference(
-        db, and_(user == user, notification_preference == notification_preference)
+        db, and_(user == user, NotificationPreference.notification_preference == notification_preference)
     ).get()
+    print(notification_preference)
     if notification_preference is None:
         raise translations["errors"]["notifications"][
             "notification_preference_not_found"
