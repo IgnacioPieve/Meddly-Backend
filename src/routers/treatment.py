@@ -70,7 +70,7 @@ def add_treatment(
 
 
 @router.post(
-    "/{treatment_id}",
+    "/{treatment_id}/",
     response_model=List[TreatmentSchema],
     status_code=200,
     summary="Update a treatment",
@@ -112,7 +112,7 @@ def update_treatment(
 
 
 @router.delete(
-    "/{treatment_id}",
+    "/{treatment_id}/",
     response_model=List[TreatmentSchema],
     status_code=200,
     summary="Delete a treatment",
@@ -130,13 +130,13 @@ def delete_treatment(treatment_id: int, authentication=Depends(auth.authenticate
 
 
 @router.post(
-    "/consumption",
+    "/consumption/",
     response_model=List[TreatmentSchema],
     status_code=201,
     summary="Add a new consumption",
 )
 def add_consumption(
-    treatment_id: str,
+    treatment_id: int,
     consumption_date: datetime.datetime,
     authentication=Depends(auth.authenticate),
 ):
@@ -158,7 +158,7 @@ def add_consumption(
 
 
 @router.delete(
-    "/consumption",
+    "/consumption/",
     response_model=List[TreatmentSchema],
     status_code=200,
     summary="Delete consumption",
@@ -186,7 +186,7 @@ def add_consumption(
 
 
 @router.get(
-    "/measurement",
+    "/measurement/",
     response_model=List[MeasurementSchema],
     status_code=200,
     summary="Get measurements",
@@ -198,7 +198,7 @@ def get_measurements(authentication=Depends(auth.authenticate)):
 
 
 @router.post(
-    "/measurement",
+    "/measurement/",
     response_model=List[MeasurementSchema],
     status_code=201,
     summary="Add a new measurement",
@@ -208,7 +208,6 @@ def add_measurement(
     authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
-
     measurement = measurement.dict()
     measurement["user"] = user
     measurement = Measurement(db, **measurement)
@@ -218,7 +217,7 @@ def add_measurement(
 
 
 @router.post(
-    "/measurement/{measurement_id}",
+    "/measurement/{measurement_id}/",
     response_model=List[MeasurementSchema],
     status_code=200,
     summary="Edit a measurement",
@@ -244,7 +243,7 @@ def update_measurement(
 
 
 @router.delete(
-    "/measurement/{measurement_id}",
+    "/measurement/{measurement_id}/",
     response_model=List[MeasurementSchema],
     status_code=200,
     summary="Delete measurement",
