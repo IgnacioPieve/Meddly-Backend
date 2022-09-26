@@ -21,6 +21,7 @@ from schemas.treatment import (
 )
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
+measurements_router = APIRouter(prefix="/measurement", tags=["Measurement"])
 
 
 @router.get(
@@ -185,8 +186,8 @@ def add_consumption(
     return user.treatments
 
 
-@router.get(
-    "/measurement/",
+@measurements_router.get(
+    "/",
     response_model=List[MeasurementSchema],
     status_code=200,
     summary="Get measurements",
@@ -197,8 +198,8 @@ def get_measurements(authentication=Depends(auth.authenticate)):
     return user.measurements
 
 
-@router.post(
-    "/measurement/",
+@measurements_router.post(
+    "/",
     response_model=List[MeasurementSchema],
     status_code=201,
     summary="Add a new measurement",
@@ -216,8 +217,8 @@ def add_measurement(
     return user.measurements
 
 
-@router.post(
-    "/measurement/{measurement_id}/",
+@measurements_router.post(
+    "/{measurement_id}/",
     response_model=List[MeasurementSchema],
     status_code=200,
     summary="Edit a measurement",
@@ -242,8 +243,8 @@ def update_measurement(
     return user.measurements
 
 
-@router.delete(
-    "/measurement/{measurement_id}/",
+@measurements_router.delete(
+    "/{measurement_id}/",
     response_model=List[MeasurementSchema],
     status_code=200,
     summary="Delete measurement",

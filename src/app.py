@@ -40,6 +40,7 @@ async def add_process_time_header(request: Request, call_next):
 app.include_router(user.router)
 app.include_router(supervisor.router)
 app.include_router(treatment.router)
+app.include_router(treatment.measurements_router)
 app.include_router(notification.router)
 app.include_router(appointments.router)
 app.include_router(test.router)
