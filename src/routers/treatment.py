@@ -21,6 +21,7 @@ from schemas.treatment import (
 )
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
+consumption_router = APIRouter(prefix="/consumption", tags=["Consumption"])
 measurements_router = APIRouter(prefix="/measurement", tags=["Measurement"])
 
 
@@ -130,8 +131,8 @@ def delete_treatment(treatment_id: int, authentication=Depends(auth.authenticate
     return user.treatments
 
 
-@router.post(
-    "/consumption/",
+@consumption_router.post(
+    "/",
     response_model=List[TreatmentSchema],
     status_code=201,
     summary="Add a new consumption",
@@ -158,8 +159,8 @@ def add_consumption(
     return user.treatments
 
 
-@router.delete(
-    "/consumption/",
+@consumption_router.delete(
+    "/",
     response_model=List[TreatmentSchema],
     status_code=200,
     summary="Delete consumption",
