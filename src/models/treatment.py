@@ -116,7 +116,8 @@ class ConsumptionRule(CRUD):
         ]
         for day in days:
             correct_day = self.validate_day(day)
-            if correct_day:
+            correct_range = self.validate_date_range(day)
+            if correct_day and (correct_range is True):
                 proyections[day.strftime("%Y-%m-%d")] = self.hours
 
         return proyections
