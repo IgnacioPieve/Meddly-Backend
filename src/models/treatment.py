@@ -31,11 +31,13 @@ class Consumption(CRUD):
     )
 
     def create(self):
-        self.treatment.stock -= 1 if self.treatment.stock > 0 else 0
+        if self.treatment.stock:
+            self.treatment.stock -= 1 if self.treatment.stock > 0 else 0
         return super().create()
 
     def destroy(self):
-        self.treatment.stock += 1
+        if self.treatment.stock:
+            self.treatment.stock += 1
         return super().destroy()
 
 
