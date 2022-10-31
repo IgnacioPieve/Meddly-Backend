@@ -102,7 +102,9 @@ class User(CRUD):
         return [str(preference) for preference in self.notification_preferences_list]
 
     def send_notification(self, message: Message):
-        thread = threading.Thread(target=PushNotification.send_notification, args=(self.id, message))
+        thread = threading.Thread(
+            target=PushNotification.send_notification, args=(self.id, message)
+        )
         thread.start()
         for notification_preference in self.notification_preferences_list:
             thread = threading.Thread(
