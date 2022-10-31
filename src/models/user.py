@@ -13,7 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 from config import translations
-from models.message import Message, NewSupervisorMessage, NewSupervisedMessage
+from models.message import Message, NewSupervisedMessage, NewSupervisorMessage
 from models.notification import PushNotification
 from models.utils import CRUD, generate_code
 
