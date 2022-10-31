@@ -81,7 +81,6 @@ class User(CRUD):
         message = NewSupervisorMessage(supervisor=supervisor)
         self.send_notification(message)
 
-
     @property
     def supervised(self):
         supervised_list = []
