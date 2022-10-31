@@ -76,10 +76,11 @@ class User(CRUD):
         supervisor.save()
         Supervised(self.db, supervisor=supervisor, supervised=self).create()
 
-        message = NewSupervisorMessage(supervisor=supervisor)
-        self.send_notification(message)
         message = NewSupervisedMessage(supervisor=self)
         supervisor.send_notification(message)
+        message = NewSupervisorMessage(supervisor=supervisor)
+        self.send_notification(message)
+
 
     @property
     def supervised(self):
