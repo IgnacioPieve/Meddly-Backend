@@ -76,3 +76,28 @@ class NewSupervisorMessage(Message):
             "title": "Nuevo supervisor",
             "body": f"Has añadido a {self.supervisor.name} como supervisor.",
         }
+
+
+class NewSupervisedMessage(Message):
+    def __init__(self, **kwargs):
+        self.supervisor = kwargs["supervisor"]
+        super().__init__(**kwargs)
+
+    def email(self):
+        return {
+            "template_id": "d-5e634cd5cd6548b4b440f188c1d2a40a",
+            "template_data": {
+                "supervisor_name": self.supervisor.name
+                if hasattr(self.supervisor, "name")
+                else ""
+            },
+        }
+
+    def sms(self):
+        return f"{self.supervisor.name} te ha añadido como supervisor."
+
+    def push(self):
+        return {
+            "title": "Nuevo supervisado",
+            "body": f"{self.supervisor.name} te ha añadido como supervisor.",
+        }

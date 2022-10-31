@@ -13,7 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 from config import translations
-from models.message import Message, NewSupervisorMessage
+from models.message import Message, NewSupervisorMessage, NewSupervisedMessage
 from models.utils import CRUD, generate_code
 
 
@@ -77,6 +77,8 @@ class User(CRUD):
 
         message = NewSupervisorMessage(supervisor=supervisor)
         self.send_notification(message)
+        message = NewSupervisedMessage(supervisor=self)
+        supervisor.send_notification(message)
 
     @property
     def supervised(self):
