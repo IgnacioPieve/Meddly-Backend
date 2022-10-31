@@ -14,6 +14,7 @@ from sqlalchemy.orm import relationship
 
 from config import translations
 from models.message import Message, NewSupervisorMessage, NewSupervisedMessage
+from models.notification import PushNotification
 from models.utils import CRUD, generate_code
 
 
@@ -101,6 +102,11 @@ class User(CRUD):
         return [str(preference) for preference in self.notification_preferences_list]
 
     def send_notification(self, message: Message):
+        push = PushNotification()
+        thread = threading.Thread(
+            target=push.send_notification, args=(message,)
+        )
+        thread.start()
         for notification_preference in self.notification_preferences_list:
             thread = threading.Thread(
                 target=notification_preference.send_notification, args=(message,)
