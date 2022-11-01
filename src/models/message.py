@@ -101,3 +101,19 @@ class NewSupervisedMessage(Message):
             "title": "Nuevo supervisado",
             "body": f"{self.supervisor.name} te ha añadido como supervisor.",
         }
+
+
+class LowStockMessage(Message):
+    def email(self):
+        return {
+            "template_id": "d-5e634cd5cd6548b4b440f188c1d2a40a",
+        }
+
+    def sms(self):
+        return "El stock de tus medicamentos está bajo."
+
+    def push(self):
+        return {
+            "title": "Nivel crítico de stock",
+            "body": "El stock de tus medicamentos está bajo.",
+        }

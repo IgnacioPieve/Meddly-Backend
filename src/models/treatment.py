@@ -6,6 +6,7 @@ from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, PickleType,
 from sqlalchemy.orm import backref, relationship
 
 from config import translations
+from models.message import LowStockMessage
 from models.utils import CRUD
 
 
@@ -31,6 +32,9 @@ class Consumption(CRUD):
     )
 
     def create(self):
+        if self.treatment.stock_warning and self.treatment.stock:
+            m = LowStockMessage()
+            self.treatment.user.send_notification(m)
         if self.treatment.stock:
             self.treatment.stock -= 1 if self.treatment.stock > 0 else 0
         return super().create()
