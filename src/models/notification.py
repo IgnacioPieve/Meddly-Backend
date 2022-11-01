@@ -95,4 +95,4 @@ class PushNotification:
                     token=device,
                 )
                 messaging.send(message)
-                print('Push enviado')
+                print("Push enviado")

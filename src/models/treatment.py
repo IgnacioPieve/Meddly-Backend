@@ -34,8 +34,11 @@ class Consumption(CRUD):
     def create(self):
         super().create()
 
-        if self.treatment.stock_warning and self.treatment.stock and \
-                self.treatment.stock <= self.treatment.stock_warning:
+        if (
+            self.treatment.stock_warning
+            and self.treatment.stock
+            and self.treatment.stock <= self.treatment.stock_warning
+        ):
             m = LowStockMessage()
             self.treatment.user.send_notification(m)
         if self.treatment.stock:
