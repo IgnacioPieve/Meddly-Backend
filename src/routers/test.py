@@ -18,7 +18,10 @@ def login(user: UserRequestModel):
     user = {**user.dict(), "returnSecureToken": True}
     url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={FIREBASE_JSON['key']}"
     response = requests.post(url, json=user)
-    return {"status": "ok", "token": response.json()["idToken"]}
+    try:
+        return {"status": "ok", "token": response.json()["idToken"]}
+    except KeyError:
+        print(response.json())
 
 
 # Endpoint to register user
@@ -27,7 +30,10 @@ def register(user: UserRequestModel):
     user = {**user.dict(), "returnSecureToken": True}
     url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_JSON['key']}"
     response = requests.post(url, json=user)
-    return {"status": "ok", "token": response.json()["idToken"]}
+    try:
+        return {"status": "ok", "token": response.json()["idToken"]}
+    except KeyError:
+        print(response.json())
 
 
 @router.post("/reset-database")

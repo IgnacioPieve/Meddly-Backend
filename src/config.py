@@ -4,22 +4,8 @@ from fastapi import HTTPException
 from starlette import status
 
 # ---------- CONFIG VARIABLES ----------
-ENV_NAME = os.getenv("ENV_NAME")
 
-if ENV_NAME == "prod":
-    # DB_URL = "postgresql://ufgbchph:cTqNG9causgSbi-eEXhsDt32FdsWwY4B@kesavan.db.elephantsql.com/ufgbchph"
-    pass
-elif ENV_NAME == "dev":
-    # DB_URL = (
-    #     "mysql+pymysql://" "meddly:MeddlyPassword123." "@" "3.238.163.234:3306/" "dev"
-    # )
-    pass
-else:
-    # Environ variables for local development
-    # DB_URL = "sqlite:///database.db"
-    ENV_NAME = "local-dev"
-DB_URL = "sqlite:///database.db"
-
+DB_URL = "postgresql+psycopg2://meddly:meddly@meddly-database-1:5432/app"
 
 SENDGRID_CONFIG = {
     "api_key": "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",
@@ -47,7 +33,7 @@ title = "Meddly"
 version = 0.1
 description = f"""
 # Welcome to MeddlyApi!
-![version](https://img.shields.io/badge/version-{version}-blue)  ![version](https://img.shields.io/badge/enviroment-{ENV_NAME.replace("-", "_")}-orange)
+![version](https://img.shields.io/badge/version-{version}-blue)
 
 Created by:
 - Cibello, Sofía Florencia
@@ -134,43 +120,6 @@ translations = {
                 detail={
                     "en": "The selected preference does not exist",
                     "es": "La preferencia seleccionada no existe",
-                },
-            ),
-        },
-        "supervisors": {
-            "already_supervised": HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail={
-                    "en": "You are already being supervised by this user",
-                    "es": "Ya estás siendo supervisado por este usuario",
-                },
-            ),
-            "code_not_valid": HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail={
-                    "en": "The invitation code is not valid",
-                    "es": "El código de invitación no es válido",
-                },
-            ),
-            "supervised_not_found": HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail={
-                    "en": "User not found (maybe you are not being supervised by this user)",
-                    "es": "Usuario no encontrado (puede que no estés siendo supervisado por este usuario)",
-                },
-            ),
-            "supervisor_not_found": HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail={
-                    "en": "User not found (maybe you are not supervising this user)",
-                    "es": "Usuario no encontrado (puede que no estés supervisando este usuario)",
-                },
-            ),
-            "cannot_be_yourself": HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail={
-                    "en": "You cannot supervise yourself",
-                    "es": "No puedes supervisarte a ti mismo",
                 },
             ),
         },

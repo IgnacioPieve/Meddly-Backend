@@ -1,3 +1,4 @@
+import datetime
 import threading
 
 from sqlalchemy import (
@@ -40,16 +41,13 @@ class User(CRUD):
     id = Column(String(255), primary_key=True, index=True)
     email = Column(String(255), nullable=False, index=True)
     invitation = Column(String(255), nullable=False, index=True)
-
-    name = Column(String(255), nullable=True)
+    first_name = Column(String(255), nullable=True)
+    last_name = Column(String(255), nullable=True)
     height = Column(Float, nullable=True)
     weight = Column(Float, nullable=True)
-    sex = Column(String(255), nullable=True)
+    sex = Column(Boolean, nullable=True)
     birth = Column(DateTime, nullable=True)
-    avatar = Column(String(255), nullable=True)
     phone = Column(String(20), nullable=True)
-
-    disabled = Column(Boolean, nullable=False, default=False)
 
     def create(self):
         self.invitation = generate_code()
@@ -104,3 +102,18 @@ class User(CRUD):
                 target=notification_preference.send_notification, args=(message,)
             )
             thread.start()
+
+    def get_calendar(self, start: datetime.date, end: datetime.date):
+        calendar = {
+            "consumptions": [],
+            "active_medicines": [],
+        }
+        for medicine in self.medicines:
+            if medicine.active:
+                calendar['active_medicines'].append(medicine)
+            if medicine.start_date > end or (medicine.end_date and medicine.end_date < start):
+                continue
+            calendar['consumptions'] += medicine.get_consumptions(start, end, self.db)
+        return calendar
+
+

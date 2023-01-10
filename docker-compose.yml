@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:latest
+    restart: 'always'
+    environment:
+      POSTGRES_USER: 'meddly'
+      POSTGRES_PASSWORD: 'meddly'
+      POSTGRES_DB: 'app'
+    ports:
+      - "11000:5432"
+  app:
+    build: .
+    restart: always
+    depends_on:
+      - database
+    stdin_open: true
+    tty: true
+    ports:
+      - "11001:8000"
+    volumes:
+      - .:/app
