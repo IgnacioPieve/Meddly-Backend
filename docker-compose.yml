@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   database:
+    container_name: meddly-database
     image: postgres:latest
     restart: 'always'
     environment:
@@ -10,6 +11,7 @@ services:
     ports:
       - "11000:5432"
   app:
+    container_name: meddly-backend
     build: .
     restart: always
     depends_on:

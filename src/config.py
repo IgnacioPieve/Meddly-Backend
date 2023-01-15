@@ -5,7 +5,7 @@ from starlette import status
 
 # ---------- CONFIG VARIABLES ----------
 
-DB_URL = "postgresql+psycopg2://meddly:meddly@meddly-database-1:5432/app"
+DB_URL = "postgresql+psycopg2://meddly:meddly@meddly-database:5432/app"
 
 SENDGRID_CONFIG = {
     "api_key": "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",
