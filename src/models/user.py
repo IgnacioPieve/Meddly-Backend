@@ -1,16 +1,8 @@
 import datetime
 import threading
 
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    or_,
-)
+from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        String, or_)
 from sqlalchemy.orm import relationship
 
 from config import translations
@@ -110,10 +102,10 @@ class User(CRUD):
         }
         for medicine in self.medicines:
             if medicine.active:
-                calendar['active_medicines'].append(medicine)
-            if medicine.start_date > end or (medicine.end_date and medicine.end_date < start):
+                calendar["active_medicines"].append(medicine)
+            if medicine.start_date > end or (
+                medicine.end_date and medicine.end_date < start
+            ):
                 continue
-            calendar['consumptions'] += medicine.get_consumptions(start, end, self.db)
+            calendar["consumptions"] += medicine.get_consumptions(start, end, self.db)
         return calendar
-
-

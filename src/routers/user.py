@@ -5,7 +5,6 @@ from dependencies import auth
 from schemas.user import UserSchema, UserUpdateSchema
 from schemas.utils import GenericResponseSchema
 
-
 router = APIRouter(prefix="/user", tags=["User"])
 
 

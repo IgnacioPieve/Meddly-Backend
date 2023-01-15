@@ -28,21 +28,21 @@ class MedicineAddSchema(BaseModel):
             "presentation": "Pastilla",
             "dosis_unit": "mg",
             "dosis": 1.5,
-            "instructions": "Disolver la pastilla en agua"
+            "instructions": "Disolver la pastilla en agua",
         }
         schema_extra = {
             "examples": {
                 "every_week": {
                     **basic_example,
                     "days": [1, 3, 5],
-                    "hours": ["08:00", "11:30", "18:00"]
+                    "hours": ["08:00", "11:30", "18:00"],
                 },
                 "interval": {
                     **basic_example,
                     "interval": 2,
-                    "hours": ["08:00", "11:30", "18:00"]
+                    "hours": ["08:00", "11:30", "18:00"],
                 },
-                "when_need": basic_example
+                "when_need": basic_example,
             }
         }
 
@@ -56,16 +56,16 @@ class MedicineSchema(MedicineAddSchema):
             "examples": {
                 "every_week": {
                     "id": 123456789,
-                    **MedicineAddSchema.Config.schema_extra['examples']['every_week']
+                    **MedicineAddSchema.Config.schema_extra["examples"]["every_week"],
                 },
                 "interval": {
                     "id": 123456789,
-                    **MedicineAddSchema.Config.schema_extra['examples']['interval']
+                    **MedicineAddSchema.Config.schema_extra["examples"]["interval"],
                 },
                 "when_need": {
                     "id": 123456789,
-                    **MedicineAddSchema.Config.schema_extra['examples']['when_need']
-                }
+                    **MedicineAddSchema.Config.schema_extra["examples"]["when_need"],
+                },
             }
         }
 
@@ -80,7 +80,7 @@ class AddConsumptionSchema(BaseModel):
             "example": {
                 "date": datetime.datetime(2023, 1, 10, 8, 0),
                 "real_consumption_date": datetime.datetime(2023, 1, 10, 9, 35),
-                "medicine_id": 123456789
+                "medicine_id": 123456789,
             }
         }
 
@@ -92,8 +92,8 @@ class ConsumptionSchema(AddConsumptionSchema):
         orm_mode = True
         schema_extra = {
             "example": {
-                **AddConsumptionSchema.Config.schema_extra['example'],
-                "consumed": True
+                **AddConsumptionSchema.Config.schema_extra["example"],
+                "consumed": True,
             }
         }
 
@@ -106,14 +106,14 @@ class CalendarSchema(BaseModel):
         schema_extra = {
             "example": {
                 "consumptions": [
-                    ConsumptionSchema.Config.schema_extra['example'],
-                    ConsumptionSchema.Config.schema_extra['example'],
-                    ConsumptionSchema.Config.schema_extra['example']
+                    ConsumptionSchema.Config.schema_extra["example"],
+                    ConsumptionSchema.Config.schema_extra["example"],
+                    ConsumptionSchema.Config.schema_extra["example"],
                 ],
                 "active_medicines": [
-                    MedicineSchema.Config.schema_extra['examples']['every_week'],
-                    MedicineSchema.Config.schema_extra['examples']['interval'],
-                    MedicineSchema.Config.schema_extra['examples']['when_need']
-                ]
+                    MedicineSchema.Config.schema_extra["examples"]["every_week"],
+                    MedicineSchema.Config.schema_extra["examples"]["interval"],
+                    MedicineSchema.Config.schema_extra["examples"]["when_need"],
+                ],
             }
         }

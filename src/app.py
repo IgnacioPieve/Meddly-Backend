@@ -11,7 +11,7 @@ from starlette.responses import Response
 
 import config
 from database import Base, engine
-from routers import notification, supervisor, test, medicine, user
+from routers import medicine, notification, supervisor, test, user
 
 # ----- DATABASE -----
 Base.metadata.create_all(bind=engine)

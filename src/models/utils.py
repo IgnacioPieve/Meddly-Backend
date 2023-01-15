@@ -82,8 +82,8 @@ def generate_code():
 
         def is_repeated(code_to_check):
             code_is_repeated = (
-                    session.query(User).filter(User.invitation == code_to_check).first()
-                    is not None
+                session.query(User).filter(User.invitation == code_to_check).first()
+                is not None
             )
             return code_is_repeated
 
@@ -94,4 +94,6 @@ def generate_code():
 
 
 def raise_errorcode(status_code):
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={'code': status_code})
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST, detail={"code": status_code}
+    )

@@ -1,13 +1,11 @@
 import datetime
-from typing import List
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import and_, exc
 
-from config import translations
 from dependencies import auth
-from models.medicine import Medicine, Consumption
-from schemas.medicine import CalendarSchema, MedicineAddSchema, ConsumptionSchema, AddConsumptionSchema
+from models.calendar.medicine import Consumption, Medicine
+from schemas.medicine import (AddConsumptionSchema, CalendarSchema,
+                              MedicineAddSchema)
 
 router = APIRouter(prefix="/calendar", tags=["Calendar"])
 
@@ -18,8 +16,11 @@ router = APIRouter(prefix="/calendar", tags=["Calendar"])
     status_code=200,
     summary="Get the calendar",
 )
-def get_calendar(start: datetime.date = None, end: datetime.date = None,
-                 authentication=Depends(auth.authenticate)):
+def get_calendar(
+    start: datetime.date = None,
+    end: datetime.date = None,
+    authentication=Depends(auth.authenticate),
+):
     """
     Retorna todos los medicamentos del usuario logueado en un intervalo de tiempo.
     """
@@ -36,7 +37,7 @@ def get_calendar(start: datetime.date = None, end: datetime.date = None,
     summary="Add a new medicine",
 )
 def add_medicine(
-        medicine: MedicineAddSchema, authentication=Depends(auth.authenticate)
+    medicine: MedicineAddSchema, authentication=Depends(auth.authenticate)
 ):
     """
     Añande una preferencia de notificación
@@ -46,6 +47,7 @@ def add_medicine(
     medicine = medicine.dict()
     medicine = Medicine(db, user=user, **medicine)
     medicine.create()
+
 
 @router.post(
     "/consumption",
@@ -64,6 +66,8 @@ def add_consumption(
     consumption = consumption.dict()
     consumption = Consumption(db, medicine=medicine, **consumption)
     consumption.create()
+
+
 #
 #
 # @router.delete(

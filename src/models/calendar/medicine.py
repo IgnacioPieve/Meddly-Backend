@@ -1,7 +1,9 @@
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, PickleType, String, Boolean, Date
-from sqlalchemy.orm import relationship
-from dateutil.rrule import rrule, DAILY, WEEKLY
 import datetime
+
+from dateutil.rrule import DAILY, WEEKLY, rrule
+from sqlalchemy import (Boolean, Column, Date, DateTime, Float, ForeignKey,
+                        Integer, PickleType, String)
+from sqlalchemy.orm import relationship
 
 from models.utils import CRUD, raise_errorcode
 
@@ -12,7 +14,9 @@ class Consumption(CRUD):
     date = Column(DateTime, primary_key=True)
     real_consumption_date = Column(DateTime)
     medicine_id = Column(Integer, ForeignKey("medicine.id"), primary_key=True)
-    medicine = relationship("Medicine", backref="consumptions", foreign_keys=[medicine_id])
+    medicine = relationship(
+        "Medicine", backref="consumptions", foreign_keys=[medicine_id]
+    )
 
     def validate_day(self, consumption_date: datetime.datetime):
         frequency = self.medicine.get_frequency()
@@ -47,13 +51,17 @@ class Medicine(CRUD):
     stock = Column(Integer, nullable=True)
     stock_warning = Column(Integer, nullable=True)
 
-    presentation = Column(String(255), nullable=False)  # Pastilla, Cápsula, Líquido, etc.
+    presentation = Column(
+        String(255), nullable=False
+    )  # Pastilla, Cápsula, Líquido, etc.
     dosis_unit = Column(String(10), nullable=False)  # mg, ml, etc.
     dosis = Column(Float, nullable=False)  # 500, 1, etc.
 
     interval = Column(Integer, nullable=True)  # Cada 4 dias
     days = Column(PickleType(), nullable=True)  # [1, 3, 5] -> Lunes, Miércoles, Viernes
-    hours = Column(PickleType(), nullable=True)  # ["12:00", "18:30", "22:00"] -> 12:00, 18:30, 22:00
+    hours = Column(
+        PickleType(), nullable=True
+    )  # ["12:00", "18:30", "22:00"] -> 12:00, 18:30, 22:00
 
     user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=False)
     user = relationship("User", backref="medicines", foreign_keys=[user_id])
@@ -76,23 +84,45 @@ class Medicine(CRUD):
         if not self.hours:
             return None
         if self.interval:
-            frequency = rrule(DAILY, interval=self.interval, dtstart=self.start_date, until=self.end_date)
+            frequency = rrule(
+                DAILY,
+                interval=self.interval,
+                dtstart=self.start_date,
+                until=self.end_date,
+            )
         else:
-            frequency = rrule(WEEKLY, byweekday=self.days, dtstart=self.start_date, until=self.end_date)
+            frequency = rrule(
+                WEEKLY,
+                byweekday=self.days,
+                dtstart=self.start_date,
+                until=self.end_date,
+            )
         return frequency
 
     def get_consumptions(self, start: datetime.date, end: datetime.date, db):
         consumptions = []
-        consumptions_taken = {c.date: c for c in self.consumptions if start <= c.date.date() <= end}
+        consumptions_taken = {
+            c.date: c for c in self.consumptions if start <= c.date.date() <= end
+        }
         if self.hours:
-            for date in self.get_frequency().between(datetime.datetime(start.year, start.month, start.day),
-                                                     datetime.datetime(end.year, end.month, end.day)):
+            for date in self.get_frequency().between(
+                datetime.datetime(start.year, start.month, start.day),
+                datetime.datetime(end.year, end.month, end.day),
+            ):
                 for hour in self.hours:
-                    date_hour = datetime.datetime.combine(date, datetime.datetime.strptime(hour, "%H:%M").time())
+                    date_hour = datetime.datetime.combine(
+                        date, datetime.datetime.strptime(hour, "%H:%M").time()
+                    )
                     if date_hour not in consumptions_taken:
-                        c = Consumption(db, date=date_hour, real_consumption_date=date_hour,
-                                        medicine=self, medicine_id=self.id,
-                                        created_at=datetime.datetime.now(), updated_at=datetime.datetime.now())
+                        c = Consumption(
+                            db,
+                            date=date_hour,
+                            real_consumption_date=date_hour,
+                            medicine=self,
+                            medicine_id=self.id,
+                            created_at=datetime.datetime.now(),
+                            updated_at=datetime.datetime.now(),
+                        )
                         c.consumed = False
                     else:
                         c = consumptions_taken[date_hour]
