@@ -3,3 +3,5 @@ __pycache__/
 set_environ.py
 src/set_environ.py
 src/database.db
+venv/
+/venv/

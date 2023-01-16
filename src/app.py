@@ -11,7 +11,7 @@ from starlette.responses import Response
 
 import config
 from database import Base, engine
-from routers import medicine, notification, supervisor, test, user
+from routers import calendar, notification, supervisor, test, user
 
 # ----- DATABASE -----
 Base.metadata.create_all(bind=engine)
@@ -22,7 +22,7 @@ app = FastAPI(**config.metadata)
 # ----- ROUTERS -----
 app.include_router(user.router)
 app.include_router(supervisor.router)
-app.include_router(medicine.router)
+app.include_router(calendar.router)
 app.include_router(notification.router)
 app.include_router(test.router)
 

@@ -98,8 +98,15 @@ class User(CRUD):
     def get_calendar(self, start: datetime.date, end: datetime.date):
         calendar = {
             "consumptions": [],
+            "appointments": [],
             "active_medicines": [],
         }
+        # Get appointments
+        for appointment in self.appointments:
+            if start <= appointment.date.date() <= end:
+                calendar["appointments"].append(appointment)
+
+        # Get active_medicines and consumptions
         for medicine in self.medicines:
             if medicine.active:
                 calendar["active_medicines"].append(medicine)
