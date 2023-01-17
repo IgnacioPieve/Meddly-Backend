@@ -6,5 +6,3 @@ WORKDIR /app/src
 RUN pip3 install -r /app/src/requirements.txt
 
 EXPOSE 8000
-
-CMD ["python", "app.py"]

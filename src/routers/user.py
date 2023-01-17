@@ -1,9 +1,7 @@
-import firebase_admin
 from fastapi import APIRouter, Depends
 
 from dependencies import auth
 from schemas.user import UserSchema, UserUpdateSchema
-from schemas.utils import GenericResponseSchema
 
 router = APIRouter(prefix="/user", tags=["User"])
 
@@ -34,7 +32,7 @@ async def update_user(
 
 
 @router.delete(
-    "/", response_model=GenericResponseSchema, status_code=200, summary="Delete user"
+    "/", status_code=200, summary="Delete user"
 )
 async def delete_user(authentication=Depends(auth.authenticate)):
     """
@@ -42,4 +40,4 @@ async def delete_user(authentication=Depends(auth.authenticate)):
     """
     user, _ = authentication
     user.destroy()
-    return {}
+    return

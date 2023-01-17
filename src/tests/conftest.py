@@ -8,8 +8,16 @@ from dependencies import auth, database
 from models.user import User
 
 
+class TestUser:
+    def __init__(self, user_id="test"):
+        self.user_id = user_id
+
+    def get_header(self):
+        return {"cred": self.user_id}
+
+
 async def override_auth(
-    cred: str = Header(default=None), db: Session = Depends(database.get_db)
+        cred: str = Header(default=None), db: Session = Depends(database.get_db)
 ):
     decoded_token = {"user_id": cred, "email": f"{cred}@test.com"}
     user: User = User(db, User.id == decoded_token["user_id"]).get()

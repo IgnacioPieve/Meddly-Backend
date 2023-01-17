@@ -11,7 +11,7 @@ from starlette.responses import Response
 
 import config
 from database import Base, engine
-from routers import calendar, notification, supervisor, test, user
+from routers import calendar, notification, supervisor, dev_tools, user
 
 # ----- DATABASE -----
 Base.metadata.create_all(bind=engine)
@@ -24,7 +24,7 @@ app.include_router(user.router)
 app.include_router(supervisor.router)
 app.include_router(calendar.router)
 app.include_router(notification.router)
-app.include_router(test.router)
+app.include_router(dev_tools.router)
 
 if __name__ == "__main__":
     import uvicorn

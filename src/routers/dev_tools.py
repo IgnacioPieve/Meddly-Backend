@@ -2,9 +2,17 @@ import requests
 from fastapi import APIRouter
 
 from config import FIREBASE_JSON
-from schemas.test import UserRequestModel
+from pydantic import BaseModel, EmailStr
 
-router = APIRouter(prefix="/test", tags=["Test"])
+router = APIRouter(prefix="/dev", tags=["Developer_Tools"])
+
+
+class UserRequestModel(BaseModel):
+    email: EmailStr
+    password: str
+
+    class Config:
+        schema_extra = {"example": {"email": "test@test.com", "password": "password"}}
 
 
 @router.get("/status")

@@ -1,9 +1,12 @@
+import os
+
 from fastapi import HTTPException
 from starlette import status
 
 # ---------- CONFIG VARIABLES ----------
 
-DB_URL = "postgresql+psycopg2://meddly:meddly@meddly-database:5432/app"
+db_name = os.getenv("DB_NAME", "meddly-database")
+DB_URL = f"postgresql+psycopg2://meddly:meddly@{db_name}:5432/app"
 
 SENDGRID_CONFIG = {
     "api_key": "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",
