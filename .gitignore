@@ -5,3 +5,5 @@ src/set_environ.py
 src/database.db
 venv/
 /venv/
+/src/.pytest_cache/
+/.pytest_cache/

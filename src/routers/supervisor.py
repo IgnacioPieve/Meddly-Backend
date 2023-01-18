@@ -9,12 +9,8 @@ from schemas.user import UserSchema
 router = APIRouter(prefix="/supervisors", tags=["Supervisors"])
 
 
-@router.post(
-    "/invitation",
-    response_model=UserSchema,
-    status_code=200,
-    summary="Accept invitation",
-)
+@router.post("/invitation", response_model=UserSchema, status_code=200, include_in_schema=False)
+@router.post("/invitation/", response_model=UserSchema, status_code=200, summary="Accept invitation")
 def accept_invitation(code: str, authentication=Depends(auth.authenticate)):
     """
     Acepta un código de invitación
@@ -24,12 +20,8 @@ def accept_invitation(code: str, authentication=Depends(auth.authenticate)):
     return user
 
 
-@router.delete(
-    "/supervisor/{supervisor_id}",
-    response_model=UserSchema,
-    status_code=200,
-    summary="Delete supervisor",
-)
+@router.delete("/supervisor/{supervisor_id}", response_model=UserSchema, status_code=200, include_in_schema=False)
+@router.delete("/supervisor/{supervisor_id}/", response_model=UserSchema, status_code=200, summary="Delete supervisor")
 def delete_supervisor(supervisor_id: str, authentication=Depends(auth.authenticate)):
     """
     Elimina un supervisor
@@ -45,12 +37,8 @@ def delete_supervisor(supervisor_id: str, authentication=Depends(auth.authentica
     return user
 
 
-@router.delete(
-    "/supervised/{supervised_id}",
-    response_model=UserSchema,
-    status_code=200,
-    summary="Delete supervised",
-)
+@router.delete("/supervised/{supervised_id}", response_model=UserSchema, status_code=200, include_in_schema=False)
+@router.delete("/supervised/{supervised_id}/", response_model=UserSchema, status_code=200, summary="Delete supervised")
 def delete_supervised(supervised_id: str, authentication=Depends(auth.authenticate)):
     """
     Elimina un supervisado

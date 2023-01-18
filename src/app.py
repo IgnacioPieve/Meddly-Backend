@@ -1,13 +1,4 @@
-import json
-import time
-import traceback
-from typing import Callable
-
-from fastapi import FastAPI
-from fastapi.exceptions import HTTPException, RequestValidationError
-from fastapi.routing import APIRoute
-from starlette.requests import Request
-from starlette.responses import Response
+from fastapi import FastAPI, APIRouter
 
 import config
 from database import Base, engine
@@ -25,6 +16,7 @@ app.include_router(supervisor.router)
 app.include_router(calendar.router)
 app.include_router(notification.router)
 app.include_router(dev_tools.router)
+
 
 if __name__ == "__main__":
     import uvicorn

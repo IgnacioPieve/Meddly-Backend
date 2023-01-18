@@ -4,6 +4,31 @@ from typing import List, Literal
 from pydantic import BaseModel
 
 
+class MedicineUpdateSchema(BaseModel):
+    name: str | None
+    end_date: datetime.date | None
+    stock: int | None
+    stock_warning: int | None
+    presentation: str | None
+    dosis_unit: str | None
+    dosis: float | None
+    instructions: str | None
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "Paracetamol",
+                "end_date": datetime.datetime(2023, 3, 5),
+                "stock": 10,
+                "stock_warning": 4,
+                "presentation": "Tabletas",
+                "dosis_unit": "mg",
+                "dosis": 500,
+                "instructions": "Tomar 1 cada 8 horas"
+            }
+        }
+
+
 class MedicineAddSchema(BaseModel):
     name: str
     start_date: datetime.date
