@@ -17,7 +17,7 @@ class TestUser:
 
 
 async def override_auth(
-        cred: str = Header(default=None), db: Session = Depends(database.get_db)
+    cred: str = Header(default=None), db: Session = Depends(database.get_db)
 ):
     decoded_token = {"user_id": cred, "email": f"{cred}@test.com"}
     user: User = User(db, User.id == decoded_token["user_id"]).get()

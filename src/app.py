@@ -1,8 +1,8 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI
 
 import config
 from database import Base, engine
-from routers import calendar, notification, supervisor, dev_tools, user
+from routers import calendar, dev_tools, notification, supervisor, user
 
 # ----- DATABASE -----
 Base.metadata.create_all(bind=engine)

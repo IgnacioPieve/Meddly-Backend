@@ -1,5 +1,7 @@
-from schemas.calendar.medicine import *
-from schemas.calendar.appointment import *
+from pydantic import BaseModel
+
+from schemas.calendar.appointment import AppointmentSchema
+from schemas.calendar.medicine import ConsumptionSchema, MedicineSchema
 
 
 class CalendarSchema(BaseModel):
@@ -21,9 +23,9 @@ class CalendarSchema(BaseModel):
                     AppointmentSchema.Config.schema_extra["example"],
                 ],
                 "active_medicines": [
-                    MedicineSchema.Config.schema_extra["examples"]["every_week"],
-                    MedicineSchema.Config.schema_extra["examples"]["interval"],
-                    MedicineSchema.Config.schema_extra["examples"]["when_need"],
+                    MedicineSchema.Config.schema_extra["example"],
+                    MedicineSchema.Config.schema_extra["example"],
+                    MedicineSchema.Config.schema_extra["example"],
                 ],
             }
         }

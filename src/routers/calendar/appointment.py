@@ -1,16 +1,18 @@
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 
 from dependencies import auth
 from models.calendar.appointment import Appointment
 from models.utils import raise_errorcode
 from schemas.calendar import AddAppointmentSchema
 
-router = APIRouter(prefix="/calendar/appointment", tags=["Appointment"])
+router = APIRouter(prefix="/calendar/appointment")
 
 
 @router.post("", status_code=201, include_in_schema=False)
 @router.post("/", status_code=201, summary="Add a new appointment")
-def add_appointment(appointment: AddAppointmentSchema, authentication=Depends(auth.authenticate)):
+def add_appointment(
+    appointment: AddAppointmentSchema, authentication=Depends(auth.authenticate)
+):
     user, db = authentication
     appointment = appointment.dict()
     appointment = Appointment(db, user=user, **appointment)
@@ -21,9 +23,9 @@ def add_appointment(appointment: AddAppointmentSchema, authentication=Depends(au
 @router.post("/{appointment_id}", status_code=200, include_in_schema=False)
 @router.post("/{appointment_id}/", status_code=200, summary="Modify an appointment")
 def modify_appointment(
-        appointment_id: int,
-        appointment: AddAppointmentSchema,
-        authentication=Depends(auth.authenticate),
+    appointment_id: int,
+    appointment: AddAppointmentSchema,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
     appointment_data = appointment.dict()

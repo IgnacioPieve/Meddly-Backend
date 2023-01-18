@@ -17,8 +17,12 @@ async def get_user(authentication=Depends(auth.authenticate)):
 
 
 @router.post("", response_model=UserSchema, status_code=200, include_in_schema=False)
-@router.post("/", response_model=UserSchema, status_code=200, summary="Update user data")
-async def update_user(update_data: UserUpdateSchema, authentication=Depends(auth.authenticate)):
+@router.post(
+    "/", response_model=UserSchema, status_code=200, summary="Update user data"
+)
+async def update_user(
+    update_data: UserUpdateSchema, authentication=Depends(auth.authenticate)
+):
     """
     Actualiza los datos de un usuario (sobreecribiendo el objeto completo).
     """

@@ -24,7 +24,7 @@ FIREBASE_JSON = {
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-8s7sw%40meddly-da2c2.iam.gserviceaccount.com",
-    "key": "AIzaSyDdCUkmev0t2iy3oTJw60w5Z-TCY36IR48"
+    "key": "AIzaSyDdCUkmev0t2iy3oTJw60w5Z-TCY36IR48",
 }
 
 WHATSAPP_API_KEY = "EAAIZAuL7Po9kBABNLP30eVWiW8xQup6JJvrshPMXfZC8dHPCORXm5qhJGKzrCjFV4GmcIK9JCEyglmAispSdAz4JJYmaiXrZA85aQI5nlZAWerlCH4RDpbATfuhy4tDolwMuayYQLwRuJABQamIVrWZAC1UraFpgQXMiWqYg9NwZDZD"

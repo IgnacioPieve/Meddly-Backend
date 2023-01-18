@@ -1,8 +1,8 @@
 import requests
 from fastapi import APIRouter
+from pydantic import BaseModel, EmailStr
 
 from config import FIREBASE_JSON
-from pydantic import BaseModel, EmailStr
 
 router = APIRouter(prefix="/dev", tags=["Developer_Tools"])
 

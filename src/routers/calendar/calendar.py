@@ -10,8 +10,14 @@ router = APIRouter(prefix="/calendar")
 
 
 @router.get("", response_model=CalendarSchema, status_code=200, include_in_schema=False)
-@router.get("/", response_model=CalendarSchema, status_code=200, summary="Get the calendar")
-def get_calendar(start: datetime.date = None, end: datetime.date = None, authentication=Depends(auth.authenticate)):
+@router.get(
+    "/", response_model=CalendarSchema, status_code=200, summary="Get the calendar"
+)
+def get_calendar(
+    start: datetime.date = None,
+    end: datetime.date = None,
+    authentication=Depends(auth.authenticate),
+):
     """
     Retorna todos los medicamentos del usuario logueado en un intervalo de tiempo.
     """

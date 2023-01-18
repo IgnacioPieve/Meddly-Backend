@@ -11,8 +11,15 @@ router = APIRouter(prefix="/notification", tags=["Notifications"])
 
 
 @router.post("", response_model=UserSchema, status_code=201, include_in_schema=False)
-@router.post("/", response_model=UserSchema, status_code=201, summary="Add a notification preference")
-def add_notification_preference(notification_preference: str, authentication=Depends(auth.authenticate)):
+@router.post(
+    "/",
+    response_model=UserSchema,
+    status_code=201,
+    summary="Add a notification preference",
+)
+def add_notification_preference(
+    notification_preference: str, authentication=Depends(auth.authenticate)
+):
     """
     Añande una preferencia de notificación
     """
@@ -27,8 +34,15 @@ def add_notification_preference(notification_preference: str, authentication=Dep
 
 
 @router.delete("", response_model=UserSchema, status_code=200, include_in_schema=False)
-@router.delete("/", response_model=UserSchema, status_code=200, summary="Delete a notification preference")
-def delete_notification_preference(notification_preference: str, authentication=Depends(auth.authenticate)):
+@router.delete(
+    "/",
+    response_model=UserSchema,
+    status_code=200,
+    summary="Delete a notification preference",
+)
+def delete_notification_preference(
+    notification_preference: str, authentication=Depends(auth.authenticate)
+):
     """
     Elimina una preferencia de notificación
     """

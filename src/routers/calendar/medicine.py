@@ -1,16 +1,19 @@
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 
 from dependencies import auth
 from models.calendar.medicine import Consumption, Medicine
 from models.utils import raise_errorcode
-from schemas.calendar import AddConsumptionSchema, MedicineAddSchema, MedicineUpdateSchema
+from schemas.calendar import (AddConsumptionSchema, MedicineAddSchema,
+                              MedicineUpdateSchema)
 
-router = APIRouter(prefix="/calendar/medicines", tags=["Medicines"])
+router = APIRouter(prefix="/calendar/medicines")
 
 
 @router.post("/medicine", status_code=201, include_in_schema=False)
 @router.post("/medicine/", status_code=201, summary="Add a new medicine")
-def add_medicine(medicine: MedicineAddSchema, authentication=Depends(auth.authenticate)):
+def add_medicine(
+    medicine: MedicineAddSchema, authentication=Depends(auth.authenticate)
+):
     """
     Añande una preferencia de notificación
     """
@@ -23,7 +26,11 @@ def add_medicine(medicine: MedicineAddSchema, authentication=Depends(auth.authen
 
 @router.post("/medicine/{medicine_id}", status_code=200, include_in_schema=False)
 @router.post("/medicine/{medicine_id}/", status_code=200, summary="Modify a medicine")
-def modify_medicine(medicine_id: int, medicine: MedicineUpdateSchema, authentication=Depends(auth.authenticate)):
+def modify_medicine(
+    medicine_id: int,
+    medicine: MedicineUpdateSchema,
+    authentication=Depends(auth.authenticate),
+):
     user, db = authentication
     medicine_data = medicine.dict()
     medicine = Medicine(db, Medicine.id == medicine_id).get()
@@ -51,8 +58,14 @@ def delete_medicine(medicine_id: int, authentication=Depends(auth.authenticate))
 
 
 @router.post("/consumption", status_code=201, include_in_schema=False)
-@router.post("/consumption/", status_code=201, summary="Add a new consumption", )
-def add_consumption(consumption: AddConsumptionSchema, authentication=Depends(auth.authenticate)):
+@router.post(
+    "/consumption/",
+    status_code=201,
+    summary="Add a new consumption",
+)
+def add_consumption(
+    consumption: AddConsumptionSchema, authentication=Depends(auth.authenticate)
+):
     user, db = authentication
     medicine = Medicine(db, Medicine.id == consumption.medicine_id).get()
     if medicine is None:
@@ -63,8 +76,12 @@ def add_consumption(consumption: AddConsumptionSchema, authentication=Depends(au
     consumption.create()
 
 
-@router.delete("/consumption/{consumption_id}", status_code=200, include_in_schema=False)
-@router.delete("/consumption/{consumption_id}/", status_code=200, summary="Delete a consumption")
+@router.delete(
+    "/consumption/{consumption_id}", status_code=200, include_in_schema=False
+)
+@router.delete(
+    "/consumption/{consumption_id}/", status_code=200, summary="Delete a consumption"
+)
 def delete_consumption(consumption_id: int, authentication=Depends(auth.authenticate)):
     user, db = authentication
     consumption = Consumption(db, Consumption.id == consumption_id).get()

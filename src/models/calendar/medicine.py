@@ -13,6 +13,8 @@ class Consumption(CRUD):
 
     date = Column(DateTime, primary_key=True)
     real_consumption_date = Column(DateTime)
+
+    # ondelete cascade
     medicine_id = Column(Integer, ForeignKey("medicine.id"), primary_key=True)
     medicine = relationship(
         "Medicine", backref="consumptions", foreign_keys=[medicine_id]
@@ -129,3 +131,9 @@ class Medicine(CRUD):
                         c.consumed = True
                     consumptions.append(c)
         return consumptions
+
+    def destroy(self):
+        for consumption in self.consumptions:
+            consumption.db = self.db
+            consumption.destroy()
+        return super().destroy()

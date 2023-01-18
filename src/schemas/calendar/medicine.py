@@ -18,13 +18,13 @@ class MedicineUpdateSchema(BaseModel):
         schema_extra = {
             "example": {
                 "name": "Paracetamol",
-                "end_date": datetime.datetime(2023, 3, 5),
+                "end_date": datetime.datetime(2023, 3, 5).date(),
                 "stock": 10,
                 "stock_warning": 4,
                 "presentation": "Tabletas",
                 "dosis_unit": "mg",
                 "dosis": 500,
-                "instructions": "Tomar 1 cada 8 horas"
+                "instructions": "Tomar 1 cada 8 horas",
             }
         }
 
@@ -44,30 +44,19 @@ class MedicineAddSchema(BaseModel):
     instructions: str | None
 
     class Config:
-        basic_example = {
-            "name": "Ibuprofeno",
-            "start_date": datetime.datetime(2023, 1, 10),
-            "end_date": datetime.datetime(2023, 2, 1),
-            "stock": 18,
-            "stock_warning": 5,
-            "presentation": "Pastilla",
-            "dosis_unit": "mg",
-            "dosis": 1.5,
-            "instructions": "Disolver la pastilla en agua",
-        }
         schema_extra = {
-            "examples": {
-                "every_week": {
-                    **basic_example,
-                    "days": [1, 3, 5],
-                    "hours": ["08:00", "11:30", "18:00"],
-                },
-                "interval": {
-                    **basic_example,
-                    "interval": 2,
-                    "hours": ["08:00", "11:30", "18:00"],
-                },
-                "when_need": basic_example,
+            "example": {
+                "name": "Ibuprofeno",
+                "start_date": datetime.datetime(2023, 1, 10).date(),
+                "end_date": datetime.datetime(2023, 2, 1).date(),
+                "stock": 18,
+                "stock_warning": 5,
+                "presentation": "Pastilla",
+                "dosis_unit": "mg",
+                "dosis": 1.5,
+                "instructions": "Disolver la pastilla en agua",
+                "interval": 2,
+                "hours": ["08:00", "11:30", "18:00"],
             }
         }
 
@@ -78,19 +67,9 @@ class MedicineSchema(MedicineAddSchema):
     class Config:
         orm_mode = True
         schema_extra = {
-            "examples": {
-                "every_week": {
-                    "id": 123456789,
-                    **MedicineAddSchema.Config.schema_extra["examples"]["every_week"],
-                },
-                "interval": {
-                    "id": 123456789,
-                    **MedicineAddSchema.Config.schema_extra["examples"]["interval"],
-                },
-                "when_need": {
-                    "id": 123456789,
-                    **MedicineAddSchema.Config.schema_extra["examples"]["when_need"],
-                },
+            "example": {
+                "id": 123456789,
+                **MedicineAddSchema.Config.schema_extra["example"],
             }
         }
 
