@@ -7,6 +7,9 @@ psycopg2-binary==2.9.5          # Database / PostgreSQL driver
 sendgrid==6.9.7                 # Notifications / Email Service
 firebase-admin==6.0.1           # Firebase Admin SDK
 python-dateutil==2.8.2          # Date utilities
+joblib==1.2.0                   # ML / Save and Load Machine Learning Models
+scikit-learn==1.2.0             # ML / Machine Learning Library
+pandas==1.5.3                   # ML / Data Analysis Library
 
 # Testing and Linting
 pytest==7.2.1
