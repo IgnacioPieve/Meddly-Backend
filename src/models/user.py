@@ -5,9 +5,8 @@ from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
                         String, or_)
 from sqlalchemy.orm import relationship
 
-from config import translations
 from models.message import Message, NewSupervisorMessage
-from models.utils import CRUD, generate_code
+from models.utils import CRUD, generate_code, raise_errorcode
 
 
 class Supervised(CRUD):
@@ -48,18 +47,18 @@ class User(CRUD):
     def accept_invitation(self, invitation_code):
         supervisor = User(self.db, User.invitation == invitation_code).get()
         if supervisor is None:
-            raise translations["errors"]["supervisors"]["code_not_valid"]
+            raise_errorcode(201)
         if supervisor.id == self.id:
-            raise translations["errors"]["supervisors"]["cannot_be_yourself"]
+            raise_errorcode(204)
         already_supervised = (
-            Supervised(
-                self.db,
-                or_(Supervised.supervisor == supervisor, Supervised.supervised == self),
-            ).get()
-            is not None
+                Supervised(
+                    self.db,
+                    or_(Supervised.supervisor == supervisor, Supervised.supervised == self),
+                ).get()
+                is not None
         )
         if already_supervised:
-            raise translations["errors"]["supervisors"]["already_supervised"]
+            raise_errorcode(200)
         supervisor.invitation = generate_code()
 
         supervisor.save()
@@ -68,21 +67,6 @@ class User(CRUD):
         message = NewSupervisorMessage(supervisor=supervisor)
         self.send_notification(message)
 
-    @property
-    def supervised(self):
-        supervised_list = []
-        for supervised in self.supervised_list:
-            supervised.supervised.db = self.db
-            supervised_list.append(supervised.supervised)
-        return supervised_list
-
-    @property
-    def supervisors(self):
-        supervisors_list = []
-        for supervisor in self.supervisors_list:
-            supervisor.supervisor.db = self.db
-            supervisors_list.append(supervisor.supervisor)
-        return supervisors_list
 
     @property
     def notification_preferences(self):
@@ -117,7 +101,7 @@ class User(CRUD):
             if medicine.active:
                 calendar["active_medicines"].append(medicine)
             if medicine.start_date > end or (
-                medicine.end_date and medicine.end_date < start
+                    medicine.end_date and medicine.end_date < start
             ):
                 continue
             calendar["consumptions"] += medicine.get_consumptions(start, end, self.db)

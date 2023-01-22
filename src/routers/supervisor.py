@@ -1,41 +1,50 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy import and_
 
-from config import translations
 from dependencies import auth
 from models.user import Supervised
-from schemas.user import UserSchema
+from models.utils import raise_errorcode
 
 router = APIRouter(prefix="/supervisors", tags=["Supervisors"])
 
 
-@router.post(
-    "/invitation", response_model=UserSchema, status_code=200, include_in_schema=False
-)
-@router.post(
-    "/invitation/",
-    response_model=UserSchema,
-    status_code=200,
-    summary="Accept invitation",
-)
+@router.post("/invitation", status_code=200, include_in_schema=False)
+@router.post("/invitation/", status_code=200, summary="Accept invitation")
 def accept_invitation(code: str, authentication=Depends(auth.authenticate)):
     """
     Acepta un código de invitación
     """
     user, _ = authentication
     user.accept_invitation(code)
-    return user
+
+
+@router.get('/supervisor', response_model=list[str], status_code=200, include_in_schema=False)
+@router.get('/supervisor/', response_model=list[str], status_code=200, summary="Get supervisors")
+def get_supervisors(authentication=Depends(auth.authenticate)):
+    """
+    Obtiene la lista de supervisores
+    """
+    user, _ = authentication
+    return [supervisor.supervisor.id for supervisor in user.supervisors_list]
+
+
+@router.get('/supervised', response_model=list[str], status_code=200, include_in_schema=False)
+@router.get('/supervised/', response_model=list[str], status_code=200, summary="Get supervised users")
+def get_supervised(authentication=Depends(auth.authenticate)):
+    """
+    Obtiene la lista de usuarios supervisados
+    """
+    user, _ = authentication
+    return [supervised.supervised.id for supervised in user.supervised_list]
 
 
 @router.delete(
     "/supervisor/{supervisor_id}",
-    response_model=UserSchema,
     status_code=200,
     include_in_schema=False,
 )
 @router.delete(
     "/supervisor/{supervisor_id}/",
-    response_model=UserSchema,
     status_code=200,
     summary="Delete supervisor",
 )
@@ -49,20 +58,17 @@ def delete_supervisor(supervisor_id: str, authentication=Depends(auth.authentica
         and_(Supervised.supervisor_id == supervisor_id, Supervised.supervised == user),
     ).get()
     if supervisor is None:
-        raise translations["errors"]["supervisors"]["supervisor_not_found"]
+        raise_errorcode(202)
     supervisor.destroy()
-    return user
 
 
 @router.delete(
     "/supervised/{supervised_id}",
-    response_model=UserSchema,
     status_code=200,
     include_in_schema=False,
 )
 @router.delete(
     "/supervised/{supervised_id}/",
-    response_model=UserSchema,
     status_code=200,
     summary="Delete supervised",
 )
@@ -76,6 +82,5 @@ def delete_supervised(supervised_id: str, authentication=Depends(auth.authentica
         and_(Supervised.supervisor == user, Supervised.supervised_id == supervised_id),
     ).get()
     if supervised is None:
-        raise translations["errors"]["supervisors"]["supervised_not_found"]
+        raise_errorcode(203)
     supervised.destroy()
-    return user

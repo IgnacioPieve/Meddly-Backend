@@ -5,8 +5,8 @@ from sendgrid.helpers.mail import Mail
 from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
-from config import SENDGRID_CONFIG, WHATSAPP_API_KEY, translations
-from models.utils import CRUD
+from config import SENDGRID_CONFIG, WHATSAPP_API_KEY
+from models.utils import CRUD, raise_errorcode
 
 
 class NotificationPreference(CRUD):
@@ -28,7 +28,7 @@ class NotificationPreference(CRUD):
 
     def validate(self):
         if self.notification_preference not in self.OPTIONS:
-            raise translations["errors"]["notifications"]["not_valid"]
+            raise_errorcode(502)
 
     def send_notification(self, message):
         raise Exception("NotImplementedException")
