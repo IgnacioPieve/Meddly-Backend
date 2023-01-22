@@ -19,10 +19,9 @@ class NotificationPreference(CRUD):
     __mapper_args__ = {"polymorphic_on": notification_preference}
 
     EMAIL = "email"
-    SMS = "sms"
     WHATSAPP = "whatsapp"
     PUSH = "push"
-    OPTIONS = [EMAIL, SMS, WHATSAPP, PUSH]
+    OPTIONS = [EMAIL, WHATSAPP, PUSH]
 
     def __str__(self):
         return f"{self.notification_preference}"
@@ -39,6 +38,12 @@ class WhatsappNotification(NotificationPreference):
     __mapper_args__ = {"polymorphic_identity": NotificationPreference.WHATSAPP}
 
     def send_notification(self, message):
+        message_data = [
+            {
+                "type": "text",
+                "text": message.whatsapp()["message"]
+            }
+        ]
         headers = {
             "Authorization": f"Bearer {WHATSAPP_API_KEY}",
             "Content-Type": "application/json",
@@ -48,18 +53,19 @@ class WhatsappNotification(NotificationPreference):
             "to": self.user.phone,
             "type": "template",
             "template": {
-                "name": message.whatsapp()["template_id"],
-                "language": {"code": "en"},
+                "name": 'generic_message',
+                "language": {"code": "es"},
                 "components": [
-                    {"type": "body", "parameters": message.whatsapp()["template_data"]}
+                    {"type": "body", "parameters": message_data}
                 ],
             },
         }
-        requests.post(
-            "https://graph.facebook.com/v13.0/100370432826961/messages",
+        response = requests.post(
+            "https://graph.facebook.com/v15.0/100370432826961/messages",
             headers=headers,
             json=body,
         )
+        print(f'Message Sent via Whatsapp to {self.user.phone}. Response: {response.text}')
 
 
 class EmailNotification(NotificationPreference):
@@ -67,16 +73,18 @@ class EmailNotification(NotificationPreference):
 
     def send_notification(self, message):
         message_constructor = Mail(
-            from_email=SENDGRID_CONFIG["email"], to_emails=self.user.email
+            from_email=SENDGRID_CONFIG["email"],
+            to_emails=self.user.email,
         )
-        message_constructor.dynamic_template_data = message.email()["template_data"]
-        message_constructor.template_id = message.email()["template_id"]
+        message_constructor.template_id = 'd-5e634cd5cd6548b4b440f188c1d2a40a'
+        message_constructor.dynamic_template_data = {
+            'hi_message': f'Hola, {self.user.name}' if hasattr(self.user, 'name') else 'Hola!',
+            'message': message.email()["message"],
+            'subject': message.email()["subject"],
+        }
         sg = SendGridAPIClient(SENDGRID_CONFIG["api_key"])
-        sg.send(message_constructor)
-
-
-class SMSNotification(NotificationPreference):
-    __mapper_args__ = {"polymorphic_identity": NotificationPreference.SMS}
+        response = sg.send(message_constructor)
+        print(f'Email Sent via Email (SendGrid) to {self.user.email}. Response: {response.__dict__}')
 
 
 class PushNotification(NotificationPreference):
@@ -92,8 +100,13 @@ class PushNotification(NotificationPreference):
                 message = messaging.Message(
                     notification=messaging.Notification(
                         title=message.push()["title"],
-                        body=message.push()["body"],
+                        body=message.push()["message"],
                     ),
                     token=device,
                 )
-                messaging.send(message)
+                response = messaging.send(message)
+                print(f'Message Sent via Push to {self.user_id}. Response {response}')
+            else:
+                print(f'No device token found for {self.user_id} in Firestore.')
+        else:
+            print(f'No user found for {self.user_id} in Firestore.')

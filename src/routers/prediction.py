@@ -66,10 +66,13 @@ def symptom_prediction(
     for symptom in symptoms_typed:
         if symptom not in symptoms:
             raise_errorcode(700)
-    symptoms_typed = {symptom: 1 for symptom in symptoms}
+    symptoms_typed = {symptom: 1 for symptom in symptoms_typed}
     symptoms_typed = {**symptoms_template, **symptoms_typed}
     symptoms_typed = pd.DataFrame([symptoms_typed])
     symptoms_typed = symptoms_typed.reindex(columns=symptoms)
+    print(symptoms_typed)
     prediction = model_trained.predict(symptoms_typed)[0]
+    print(model_trained.predict(symptoms_typed))
+    print(model_trained.predict_proba(symptoms_typed))
 
     return {"results": [str(prediction)]}

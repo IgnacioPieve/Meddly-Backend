@@ -9,8 +9,8 @@ db_name = os.getenv("DB_NAME", "meddly-database")
 DB_URL = f"postgresql+psycopg2://meddly:meddly@{db_name}:5432/app"
 
 SENDGRID_CONFIG = {
-    "api_key": "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",
-    "email": "meddly.health@gmail.com",
+    "api_key": "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",
+    "email": "meddly.it@gmail.com",
 }
 
 FIREBASE_JSON = {
@@ -27,7 +27,7 @@ FIREBASE_JSON = {
     "key": "AIzaSyDdCUkmev0t2iy3oTJw60w5Z-TCY36IR48",
 }
 
-WHATSAPP_API_KEY = "EAAIZAuL7Po9kBABNLP30eVWiW8xQup6JJvrshPMXfZC8dHPCORXm5qhJGKzrCjFV4GmcIK9JCEyglmAispSdAz4JJYmaiXrZA85aQI5nlZAWerlCH4RDpbATfuhy4tDolwMuayYQLwRuJABQamIVrWZAC1UraFpgQXMiWqYg9NwZDZD"
+WHATSAPP_API_KEY = "EAAIZAuL7Po9kBAJSZBjrugdMpp8cmm18vvChcUUz53QFkZCAJthMMKNF1uidehy0wUcMIIEJJwHo0UsIrTOvCczbYpcGw7tquJQZBqMJZBFZB4lpMzKJvfFRXAvgYr2r8SbaAuW6ZCpa9GVWKPQKOzryFSBjZAabY3YdUbKHC4LM0yjp8oGSf6s0N7Or4C7HYUBT84n6x6ehISsyJFJauMXO"
 
 # ---------- METADATA ----------
 title = "Meddly"

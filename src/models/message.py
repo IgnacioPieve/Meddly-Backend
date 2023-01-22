@@ -21,13 +21,6 @@ class Message:
         """
         raise Exception("NotImplementedException")
 
-    def sms(self):
-        """
-        Returns a message (str)
-        TODO: Complete this description
-        """
-        raise Exception("NotImplementedException")
-
     def push(self):
         """
         Returns the title and the body (dict).
@@ -45,31 +38,29 @@ class NewSupervisorMessage(Message):
         super().__init__(**kwargs)
 
     def whatsapp(self):
-        template_id = "new_supervisor"
+        if hasattr(self.supervisor, "name"):
+            return {
+                "message": f"Felicitaciones! Has añadido a {self.supervisor.name} como supervisor. "
+                           f"Recuerda verificar tus supervisores desde la app",
+            }
         return {
-            "template_id": template_id,
-            "template_data": [
-                {
-                    "type": "text",
-                    "text": self.supervisor.name
-                    if hasattr(self.supervisor, "name")
-                    else "",
-                }
-            ],
+            "subject": "Has añadido a un nuevo supervisor.",
+            "message": "Felicitaciones! Has añadido a un nuevo supervisor. "
+                       "Recuerda verificar tus supervisores desde la app",
         }
 
     def email(self):
+        if hasattr(self.supervisor, "name"):
+            return {
+                "subject": f"Has añadido a {self.supervisor.name} como supervisor.",
+                "message": f"Felicitaciones! Has añadido a {self.supervisor.name} como supervisor. "
+                           f"Recuerda verificar tus supervisores desde la app.",
+            }
         return {
-            "template_id": "d-5e634cd5cd6548b4b440f188c1d2a40a",
-            "template_data": {
-                "supervisor_name": self.supervisor.name
-                if hasattr(self.supervisor, "name")
-                else ""
-            },
+            "subject": "Has añadido a un nuevo supervisor.",
+            "message": "Felicitaciones! Has añadido a un nuevo supervisor. "
+                       "Recuerda verificar tus supervisores desde la app.",
         }
-
-    def sms(self):
-        return f"Has añadido a {self.supervisor.name} como supervisor."
 
     def push(self):
         return {
