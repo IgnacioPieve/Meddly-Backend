@@ -4,26 +4,26 @@ class Message:
 
     def whatsapp(self):
         """
-        Returns a message (str)
-        TODO: Complete this description
+        Returns a message: str on a dict.
+        {
+            "message": "Some message"
+        }
         """
         raise Exception("NotImplementedException")
 
     def email(self):
         """
-        Returns the template_id and the template_data (dict).
+        Returns a message: str and a subject: str on a dict.
         {
-            "template_id": "",
-            "template_data": {
-                "example": "example"
-            }
+            "subject": "Some subject",
+            "message": "Some message"
         }
         """
         raise Exception("NotImplementedException")
 
     def push(self):
         """
-        Returns the title and the body (dict).
+        Returns the title and the body on a dict.
         {
             "title": "Push Title",
             "body": "Push Body"
@@ -44,7 +44,6 @@ class NewSupervisorMessage(Message):
                            f"Recuerda verificar tus supervisores desde la app",
             }
         return {
-            "subject": "Has añadido a un nuevo supervisor.",
             "message": "Felicitaciones! Has añadido a un nuevo supervisor. "
                        "Recuerda verificar tus supervisores desde la app",
         }
@@ -81,7 +80,6 @@ class NewSupervisedMessage(Message):
                            f"Recuerda verificar tus supervisados desde la app",
             }
         return {
-            "subject": "Has añadido a un nuevo supervisado.",
             "message": "Felicitaciones! Has añadido a un nuevo supervisado. "
                        "Recuerda verificar tus supervisados desde la app",
         }

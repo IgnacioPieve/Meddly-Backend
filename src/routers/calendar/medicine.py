@@ -74,11 +74,11 @@ def add_consumption(
     consumption.create()
 
 
-@router.delete(
-    "/consumption", status_code=200, include_in_schema=False
+@router.post(
+    "/consumption_delete", status_code=200, include_in_schema=False
 )
-@router.delete(
-    "/consumption/", status_code=200, summary="Delete a consumption"
+@router.post(
+    "/consumption_delete/", status_code=200, summary="Delete a consumption"
 )
 def delete_consumption(consumption: DeleteConsumptionSchema, authentication=Depends(auth.authenticate)):
     user, db = authentication
