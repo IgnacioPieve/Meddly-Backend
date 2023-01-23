@@ -1,4 +1,4 @@
-FROM amd64/python:latest
+FROM python:latest
 
 COPY ./src /app/src
 WORKDIR /app/src
