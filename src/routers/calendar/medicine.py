@@ -1,5 +1,3 @@
-import datetime
-
 from fastapi import APIRouter, Depends
 
 from dependencies import auth
@@ -43,7 +41,6 @@ def modify_medicine(
     for key, value in medicine_data.items():
         setattr(medicine, key, value)
     medicine.save()
-    return
 
 
 @router.delete("/medicine/{medicine_id}", status_code=200, include_in_schema=False)
@@ -56,7 +53,6 @@ def delete_medicine(medicine_id: int, authentication=Depends(auth.authenticate))
     if medicine.user != user:
         raise_errorcode(306)
     medicine.destroy()
-    return
 
 
 @router.post("/consumption", status_code=201, include_in_schema=False)
