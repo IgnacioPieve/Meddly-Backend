@@ -78,3 +78,9 @@ def reset_database():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     return {"status": "ok"}
+
+
+@router.post("/load-example-data", include_in_schema=False)
+@router.post("/load-example-data/")
+def load_example_data():
+    pass
