@@ -1,5 +1,17 @@
+import datetime
+
+from firebase_admin import auth
+from firebase_admin._auth_utils import UserNotFoundError
+
+from models.calendar.appointment import Appointment
+from models.calendar.measurement import Measurement
+from models.calendar.medicine import Medicine
+from models.user import User
+from database import Base, engine
+from dependencies import database
+from sqlalchemy.orm import Session
 import requests
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, EmailStr
 
 from config import FIREBASE_JSON
@@ -73,8 +85,6 @@ def register(user: UserRequestModel):
 @router.post("/reset-database", include_in_schema=False)
 @router.post("/reset-database/")
 def reset_database():
-    from database import Base, engine
-
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     return {"status": "ok"}
@@ -82,5 +92,189 @@ def reset_database():
 
 @router.post("/load-example-data", include_in_schema=False)
 @router.post("/load-example-data/")
-def load_example_data():
-    pass
+def load_example_data(db: Session = Depends(database.get_db)):
+    def assure_user_exists(email):
+        try:
+            return auth.get_user_by_email(email).uid
+        except UserNotFoundError:
+            user_data = {"email": email, "password": "password", "returnSecureToken": True}
+            url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_JSON['key']}"
+            return requests.post(url, json=user_data).json()["localId"]
+
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+
+    user_igna = 'ignacio.pieve@gmail.com'
+    user_igna = User(
+        db,
+        id=assure_user_exists(user_igna),
+        email=user_igna,
+        first_name='Ignacio',
+        last_name='Pieve Roiger',
+        height=180.0,
+        weight=70.0,
+        sex=True,
+        birth=datetime.datetime(2000, 2, 10),
+        phone='+5493516637217',
+    )
+    user_igna.create()
+
+    user_sofi = 'soficibello@gmail.com'
+    user_sofi = User(
+        db,
+        id=assure_user_exists(user_sofi),
+        email=user_sofi,
+        first_name='Sofía Florencia',
+        last_name='Cibello',
+        height=152.0,
+        weight=45.0,
+        sex=False,
+        birth=datetime.datetime(1999, 11, 11),
+        phone='+5493512672399',
+    )
+    user_sofi.create()
+
+    user_loren = 'salalorennn@gmail.com'
+    user_loren = User(
+        db,
+        id=assure_user_exists(user_loren),
+        email=user_loren,
+        first_name='Lorenzo',
+        last_name='Sala',
+        height=165.0,
+        weight=60.0,
+        sex=True,
+        birth=datetime.datetime(1999, 11, 4),
+        phone='+5493543572535',
+    )
+    user_loren.create()
+
+    # Ignacio supervises Lorenzo and Sofía, Sofía supervises Lorenzo, Lorenzo supervises Ignacio
+    user_loren.accept_invitation(user_igna.invitation)
+    user_loren.accept_invitation(user_sofi.invitation)
+
+    user_sofi.accept_invitation(user_igna.invitation)
+
+    user_igna.accept_invitation(user_loren.invitation)
+
+    test_medicines = [
+        {
+            "name": "Ibuprofeno",
+            "start_date": datetime.datetime.now(),
+            "end_date": datetime.datetime.now() + datetime.timedelta(days=20),
+            "stock": 15,
+            "stock_warning": 5,
+            "presentation": "Pastilla",
+            "dosis_unit": "mg",
+            "dosis": 1.5,
+            "instructions": "Disolver la pastilla en agua",
+            "interval": 3,
+            "hours": ["08:00", "11:00", "18:00"],
+        },
+        {
+            "name": "Paracetamol",
+            "start_date": datetime.datetime.now(),
+            "end_date": datetime.datetime.now() + datetime.timedelta(days=25),
+            "stock": 20,
+            "stock_warning": 5,
+            "presentation": "Pastilla",
+            "dosis_unit": "mg",
+            "dosis": 1.5,
+            "instructions": "Consumir cuando me duela la cabeza",
+        },
+        {
+            "name": "Amoxidal",
+            "start_date": datetime.datetime.now(),
+            "end_date": datetime.datetime.now() + datetime.timedelta(days=30),
+            "stock": 20,
+            "stock_warning": 4,
+            "presentation": "Líquido",
+            "dosis_unit": "ml",
+            "dosis": 20,
+            "instructions": "Tomarmelo entero",
+            "days": [1, 3, 5, 7],
+            "hours": ["08:00", "13:00", "20:00"],
+        }
+    ]
+    users = [user_igna, user_sofi, user_loren]
+    for test_medicine in test_medicines:
+        for user in users:
+            medicine = Medicine(db, **test_medicine, user_id=user.id)
+            medicine.create()
+
+    test_appointments = [
+        {
+            "date": datetime.datetime.now(),
+            "name": "Consulta con Cardiólogo",
+            "doctor": "Dr. Juan Perez",
+            "speciality": "Cardiología",
+            "location": "Hospital de la ciudad",
+            "notes": "Llevar los resultados de los análisis",
+        },
+        {
+            "date": datetime.datetime.now() + datetime.timedelta(days=1),
+            "name": "Turno con el dentista",
+            "doctor": "Dra. Anastasia Rodriguez",
+            "speciality": "Dentista",
+            "location": "Av. Santiago Baravino 4238",
+        },
+        {
+            "date": datetime.datetime.now() + datetime.timedelta(days=3),
+            "name": "Consulta con el psicólogo",
+            "doctor": "Dr. Pedro Martinez",
+            "speciality": "Psicología",
+            "location": "Av. Colón 1234",
+            "notes": "Llevar plata, la consulta cuesta caro"
+        }
+    ]
+    for test_appointment in test_appointments:
+        for user in users:
+            appointment = Appointment(db, **test_appointment, user_id=user.id)
+            appointment.create()
+
+    test_measurements = [
+        {
+            "date": datetime.datetime.now(),
+            "type": "Glucosa",
+            "value": 95.0,
+        },
+        {
+            "date": datetime.datetime.now() + datetime.timedelta(hours=2),
+            "type": "Presión Arterial",
+            "value": 114,
+        },
+        {
+            "date": datetime.datetime.now() + datetime.timedelta(days=1),
+            "type": "Glucosa",
+            "value": 100.0,
+        },
+        {
+            "date": datetime.datetime.now() + datetime.timedelta(days=2),
+            "type": "Glucosa",
+            "value": 115.0,
+        },
+        {
+            "date": datetime.datetime.now() + datetime.timedelta(days=2) + datetime.timedelta(hours=2),
+            "type": "Presión Arterial",
+            "value": 102,
+        },
+        {
+            "date": datetime.datetime.now() + datetime.timedelta(days=3),
+            "type": "Glucosa",
+            "value": 103.0,
+        },
+        {
+            "date": datetime.datetime.now() + datetime.timedelta(days=4),
+            "type": "Glucosa",
+            "value": 235.0,
+        },
+        {
+            "date": datetime.datetime.now() + datetime.timedelta(days=5),
+            "type": "Glucosa",
+            "value": 105.0,
+        },
+    ]
+    for test_measurement in test_measurements:
+        for user in users:
+            measurement = Measurement(db, **test_measurement, user_id=user.id)
+            measurement.create()
