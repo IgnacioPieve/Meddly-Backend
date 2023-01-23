@@ -1,4 +1,5 @@
 import datetime
+import random
 
 from firebase_admin import auth
 from firebase_admin._auth_utils import UserNotFoundError
@@ -111,8 +112,8 @@ def load_example_data(db: Session = Depends(database.get_db)):
         email=user_igna,
         first_name='Ignacio',
         last_name='Pieve Roiger',
-        height=180.0,
-        weight=70.0,
+        height=random.randint(150, 170),
+        weight=random.randint(45, 75),
         sex=True,
         birth=datetime.datetime(2000, 2, 10),
         phone='+5493516637217',
@@ -126,8 +127,8 @@ def load_example_data(db: Session = Depends(database.get_db)):
         email=user_sofi,
         first_name='Sofía Florencia',
         last_name='Cibello',
-        height=152.0,
-        weight=45.0,
+        height=random.randint(150, 170),
+        weight=random.randint(45, 75),
         sex=False,
         birth=datetime.datetime(1999, 11, 11),
         phone='+5493512672399',
@@ -141,8 +142,8 @@ def load_example_data(db: Session = Depends(database.get_db)):
         email=user_loren,
         first_name='Lorenzo',
         last_name='Sala',
-        height=165.0,
-        weight=60.0,
+        height=random.randint(150, 170),
+        weight=random.randint(45, 75),
         sex=True,
         birth=datetime.datetime(1999, 11, 4),
         phone='+5493543572535',
