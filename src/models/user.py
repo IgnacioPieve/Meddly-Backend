@@ -2,10 +2,10 @@ import datetime
 import threading
 
 from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
-                        String, or_)
+                        String, and_)
 from sqlalchemy.orm import relationship
 
-from models.message import Message, NewSupervisorMessage
+from models.message import Message, NewSupervisorMessage, NewSupervisedMessage
 from models.utils import CRUD, generate_code, raise_errorcode
 
 
@@ -53,7 +53,7 @@ class User(CRUD):
         already_supervised = (
                 Supervised(
                     self.db,
-                    or_(Supervised.supervisor == supervisor, Supervised.supervised == self),
+                    and_(Supervised.supervisor == supervisor, Supervised.supervised == self),
                 ).get()
                 is not None
         )
@@ -64,9 +64,8 @@ class User(CRUD):
         supervisor.save()
         Supervised(self.db, supervisor=supervisor, supervised=self).create()
 
-        message = NewSupervisorMessage(supervisor=supervisor)
-        self.send_notification(message)
-
+        self.send_notification(NewSupervisorMessage(supervisor=supervisor))
+        supervisor.send_notification(NewSupervisedMessage(supervised=self))
 
     @property
     def notification_preferences(self):

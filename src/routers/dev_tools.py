@@ -15,6 +15,30 @@ class UserRequestModel(BaseModel):
         schema_extra = {"example": {"email": "test@test.com", "password": "password"}}
 
 
+@router.post("/get-some-users", include_in_schema=False)
+@router.post("/get-some-users/")
+def get_some_users():
+    users = [
+        'user1@gmail.com',
+        'user2@gmail.com',
+        'ignacio.pieve@gmail.com',
+        'soficibello@gmail.com',
+    ]
+    tokens = {}
+    for user in users:
+        user_data = {"email": user, "password": "password", "returnSecureToken": True}
+        url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={FIREBASE_JSON['key']}"
+        response = requests.post(url, json=user_data)
+        try:
+            tokens[user] = response.json()["idToken"]
+        except KeyError:
+            url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_JSON['key']}"
+            response = requests.post(url, json=user_data)
+            tokens[user] = response.json()["idToken"]
+
+    return tokens
+
+
 @router.get("/status", include_in_schema=False)
 @router.get("/status/")
 def get_status():

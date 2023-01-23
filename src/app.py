@@ -12,13 +12,12 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(**config.metadata)
 
 # ----- ROUTERS -----
+app.include_router(dev_tools.router)
 app.include_router(user.router)
 app.include_router(supervisor.router)
 app.include_router(calendar.router)
 app.include_router(notification.router)
 app.include_router(prediction.router)
-app.include_router(dev_tools.router)
-
 
 if __name__ == "__main__":
     import uvicorn
