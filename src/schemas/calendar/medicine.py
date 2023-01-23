@@ -89,6 +89,19 @@ class AddConsumptionSchema(BaseModel):
         }
 
 
+class DeleteConsumptionSchema(BaseModel):
+    date: datetime.datetime
+    medicine_id: int
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "date": datetime.datetime(2023, 1, 10, 8, 0),
+                "medicine_id": 123456789,
+            }
+        }
+
+
 class ConsumptionSchema(AddConsumptionSchema):
     consumed: bool
 

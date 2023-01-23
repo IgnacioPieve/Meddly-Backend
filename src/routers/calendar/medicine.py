@@ -1,10 +1,12 @@
+import datetime
+
 from fastapi import APIRouter, Depends
 
 from dependencies import auth
 from models.calendar.medicine import Consumption, Medicine
 from models.utils import raise_errorcode
 from schemas.calendar.medicine import (AddConsumptionSchema, MedicineAddSchema,
-                                       MedicineUpdateSchema)
+                                       MedicineUpdateSchema, DeleteConsumptionSchema)
 
 router = APIRouter(prefix="/calendar/medicines")
 
@@ -77,17 +79,18 @@ def add_consumption(
 
 
 @router.delete(
-    "/consumption/{consumption_id}", status_code=200, include_in_schema=False
+    "/consumption", status_code=200, include_in_schema=False
 )
 @router.delete(
-    "/consumption/{consumption_id}/", status_code=200, summary="Delete a consumption"
+    "/consumption/", status_code=200, summary="Delete a consumption"
 )
-def delete_consumption(consumption_id: int, authentication=Depends(auth.authenticate)):
+def delete_consumption(consumption: DeleteConsumptionSchema, authentication=Depends(auth.authenticate)):
     user, db = authentication
-    consumption = Consumption(db, Consumption.id == consumption_id).get()
+    consumption = Consumption(db,
+                              Consumption.medicine_id == consumption.medicine_id,
+                              Consumption.date == consumption.date).get()
     if consumption is None:
         raise_errorcode(305)
     if consumption.medicine.user != user:
         raise_errorcode(306)
     consumption.destroy()
-    return
