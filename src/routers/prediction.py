@@ -1,16 +1,12 @@
-import pickle
-
 import numpy as np
 import pandas as pd
 from fastapi import APIRouter, Depends
 from joblib import load
 from sklearn.tree import DecisionTreeClassifier
-from sqlalchemy import and_, exc
 
 from dependencies import auth
-from models.notification import NotificationPreference
 from models.utils import raise_errorcode
-from schemas.utils import SearchResultSchema
+from schemas.utils import SearchResultSchema, ProbabilitySchema
 
 router = APIRouter(prefix="/prediction", tags=["Predictions"])
 
@@ -49,18 +45,18 @@ def symptom_search(symptom: str, authentication=Depends(auth.authenticate)):
 
 @router.post(
     "symptom/prediction",
-    response_model=SearchResultSchema,
+    response_model=list[ProbabilitySchema],
     status_code=200,
     include_in_schema=False,
 )
 @router.post(
     "symptom/prediction/",
-    response_model=SearchResultSchema,
+    response_model=list[ProbabilitySchema],
     status_code=200,
     summary="symptom_prediction",
 )
 def symptom_prediction(
-    symptoms_typed: list[str], authentication=Depends(auth.authenticate)
+        symptoms_typed: list[str], authentication=Depends(auth.authenticate)
 ):
     _, _ = authentication
     for symptom in symptoms_typed:
@@ -70,9 +66,16 @@ def symptom_prediction(
     symptoms_typed = {**symptoms_template, **symptoms_typed}
     symptoms_typed = pd.DataFrame([symptoms_typed])
     symptoms_typed = symptoms_typed.reindex(columns=symptoms)
-    print(symptoms_typed)
-    prediction = model_trained.predict(symptoms_typed)[0]
-    print(model_trained.predict(symptoms_typed))
-    print(model_trained.predict_proba(symptoms_typed))
+    probabilities = model_trained.predict_proba(symptoms_typed)
 
-    return {"results": [str(prediction)]}
+    results = []
+    n = 5
+    predictions = np.argsort(probabilities[0])[-n:][::-1]
+    predictions_names = model_trained.classes_[predictions]
+    for i in range(len(predictions)):
+        results.append({
+            'disease': predictions_names[i],
+            'probability': probabilities[0][predictions[i]]
+        })
+
+    return results
