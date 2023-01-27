@@ -91,6 +91,7 @@ class AddConsumptionSchema(BaseModel):
 
 class DeleteConsumptionSchema(BaseModel):
     date: datetime.datetime
+    real_consumption_date: datetime.datetime | None
     medicine_id: int
 
     class Config:
