@@ -1,21 +1,20 @@
 import datetime
 import random
 
+import requests
+from fastapi import APIRouter, Depends
 from firebase_admin import auth
 from firebase_admin._auth_utils import UserNotFoundError
+from pydantic import BaseModel, EmailStr
+from sqlalchemy.orm import Session
 
+from config import FIREBASE_JSON
+from database import Base, engine
+from dependencies import database
 from models.calendar.appointment import Appointment
 from models.calendar.measurement import Measurement
 from models.calendar.medicine import Medicine
 from models.user import User
-from database import Base, engine
-from dependencies import database
-from sqlalchemy.orm import Session
-import requests
-from fastapi import APIRouter, Depends
-from pydantic import BaseModel, EmailStr
-
-from config import FIREBASE_JSON
 
 router = APIRouter(prefix="/dev", tags=["Developer_Tools"])
 

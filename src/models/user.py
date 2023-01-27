@@ -5,7 +5,7 @@ from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
                         String, and_)
 from sqlalchemy.orm import relationship
 
-from models.message import Message, NewSupervisorMessage, NewSupervisedMessage
+from models.message import Message, NewSupervisedMessage, NewSupervisorMessage
 from models.utils import CRUD, generate_code, raise_errorcode
 
 

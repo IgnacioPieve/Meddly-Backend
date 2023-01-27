@@ -1,4 +1,4 @@
-FROM python:latest
+FROM python:3.10
 
 COPY ./src /app/src
 WORKDIR /app/src
