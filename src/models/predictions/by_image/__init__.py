@@ -2,7 +2,7 @@ import numpy as np
 from fastapi import UploadFile
 from PIL import Image
 from sklearn.preprocessing import LabelEncoder
-from sqlalchemy import Column, Integer, PickleType, String, ForeignKey, Boolean
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, PickleType, String
 from sqlalchemy.orm import relationship
 from tensorflow.keras.models import load_model
 
@@ -21,7 +21,8 @@ model_trained = load_model("models/predictions/by_image/model.trained")
 class PredictionByImage(CRUD):
     __tablename__ = "prediction_by_image"
     id = Column(Integer, primary_key=True, index=True)
-    image = Column(Integer, nullable=True)
+    image_name = Column(String(255), ForeignKey("image.name"), index=True, nullable=False)
+    image = relationship("Image", backref="prediction_image", foreign_keys=[image_name])
     prediction = Column(PickleType(), nullable=False)
     user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=False)
     user = relationship("User", backref="predictions_by_image", foreign_keys=[user_id])

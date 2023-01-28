@@ -2,11 +2,11 @@ import numpy as np
 import pandas as pd
 from joblib import load
 from sklearn.tree import DecisionTreeClassifier
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, PickleType, String
 from sqlalchemy.orm import relationship
 
 from models.user import User
 from models.utils import CRUD, raise_errorcode
-from sqlalchemy import (Boolean, Column, ForeignKey, Integer, String, PickleType)
 
 model_trained: DecisionTreeClassifier = load("models/predictions/by_symptom/model.trained")
 

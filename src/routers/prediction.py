@@ -1,12 +1,13 @@
-from PIL import Image
 from fastapi import APIRouter, Depends, UploadFile
+from PIL import Image
 
 from dependencies import auth
-from models.predictions.by_symptom import PredictionBySymptom
-from models.predictions.by_image import PredictionByImage
-from schemas.utils import ProbabilitySchema, SearchResultSchema
 from models.image import Image as ImageModel
-
+from models.predictions.by_image import PredictionByImage
+from models.predictions.by_symptom import PredictionBySymptom
+from schemas.prediction import (PredictionByImageSchema,
+                                PredictionBySymptomSchema, ProbabilitySchema)
+from schemas.utils import SearchResultSchema
 
 router = APIRouter(prefix="/prediction", tags=["Predictions"])
 
@@ -71,4 +72,42 @@ def image_prediction(
     image.set_image(Image.open(file.file).resize((512, 512)))
     image.create()
 
-    return PredictionByImage(db, user=user).predict(file)
+    return PredictionByImage(db, user=user, image=image).predict(file)
+
+
+@router.get(
+    "symptom/prediction",
+    response_model=list[PredictionBySymptomSchema],
+    status_code=200,
+    include_in_schema=False,
+)
+@router.get(
+    "symptom/prediction/",
+    response_model=list[PredictionBySymptomSchema],
+    status_code=200,
+    summary="List all predictions by symptoms",
+)
+def symptom_prediction(
+        authentication=Depends(auth.authenticate)
+):
+    user, _ = authentication
+    return user.predictions_by_symptom
+
+
+@router.get(
+    "image/prediction",
+    response_model=list[PredictionByImageSchema],
+    status_code=200,
+    include_in_schema=False,
+)
+@router.get(
+    "image/prediction/",
+    response_model=list[PredictionByImageSchema],
+    status_code=200,
+    summary="List all predictions by image",
+)
+def image_prediction(
+        authentication=Depends(auth.authenticate)
+):
+    user, _ = authentication
+    return user.predictions_by_image

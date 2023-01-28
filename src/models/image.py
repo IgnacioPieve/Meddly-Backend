@@ -1,17 +1,16 @@
 import os
+from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, String, Integer
-from sqlalchemy.orm import relationship, Session
+from PIL import Image as PILImage
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import Session, relationship
 
 from models.utils import CRUD
-from uuid import uuid4
-from PIL import Image as PILImage
 
 
 class Image(CRUD):
     __tablename__ = "image"
-    id = Column(Integer, primary_key=True, index=True)
-    path = Column(String(255), nullable=False)
+    name = Column(String(255), primary_key=True, index=True)
     user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=False)
     user = relationship("User", backref="images", foreign_keys=[user_id])
 
@@ -23,4 +22,10 @@ class Image(CRUD):
             os.makedirs(folder)
         path = f'{folder}/{file_name}'
         image.save(path)
-        self.path = path
+        self.name = file_name
+
+    def get_bytes(self):
+        folder = 'store/images'
+        path = f'{folder}/{self.name}'
+        with open(path, 'rb') as file:
+            return file.read()
