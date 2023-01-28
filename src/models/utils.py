@@ -12,6 +12,7 @@ from database import Base, SessionLocal
 
 class CRUD(Base):
     __abstract__ = True
+    db: Session = None
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
 
