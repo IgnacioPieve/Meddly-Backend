@@ -1,9 +1,6 @@
 .idea
 __pycache__/
-set_environ.py
-src/set_environ.py
-src/database.db
 venv/
-/venv/
-/src/.pytest_cache/
+src/.pytest_cache/
+src/store/
 /.pytest_cache/

@@ -16,7 +16,7 @@ diseases = model_trained.classes_
 
 
 class DiseaseSymptoms(CRUD):
-    __tablename__ = "disease_symptoms"
+    __tablename__ = "verified_disease_symptoms"
     id = Column(Integer, primary_key=True, index=True)
     symptoms = Column(PickleType(), nullable=False)
     predicted_disease = Column(String(255), nullable=False)
@@ -61,7 +61,7 @@ class PredictionBySymptom(CRUD):
                     return {"results": results}
         return {"results": results}
 
-    def load_real_disease(self, disease: str):
+    def verify(self, disease: str):
         if self.verified:
             raise_errorcode(701)
         DiseaseSymptoms(self.db, symptoms=self.symptoms,
