@@ -16,7 +16,7 @@ router = APIRouter(prefix="/calendar")
 def get_calendar(
     start: datetime.date = None,
     end: datetime.date = None,
-    authentication=Depends(auth.authenticate),
+    authentication=Depends(auth.authenticate_with_supervisor),
 ):
     """
     Retorna todos los medicamentos del usuario logueado en un intervalo de tiempo.

@@ -6,8 +6,21 @@ from models.utils import raise_errorcode
 from schemas.calendar.medicine import (AddConsumptionSchema,
                                        DeleteConsumptionSchema,
                                        MedicineAddSchema, MedicineUpdateSchema)
+from schemas.utils import SearchResultSchema
 
 router = APIRouter(prefix="/calendar/medicines")
+
+@router.get("/medicine_search", response_model=list[SearchResultSchema], status_code=200, include_in_schema=False)
+@router.get("/medicine_search/", response_model=list[SearchResultSchema], status_code=200, summary="Find medicine names")
+def medicine_search(
+    medicine_name: str,
+    authentication=Depends(auth.authenticate),
+):
+    """
+    Busca medicamentos por nombre
+    """
+    _, _ = authentication
+    return Medicine.search(medicine_name)
 
 
 @router.post("/medicine", status_code=201, include_in_schema=False)
