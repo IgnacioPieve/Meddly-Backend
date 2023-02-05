@@ -8,11 +8,21 @@ from sqlalchemy.orm import relationship
 from models.user import User
 from models.utils import CRUD, raise_errorcode
 
+import whoosh.index as index
+from whoosh.qparser import QueryParser
+
+
 model_trained: DecisionTreeClassifier = load("models/predictions/by_symptom/model.trained")
 
 symptoms = model_trained.feature_names_in_
 symptoms_template = {symptom: 0 for symptom in symptoms}
 diseases = model_trained.classes_
+
+code_index_en = index.open_dir("models/predictions/by_symptom/index_en")
+code_index_es = index.open_dir("models/predictions/by_symptom/index_es")
+searcher = {'en': code_index_en.searcher(), 'es': code_index_es.searcher()}
+query_parser = {'en': QueryParser("description", schema=code_index_en.schema),
+                'es': QueryParser("description", schema=code_index_es.schema)}
 
 
 class DiseaseSymptoms(CRUD):
@@ -52,14 +62,9 @@ class PredictionBySymptom(CRUD):
         return results
 
     @staticmethod
-    def search(symptom_typed: str):
-        results = []
-        for symptom in symptoms:
-            if symptom_typed in symptom:
-                results.append(symptom)
-                if len(results) > 10:
-                    return {"results": results}
-        return {"results": results}
+    def search(symptom_typed: str, language: str):
+        results = searcher[language].search(query_parser[language].parse(f'{symptom_typed.strip()}*'))
+        return [{'code': result['code'], 'description': result['description']} for result in results]
 
     def verify(self, disease: str):
         if self.verified:

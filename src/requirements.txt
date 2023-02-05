@@ -13,6 +13,7 @@ scikit-learn==1.2.0             # ML / Machine Learning Library
 pandas==1.5.3                   # ML / Data Analysis Library
 tensorflow==2.11.0              # ML / Machine Learning Library
 Pillow==9.4.0                   # ML / Machine Learning Library
+Whoosh==2.7.4                   # Searching
 
 
 # Testing and Linting

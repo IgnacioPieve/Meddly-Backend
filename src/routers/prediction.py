@@ -15,22 +15,22 @@ router = APIRouter(prefix="/prediction", tags=["Predictions"])
 
 @router.post(
     "/symptom_search",
-    response_model=SearchResultSchema,
+    response_model=list[SearchResultSchema],
     status_code=200,
     include_in_schema=False,
 )
 @router.post(
     "/symptom_search/",
-    response_model=SearchResultSchema,
+    response_model=list[SearchResultSchema],
     status_code=200,
     summary="Symptoms Search",
 )
-def symptom_search(symptom: str, authentication=Depends(auth.authenticate)):
+def symptom_search(symptom: str, language: str = 'es', authentication=Depends(auth.authenticate)):
     """
     symptom_search
     """
     _, _ = authentication
-    return PredictionBySymptom.search(symptom)
+    return PredictionBySymptom.search(symptom, language)
 
 
 @router.post(
