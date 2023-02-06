@@ -1,8 +1,17 @@
 import datetime
 
 from dateutil.rrule import DAILY, WEEKLY, rrule
-from sqlalchemy import (Boolean, Column, Date, DateTime, Float, ForeignKey,
-                        Integer, PickleType, String)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    Date,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    PickleType,
+    String,
+)
 from sqlalchemy.orm import relationship
 from whoosh import index
 from whoosh.qparser import QueryParser
@@ -114,8 +123,8 @@ class Medicine(CRUD):
         }
         if self.hours:
             for date in self.get_frequency().between(
-                    datetime.datetime(start.year, start.month, start.day),
-                    datetime.datetime(end.year, end.month, end.day),
+                datetime.datetime(start.year, start.month, start.day),
+                datetime.datetime(end.year, end.month, end.day),
             ):
                 for hour in self.hours:
                     date_hour = datetime.datetime.combine(
@@ -146,5 +155,8 @@ class Medicine(CRUD):
 
     @staticmethod
     def search(query):
-        results = searcher.search(query_parser.parse(f'{query.strip()}*'))
-        return [{'code': result['code'], 'description': result['description']} for result in results]
+        results = searcher.search(query_parser.parse(f"{query.strip()}*"))
+        return [
+            {"code": result["code"], "description": result["description"]}
+            for result in results
+        ]

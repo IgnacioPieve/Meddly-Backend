@@ -1,8 +1,16 @@
 import datetime
 import threading
 
-from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
-                        String, and_)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    and_,
+)
 from sqlalchemy.orm import relationship
 
 from models.message import Message, NewSupervisedMessage, NewSupervisorMessage
@@ -51,11 +59,13 @@ class User(CRUD):
         if supervisor.id == self.id:
             raise_errorcode(204)
         already_supervised = (
-                Supervised(
-                    self.db,
-                    and_(Supervised.supervisor == supervisor, Supervised.supervised == self),
-                ).get()
-                is not None
+            Supervised(
+                self.db,
+                and_(
+                    Supervised.supervisor == supervisor, Supervised.supervised == self
+                ),
+            ).get()
+            is not None
         )
         if already_supervised:
             raise_errorcode(200)
@@ -100,7 +110,7 @@ class User(CRUD):
             if medicine.active:
                 calendar["active_medicines"].append(medicine)
             if medicine.start_date > end or (
-                    medicine.end_date and medicine.end_date < start
+                medicine.end_date and medicine.end_date < start
             ):
                 continue
             calendar["consumptions"] += medicine.get_consumptions(start, end, self.db)

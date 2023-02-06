@@ -1,12 +1,12 @@
 import firebase_admin
-from fastapi import Depends, HTTPException, status, Header
+from fastapi import Depends, Header, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from firebase_admin import auth, credentials
 from sqlalchemy.orm import Session
 
 from config import FIREBASE_JSON
 from dependencies import database
-from models.user import User, Supervised
+from models.user import Supervised, User
 from models.utils import raise_errorcode
 
 cred = credentials.Certificate(FIREBASE_JSON)
@@ -14,8 +14,8 @@ firebase_admin.initialize_app(cred)
 
 
 async def authenticate(
-        cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
-        db: Session = Depends(database.get_db),
+    cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+    db: Session = Depends(database.get_db),
 ):
     """
     Authenticate a user with a Bearer token.
@@ -44,9 +44,9 @@ async def authenticate(
 
 
 async def authenticate_with_supervisor(
-        cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
-        db=Depends(database.get_db),
-        supervised_id: str | None = Header(default=None),
+    cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+    db=Depends(database.get_db),
+    supervised_id: str | None = Header(default=None),
 ):
     """
     Authenticate a user with a Bearer token.
@@ -54,9 +54,9 @@ async def authenticate_with_supervisor(
     """
     user, db = await authenticate(cred, db)
     if supervised_id is not None:
-        supervised = Supervised(db,
-                                Supervised.supervisor == user,
-                                Supervised.supervised_id == supervised_id).get()
+        supervised = Supervised(
+            db, Supervised.supervisor == user, Supervised.supervised_id == supervised_id
+        ).get()
         if supervised is None:
             raise_errorcode(203)
         user = supervised.supervised

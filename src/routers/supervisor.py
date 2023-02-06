@@ -18,8 +18,12 @@ def accept_invitation(code: str, authentication=Depends(auth.authenticate)):
     user.accept_invitation(code)
 
 
-@router.get('/supervisor', response_model=list[str], status_code=200, include_in_schema=False)
-@router.get('/supervisor/', response_model=list[str], status_code=200, summary="Get supervisors")
+@router.get(
+    "/supervisor", response_model=list[str], status_code=200, include_in_schema=False
+)
+@router.get(
+    "/supervisor/", response_model=list[str], status_code=200, summary="Get supervisors"
+)
 def get_supervisors(authentication=Depends(auth.authenticate)):
     """
     Obtiene la lista de supervisores
@@ -28,8 +32,15 @@ def get_supervisors(authentication=Depends(auth.authenticate)):
     return [supervisor.supervisor.id for supervisor in user.supervisors_list]
 
 
-@router.get('/supervised', response_model=list[str], status_code=200, include_in_schema=False)
-@router.get('/supervised/', response_model=list[str], status_code=200, summary="Get supervised users")
+@router.get(
+    "/supervised", response_model=list[str], status_code=200, include_in_schema=False
+)
+@router.get(
+    "/supervised/",
+    response_model=list[str],
+    status_code=200,
+    summary="Get supervised users",
+)
 def get_supervised(authentication=Depends(auth.authenticate)):
     """
     Obtiene la lista de usuarios supervisados

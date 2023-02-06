@@ -6,8 +6,11 @@ from models.image import Image as ImageModel
 from models.predictions.by_image import PredictionByImage
 from models.predictions.by_symptom import PredictionBySymptom
 from models.utils import raise_errorcode
-from schemas.prediction import (PredictionByImageSchema,
-                                PredictionBySymptomSchema, ProbabilitySchema)
+from schemas.prediction import (
+    PredictionByImageSchema,
+    PredictionBySymptomSchema,
+    ProbabilitySchema,
+)
 from schemas.utils import SearchResultSchema
 
 router = APIRouter(prefix="/prediction", tags=["Predictions"])
@@ -25,7 +28,9 @@ router = APIRouter(prefix="/prediction", tags=["Predictions"])
     status_code=200,
     summary="Symptoms Search",
 )
-def symptom_search(symptom: str, language: str = 'es', authentication=Depends(auth.authenticate)):
+def symptom_search(
+    symptom: str, language: str = "es", authentication=Depends(auth.authenticate)
+):
     """
     symptom_search
     """
@@ -46,7 +51,7 @@ def symptom_search(symptom: str, language: str = 'es', authentication=Depends(au
     summary="Prediction by symptoms",
 )
 def symptom_prediction(
-        symptoms_typed: list[str], authentication=Depends(auth.authenticate)
+    symptoms_typed: list[str], authentication=Depends(auth.authenticate)
 ):
     user, db = authentication
     return PredictionBySymptom(db, user=user).predict(symptoms_typed)
@@ -64,9 +69,7 @@ def symptom_prediction(
     status_code=200,
     summary="List all predictions by symptoms",
 )
-def symptom_prediction_list(
-        authentication=Depends(auth.authenticate)
-):
+def symptom_prediction_list(authentication=Depends(auth.authenticate)):
     user, _ = authentication
     return user.predictions_by_symptoms
 
@@ -82,13 +85,14 @@ def symptom_prediction_list(
     summary="Verify a prediction by symptoms",
 )
 def verify_prediction_by_symptoms(
-        prediction_id: int, real_disease: str,
-        authentication=Depends(auth.authenticate)
+    prediction_id: int, real_disease: str, authentication=Depends(auth.authenticate)
 ):
     user, db = authentication
-    prediction = PredictionBySymptom(db,
-                                     PredictionBySymptom.id == prediction_id,
-                                     PredictionBySymptom.user_id == user.id).get()
+    prediction = PredictionBySymptom(
+        db,
+        PredictionBySymptom.id == prediction_id,
+        PredictionBySymptom.user_id == user.id,
+    ).get()
     if not prediction:
         raise_errorcode(702)
     prediction.verify(real_disease)
@@ -106,12 +110,10 @@ def verify_prediction_by_symptoms(
     status_code=200,
     summary="Prediction by image",
 )
-def image_prediction(
-        file: UploadFile, authentication=Depends(auth.authenticate)
-):
+def image_prediction(file: UploadFile, authentication=Depends(auth.authenticate)):
     user, db = authentication
 
-    image = ImageModel(db, user=user, tag='prediction_by_image')
+    image = ImageModel(db, user=user, tag="prediction_by_image")
     image.set_image(Image.open(file.file).resize((512, 512)))
     image.create()
 
@@ -130,9 +132,7 @@ def image_prediction(
     status_code=200,
     summary="List all predictions by image",
 )
-def image_prediction_list(
-        authentication=Depends(auth.authenticate)
-):
+def image_prediction_list(authentication=Depends(auth.authenticate)):
     user, _ = authentication
     return user.predictions_by_image
 
@@ -148,12 +148,13 @@ def image_prediction_list(
     summary="Verify a prediction by image",
 )
 def verify_prediction_by_image(
-        prediction_id: str, real_disease: str, authentication=Depends(auth.authenticate)
+    prediction_id: str, real_disease: str, authentication=Depends(auth.authenticate)
 ):
     user, db = authentication
 
-    prediction = PredictionByImage(db, PredictionByImage.user_id == user.id,
-                                   PredictionByImage.id == prediction_id).get()
+    prediction = PredictionByImage(
+        db, PredictionByImage.user_id == user.id, PredictionByImage.id == prediction_id
+    ).get()
     if prediction is None:
         raise_errorcode(702)
     prediction.verify(real_disease)

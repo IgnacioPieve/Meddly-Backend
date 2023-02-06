@@ -75,6 +75,7 @@ def request_verification_code():
     )
     print(result.text)
 
+
 def verificate_code():
     number_id = 100370432826961
     url = f'https://graph.facebook.com/v15.0/{number_id}/verify_code?code=788922&access_token={WHATSAPP_API_KEY}'

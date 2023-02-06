@@ -41,11 +41,11 @@ class NewSupervisorMessage(Message):
         if self.supervisor.first_name:
             return {
                 "message": f"Felicitaciones! Has añadido a {self.supervisor.first_name} como supervisor. "
-                           f"Recuerda verificar tus supervisores desde la app",
+                f"Recuerda verificar tus supervisores desde la app",
             }
         return {
             "message": "Felicitaciones! Has añadido a un nuevo supervisor. "
-                       "Recuerda verificar tus supervisores desde la app",
+            "Recuerda verificar tus supervisores desde la app",
         }
 
     def email(self):
@@ -53,12 +53,12 @@ class NewSupervisorMessage(Message):
             return {
                 "subject": f"Has añadido a {self.supervisor.first_name} como supervisor.",
                 "message": f"Felicitaciones! Has añadido a {self.supervisor.first_name} como supervisor. "
-                           f"Recuerda verificar tus supervisores desde la app.",
+                f"Recuerda verificar tus supervisores desde la app.",
             }
         return {
             "subject": "Has añadido a un nuevo supervisor.",
             "message": "Felicitaciones! Has añadido a un nuevo supervisor. "
-                       "Recuerda verificar tus supervisores desde la app.",
+            "Recuerda verificar tus supervisores desde la app.",
         }
 
     def push(self):
@@ -77,11 +77,11 @@ class NewSupervisedMessage(Message):
         if self.supervised.first_name:
             return {
                 "message": f"Felicitaciones! Has añadido a {self.supervised.first_name} como supervisado. "
-                           f"Recuerda verificar tus supervisados desde la app",
+                f"Recuerda verificar tus supervisados desde la app",
             }
         return {
             "message": "Felicitaciones! Has añadido a un nuevo supervisado. "
-                       "Recuerda verificar tus supervisados desde la app",
+            "Recuerda verificar tus supervisados desde la app",
         }
 
     def email(self):
@@ -89,12 +89,12 @@ class NewSupervisedMessage(Message):
             return {
                 "subject": f"Has añadido a {self.supervised.first_name} como supervisado.",
                 "message": f"Felicitaciones! Has añadido a {self.supervised.first_name} como supervisado. "
-                           f"Recuerda verificar tus supervisados desde la app.",
+                f"Recuerda verificar tus supervisados desde la app.",
             }
         return {
             "subject": "Has añadido a un nuevo supervisado.",
             "message": "Felicitaciones! Has añadido a un nuevo supervisado. "
-                       "Recuerda verificar tus supervisados desde la app.",
+            "Recuerda verificar tus supervisados desde la app.",
         }
 
     def push(self):

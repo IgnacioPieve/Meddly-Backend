@@ -3,15 +3,29 @@ from fastapi import APIRouter, Depends
 from dependencies import auth
 from models.calendar.medicine import Consumption, Medicine
 from models.utils import raise_errorcode
-from schemas.calendar.medicine import (AddConsumptionSchema,
-                                       DeleteConsumptionSchema,
-                                       MedicineAddSchema, MedicineUpdateSchema)
+from schemas.calendar.medicine import (
+    AddConsumptionSchema,
+    DeleteConsumptionSchema,
+    MedicineAddSchema,
+    MedicineUpdateSchema,
+)
 from schemas.utils import SearchResultSchema
 
 router = APIRouter(prefix="/calendar/medicines")
 
-@router.get("/medicine_search", response_model=list[SearchResultSchema], status_code=200, include_in_schema=False)
-@router.get("/medicine_search/", response_model=list[SearchResultSchema], status_code=200, summary="Find medicine names")
+
+@router.get(
+    "/medicine_search",
+    response_model=list[SearchResultSchema],
+    status_code=200,
+    include_in_schema=False,
+)
+@router.get(
+    "/medicine_search/",
+    response_model=list[SearchResultSchema],
+    status_code=200,
+    summary="Find medicine names",
+)
 def medicine_search(
     medicine_name: str,
     authentication=Depends(auth.authenticate),
@@ -88,17 +102,17 @@ def add_consumption(
     consumption.create()
 
 
-@router.post(
-    "/consumption_delete", status_code=200, include_in_schema=False
-)
-@router.post(
-    "/consumption_delete/", status_code=200, summary="Delete a consumption"
-)
-def delete_consumption(consumption: DeleteConsumptionSchema, authentication=Depends(auth.authenticate)):
+@router.post("/consumption_delete", status_code=200, include_in_schema=False)
+@router.post("/consumption_delete/", status_code=200, summary="Delete a consumption")
+def delete_consumption(
+    consumption: DeleteConsumptionSchema, authentication=Depends(auth.authenticate)
+):
     user, db = authentication
-    consumption = Consumption(db,
-                              Consumption.medicine_id == consumption.medicine_id,
-                              Consumption.date == consumption.date).get()
+    consumption = Consumption(
+        db,
+        Consumption.medicine_id == consumption.medicine_id,
+        Consumption.date == consumption.date,
+    ).get()
     if consumption is None:
         raise_errorcode(305)
     if consumption.medicine.user != user:

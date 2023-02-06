@@ -38,12 +38,7 @@ class WhatsappNotification(NotificationPreference):
     __mapper_args__ = {"polymorphic_identity": NotificationPreference.WHATSAPP}
 
     def send_notification(self, message):
-        message_data = [
-            {
-                "type": "text",
-                "text": message.whatsapp()["message"]
-            }
-        ]
+        message_data = [{"type": "text", "text": message.whatsapp()["message"]}]
         headers = {
             "Authorization": f"Bearer {WHATSAPP_API_KEY}",
             "Content-Type": "application/json",
@@ -53,11 +48,9 @@ class WhatsappNotification(NotificationPreference):
             "to": self.user.phone,
             "type": "template",
             "template": {
-                "name": 'generic_message',
+                "name": "generic_message",
                 "language": {"code": "es"},
-                "components": [
-                    {"type": "body", "parameters": message_data}
-                ],
+                "components": [{"type": "body", "parameters": message_data}],
             },
         }
         response = requests.post(
@@ -65,7 +58,9 @@ class WhatsappNotification(NotificationPreference):
             headers=headers,
             json=body,
         )
-        print(f'Message Sent via Whatsapp to {self.user.phone}. Response: {response.text}')
+        print(
+            f"Message Sent via Whatsapp to {self.user.phone}. Response: {response.text}"
+        )
 
 
 class EmailNotification(NotificationPreference):
@@ -76,15 +71,19 @@ class EmailNotification(NotificationPreference):
             from_email=SENDGRID_CONFIG["email"],
             to_emails=self.user.email,
         )
-        message_constructor.template_id = 'd-5e634cd5cd6548b4b440f188c1d2a40a'
+        message_constructor.template_id = "d-5e634cd5cd6548b4b440f188c1d2a40a"
         message_constructor.dynamic_template_data = {
-            'hi_message': f'Hola, {self.user.name}' if hasattr(self.user, 'name') else 'Hola!',
-            'message': message.email()["message"],
-            'subject': message.email()["subject"],
+            "hi_message": f"Hola, {self.user.name}"
+            if hasattr(self.user, "name")
+            else "Hola!",
+            "message": message.email()["message"],
+            "subject": message.email()["subject"],
         }
         sg = SendGridAPIClient(SENDGRID_CONFIG["api_key"])
         response = sg.send(message_constructor)
-        print(f'Email Sent via Email (SendGrid) to {self.user.email}. Response: {response.__dict__}')
+        print(
+            f"Email Sent via Email (SendGrid) to {self.user.email}. Response: {response.__dict__}"
+        )
 
 
 class PushNotification(NotificationPreference):
@@ -105,8 +104,8 @@ class PushNotification(NotificationPreference):
                     token=device,
                 )
                 response = messaging.send(message)
-                print(f'Message Sent via Push to {self.user_id}. Response {response}')
+                print(f"Message Sent via Push to {self.user_id}. Response {response}")
             else:
-                print(f'No device token found for {self.user_id} in Firestore.')
+                print(f"No device token found for {self.user_id} in Firestore.")
         else:
-            print(f'No user found for {self.user_id} in Firestore.')
+            print(f"No user found for {self.user_id} in Firestore.")

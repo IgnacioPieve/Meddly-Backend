@@ -31,10 +31,10 @@ class UserRequestModel(BaseModel):
 @router.post("/get-some-users/")
 def get_some_users():
     users = [
-        'user1@gmail.com',
-        'user2@gmail.com',
-        'ignacio.pieve@gmail.com',
-        'soficibello@gmail.com',
+        "user1@gmail.com",
+        "user2@gmail.com",
+        "ignacio.pieve@gmail.com",
+        "soficibello@gmail.com",
     ]
     tokens = {}
     for user in users:
@@ -97,55 +97,59 @@ def load_example_data(db: Session = Depends(database.get_db)):
         try:
             return auth.get_user_by_email(email).uid
         except UserNotFoundError:
-            user_data = {"email": email, "password": "password", "returnSecureToken": True}
+            user_data = {
+                "email": email,
+                "password": "password",
+                "returnSecureToken": True,
+            }
             url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_JSON['key']}"
             return requests.post(url, json=user_data).json()["localId"]
 
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
-    user_igna = 'ignacio.pieve@gmail.com'
+    user_igna = "ignacio.pieve@gmail.com"
     user_igna = User(
         db,
         id=assure_user_exists(user_igna),
         email=user_igna,
-        first_name='Ignacio',
-        last_name='Pieve Roiger',
+        first_name="Ignacio",
+        last_name="Pieve Roiger",
         height=random.randint(150, 170),
         weight=random.randint(45, 75),
         sex=True,
         birth=datetime.datetime(2000, 2, 10),
-        phone='+5493516637217',
+        phone="+5493516637217",
     )
     user_igna.create()
 
-    user_sofi = 'soficibello@gmail.com'
+    user_sofi = "soficibello@gmail.com"
     user_sofi = User(
         db,
         id=assure_user_exists(user_sofi),
         email=user_sofi,
-        first_name='Sofía Florencia',
-        last_name='Cibello',
+        first_name="Sofía Florencia",
+        last_name="Cibello",
         height=random.randint(150, 170),
         weight=random.randint(45, 75),
         sex=False,
         birth=datetime.datetime(1999, 11, 11),
-        phone='+5493512672399',
+        phone="+5493512672399",
     )
     user_sofi.create()
 
-    user_loren = 'salalorennn@gmail.com'
+    user_loren = "salalorennn@gmail.com"
     user_loren = User(
         db,
         id=assure_user_exists(user_loren),
         email=user_loren,
-        first_name='Lorenzo',
-        last_name='Sala',
+        first_name="Lorenzo",
+        last_name="Sala",
         height=random.randint(150, 170),
         weight=random.randint(45, 75),
         sex=True,
         birth=datetime.datetime(1999, 11, 4),
-        phone='+5493543572535',
+        phone="+5493543572535",
     )
     user_loren.create()
 
@@ -194,7 +198,7 @@ def load_example_data(db: Session = Depends(database.get_db)):
             "instructions": "Tomarmelo entero",
             "days": [1, 3, 5, 7],
             "hours": ["08:00", "13:00", "20:00"],
-        }
+        },
     ]
     users = [user_igna, user_sofi, user_loren]
     for test_medicine in test_medicines:
@@ -224,8 +228,8 @@ def load_example_data(db: Session = Depends(database.get_db)):
             "doctor": "Dr. Pedro Martinez",
             "speciality": "Psicología",
             "location": "Av. Colón 1234",
-            "notes": "Llevar plata, la consulta cuesta caro"
-        }
+            "notes": "Llevar plata, la consulta cuesta caro",
+        },
     ]
     for test_appointment in test_appointments:
         for user in users:
@@ -254,7 +258,9 @@ def load_example_data(db: Session = Depends(database.get_db)):
             "value": 115.0,
         },
         {
-            "date": datetime.datetime.now() + datetime.timedelta(days=2) + datetime.timedelta(hours=2),
+            "date": datetime.datetime.now()
+            + datetime.timedelta(days=2)
+            + datetime.timedelta(hours=2),
             "type": "Presión Arterial",
             "value": 102,
         },
