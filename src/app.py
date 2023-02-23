@@ -32,6 +32,7 @@ if __name__ == "__main__":
 
     import uvicorn
 
+    # The TensorFlow warnings can be very annoying, so we disable them
     os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)

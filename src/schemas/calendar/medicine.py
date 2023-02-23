@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 class MedicineUpdateSchema(BaseModel):
     name: str | None
-    end_date: datetime.date | None
+    end_date: datetime.datetime | None
     stock: int | None
     stock_warning: int | None
     presentation: str | None
@@ -18,7 +18,7 @@ class MedicineUpdateSchema(BaseModel):
         schema_extra = {
             "example": {
                 "name": "Paracetamol",
-                "end_date": datetime.datetime(2023, 3, 5).date(),
+                "end_date": datetime.datetime(2023, 3, 5),
                 "stock": 10,
                 "stock_warning": 4,
                 "presentation": "Tabletas",
@@ -31,8 +31,8 @@ class MedicineUpdateSchema(BaseModel):
 
 class MedicineAddSchema(BaseModel):
     name: str
-    start_date: datetime.date
-    end_date: datetime.date | None
+    start_date: datetime.datetime
+    end_date: datetime.datetime | None
     stock: int | None
     stock_warning: int | None
     presentation: str
@@ -47,8 +47,8 @@ class MedicineAddSchema(BaseModel):
         schema_extra = {
             "example": {
                 "name": "Ibuprofeno",
-                "start_date": datetime.datetime(2023, 1, 10).date(),
-                "end_date": datetime.datetime(2023, 2, 1).date(),
+                "start_date": datetime.datetime(2023, 1, 10),
+                "end_date": datetime.datetime(2023, 2, 1),
                 "stock": 18,
                 "stock_warning": 5,
                 "presentation": "Pastilla",

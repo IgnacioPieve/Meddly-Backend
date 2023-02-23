@@ -16,8 +16,9 @@ Pillow==9.4.0                   # ML / Machine Learning Library
 Whoosh==2.7.4                   # Searching
 
 
-# Testing and Linting
-pytest==7.2.1
-httpx==0.23.3
-flake8==6.0.0
-isort==5.11.4
+# Testing and Linting. These libraries are not required for the application to run
+pytest==7.2.1                   # Testing
+httpx==0.23.3                   # Testing
+flake8==6.0.0                   # Check code quality
+isort==5.11.4                   # Fix Imports order
+python-dotenv==0.21.1           # Load environment variables from .env file, used only in /scripts folder

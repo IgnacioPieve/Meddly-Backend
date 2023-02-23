@@ -8,7 +8,7 @@ from firebase_admin._auth_utils import UserNotFoundError
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
-from config import FIREBASE_JSON
+from config import FIREBASE_KEY
 from database import Base, engine
 from dependencies import database
 from models.calendar.appointment import Appointment
@@ -39,12 +39,12 @@ def get_some_users():
     tokens = {}
     for user in users:
         user_data = {"email": user, "password": "password", "returnSecureToken": True}
-        url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={FIREBASE_JSON['key']}"
+        url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={FIREBASE_KEY}"
         response = requests.post(url, json=user_data)
         try:
             tokens[user] = response.json()["idToken"]
         except KeyError:
-            url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_JSON['key']}"
+            url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_KEY}"
             response = requests.post(url, json=user_data)
             tokens[user] = response.json()["idToken"]
 
@@ -62,7 +62,7 @@ def get_status():
 @router.post("/login/")
 def login(user: UserRequestModel):
     user = {**user.dict(), "returnSecureToken": True}
-    url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={FIREBASE_JSON['key']}"
+    url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={FIREBASE_KEY}"
     response = requests.post(url, json=user)
     try:
         return {"status": "ok", "token": response.json()["idToken"]}
@@ -74,7 +74,7 @@ def login(user: UserRequestModel):
 @router.post("/register/")
 def register(user: UserRequestModel):
     user = {**user.dict(), "returnSecureToken": True}
-    url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_JSON['key']}"
+    url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_KEY}"
     response = requests.post(url, json=user)
     try:
         return {"status": "ok", "token": response.json()["idToken"]}
@@ -102,7 +102,7 @@ def load_example_data(db: Session = Depends(database.get_db)):
                 "password": "password",
                 "returnSecureToken": True,
             }
-            url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_JSON['key']}"
+            url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_KEY}"
             return requests.post(url, json=user_data).json()["localId"]
 
     Base.metadata.drop_all(bind=engine)

@@ -24,6 +24,6 @@ def get_calendar(
     user, _ = authentication
     user: User
     if start is None:
-        start = (datetime.datetime.now() - datetime.timedelta(days=15)).date()
-        end = (datetime.datetime.now() + datetime.timedelta(days=15)).date()
+        start = datetime.datetime.now() - datetime.timedelta(days=15)
+        end = datetime.datetime.now() + datetime.timedelta(days=15)
     return user.get_calendar(start, end)

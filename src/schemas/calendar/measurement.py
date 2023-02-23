@@ -7,6 +7,7 @@ class AddMeasurementSchema(BaseModel):
     date: datetime.datetime
     type: str
     value: float
+    unit: str
 
     class Config:
         schema_extra = {
@@ -14,6 +15,7 @@ class AddMeasurementSchema(BaseModel):
                 "date": datetime.datetime(2023, 1, 10),
                 "type": "Glucosa",
                 "value": 95.0,
+                "unit": "mg/dl",
             }
         }
 

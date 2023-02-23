@@ -14,3 +14,4 @@ class Measurement(CRUD):
     date = Column(DateTime, nullable=False, index=True)
     type = Column(String(255), nullable=False)
     value = Column(Float, nullable=False)
+    unit = Column(String(255), nullable=False)

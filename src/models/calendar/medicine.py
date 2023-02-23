@@ -116,15 +116,15 @@ class Medicine(CRUD):
             )
         return frequency
 
-    def get_consumptions(self, start: datetime.date, end: datetime.date, db):
+    def get_consumptions(self, start: datetime.datetime, end: datetime.datetime, db):
         consumptions = []
         consumptions_taken = {
-            c.date: c for c in self.consumptions if start <= c.date.date() <= end
+            c.date: c for c in self.consumptions if start <= c.date <= end
         }
         if self.hours:
             for date in self.get_frequency().between(
-                datetime.datetime(start.year, start.month, start.day),
-                datetime.datetime(end.year, end.month, end.day),
+                start,
+                end,
             ):
                 for hour in self.hours:
                     date_hour = datetime.datetime.combine(

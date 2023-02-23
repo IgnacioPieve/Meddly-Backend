@@ -1,4 +1,9 @@
+from pathlib import Path
+
 import requests
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=Path('src/credentials/.env'))
 
 # The WhatsApp API key is stored in the config.py file
 WHATSAPP_API_KEY = (
@@ -9,9 +14,9 @@ WHATSAPP_API_KEY = (
 )
 WA_BUSINESS_ACCOUNT_ID = 101547182706329  # ID of Meddly's WhatsApp Business Account
 
-# ID of Meddly's WhatsApp number: +54 9 351 606-8857
+# ID of Meddly's WhatsApp number
 # Can be obtained using the get_phone_numbers() function
-NUMBER_ID = 100370432826961
+WA_NUMBER_ID = os.getenv("WA_NUMBER_ID")
 PIN = "100220"
 
 # Example data to send the message
@@ -34,7 +39,7 @@ def register_phone():
     Register a phone number to a WhatsApp Business Account.
     Docs: https://developers.facebook.com/docs/whatsapp/cloud-api/reference/registration
     """
-    url = f"https://graph.facebook.com/v15.0/{NUMBER_ID}/register"
+    url = f"https://graph.facebook.com/v15.0/{WA_NUMBER_ID}/register"
     headers = {
         "Authorization": f"Bearer {WHATSAPP_API_KEY}",
         "Content-Type": "application/json",
@@ -48,7 +53,7 @@ def request_verification_code():
     Use this edge to request a verification code for your phone number.
     Docs: https://developers.facebook.com/docs/whatsapp/cloud-api/reference/phone-numbers
     """
-    url = f"https://graph.facebook.com/v15.0/{NUMBER_ID}/request_code?code_method=SMS&language=en_US&access_token={WHATSAPP_API_KEY}"
+    url = f"https://graph.facebook.com/v15.0/{WA_NUMBER_ID}/request_code?code_method=SMS&language=en_US&access_token={WHATSAPP_API_KEY}"
     headers = {
         "Authorization": f"Bearer {WHATSAPP_API_KEY}",
         "Content-Type": "application/json",
@@ -61,7 +66,7 @@ def verificate_code():
     Use this edge to verify your phone number.
     Docs: https://developers.facebook.com/docs/graph-api/reference/whats-app-business-account-to-number-current-status/verify_code/
     """
-    url = f"https://graph.facebook.com/v15.0/{NUMBER_ID}/verify_code?code=788922&access_token={WHATSAPP_API_KEY}"
+    url = f"https://graph.facebook.com/v15.0/{WA_NUMBER_ID}/verify_code?code=788922&access_token={WHATSAPP_API_KEY}"
     headers = {
         "Authorization": f"Bearer {WHATSAPP_API_KEY}",
         "Content-Type": "application/json",
@@ -74,7 +79,7 @@ def send_message():
     Send a message to a WhatsApp number.
     Docs: https://developers.facebook.com/docs/whatsapp/on-premises/reference/messages
     """
-    url = f"https://graph.facebook.com/v15.0/{NUMBER_ID}/messages"
+    url = f"https://graph.facebook.com/v15.0/{WA_NUMBER_ID}/messages"
     message_data = [
         {"type": "text", "text": EXAMPLE_MESSAGE}
     ]

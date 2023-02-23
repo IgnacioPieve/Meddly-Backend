@@ -48,6 +48,8 @@ def add_medicine(
     user, db = authentication
 
     medicine = medicine.dict()
+    medicine['start_date'] = medicine['start_date'].date()
+    medicine['end_date'] = medicine['end_date'].date() if medicine.get('end_date') else None
     medicine = Medicine(db, user=user, **medicine)
     medicine.create()
 
@@ -61,6 +63,9 @@ def modify_medicine(
 ):
     user, db = authentication
     medicine_data = medicine.dict()
+    medicine_data['start_date'] = medicine_data['start_date'].date()
+    medicine_data['end_date'] = medicine_data['end_date'].date() if medicine_data.get('end_date') else None
+
     medicine = Medicine(db, Medicine.id == medicine_id).get()
     if medicine is None:
         raise_errorcode(305)

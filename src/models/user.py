@@ -88,7 +88,7 @@ class User(CRUD):
             )
             thread.start()
 
-    def get_calendar(self, start: datetime.date, end: datetime.date):
+    def get_calendar(self, start: datetime.datetime, end: datetime.datetime):
         calendar = {
             "consumptions": [],
             "appointments": [],
@@ -97,17 +97,21 @@ class User(CRUD):
         }
         # Get appointments
         for appointment in self.appointments:
-            if start <= appointment.date.date() <= end:
+            if start <= appointment.date <= end:
                 calendar["appointments"].append(appointment)
 
         # Get measurements
         for measurement in self.measurements:
-            if start <= measurement.date.date() <= end:
+            if start <= measurement.date <= end:
                 calendar["measurements"].append(measurement)
 
         # Get active_medicines and consumptions
         for medicine in self.medicines:
             if medicine.active:
+                d = medicine.start_date
+                medicine.start_date = datetime.datetime(d.year, d.month, d.day)
+                d = medicine.end_date
+                medicine.end_date = datetime.datetime(d.year, d.month, d.day) if d else None
                 calendar["active_medicines"].append(medicine)
             if medicine.start_date > end or (
                 medicine.end_date and medicine.end_date < start
