@@ -14,6 +14,8 @@ pandas==1.5.3                   # ML / Data Analysis Library
 tensorflow==2.11.0              # ML / Machine Learning Library
 Pillow==9.4.0                   # ML / Machine Learning Library
 Whoosh==2.7.4                   # Searching
+jinja2==3.1.2                   # PDF / HTML to PDF
+pdfkit==1.0.0                   # PDF / HTML to PDF
 
 
 # Testing and Linting. These libraries are not required for the application to run

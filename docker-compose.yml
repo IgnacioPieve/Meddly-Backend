@@ -19,7 +19,7 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - "11001:8000"
+      - "11001:11001"
     env_file:
       - src/credentials/.env
     volumes:

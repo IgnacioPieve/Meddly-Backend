@@ -240,21 +240,25 @@ def load_example_data(db: Session = Depends(database.get_db)):
         {
             "date": datetime.datetime.now(),
             "type": "Glucosa",
+            "unit": "mg/dL",
             "value": 95.0,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(hours=2),
             "type": "Presión Arterial",
+            "unit": "mmHg",
             "value": 114,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(days=1),
             "type": "Glucosa",
+            "unit": "mg/dL",
             "value": 100.0,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(days=2),
             "type": "Glucosa",
+            "unit": "mg/dL",
             "value": 115.0,
         },
         {
@@ -262,21 +266,25 @@ def load_example_data(db: Session = Depends(database.get_db)):
             + datetime.timedelta(days=2)
             + datetime.timedelta(hours=2),
             "type": "Presión Arterial",
+            "unit": "mmHg",
             "value": 102,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(days=3),
             "type": "Glucosa",
+            "unit": "mg/dL",
             "value": 103.0,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(days=4),
             "type": "Glucosa",
+            "unit": "mg/dL",
             "value": 235.0,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(days=5),
             "type": "Glucosa",
+            "unit": "mg/dL",
             "value": 105.0,
         },
     ]
