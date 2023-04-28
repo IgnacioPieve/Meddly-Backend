@@ -16,6 +16,8 @@ from sqlalchemy.orm import relationship
 from models.message import Message, NewSupervisedMessage, NewSupervisorMessage
 from models.utils import CRUD, generate_code, raise_errorcode
 
+base_date = datetime.datetime(1900, 1, 1)
+final_date = datetime.datetime(2100, 1, 1)
 
 class Supervised(CRUD):
     __tablename__ = "supervised"
@@ -59,13 +61,13 @@ class User(CRUD):
         if supervisor.id == self.id:
             raise_errorcode(204)
         already_supervised = (
-            Supervised(
-                self.db,
-                and_(
-                    Supervised.supervisor == supervisor, Supervised.supervised == self
-                ),
-            ).get()
-            is not None
+                Supervised(
+                    self.db,
+                    and_(
+                        Supervised.supervisor == supervisor, Supervised.supervised == self
+                    ),
+                ).get()
+                is not None
         )
         if already_supervised:
             raise_errorcode(200)
@@ -88,34 +90,36 @@ class User(CRUD):
             )
             thread.start()
 
-    def get_calendar(self, start: datetime.datetime, end: datetime.datetime):
-        calendar = {
-            "consumptions": [],
-            "appointments": [],
-            "measurements": [],
-            "active_medicines": [],
-        }
-        # Get appointments
-        for appointment in self.appointments:
-            if start <= appointment.date <= end:
-                calendar["appointments"].append(appointment)
+    def get_appointments(self, start: datetime.datetime = base_date, end: datetime.datetime = final_date):
+        return [appointment for appointment in self.appointments if start <= appointment.date <= end]
 
-        # Get measurements
-        for measurement in self.measurements:
-            if start <= measurement.date <= end:
-                calendar["measurements"].append(measurement)
+    def get_measurements(self, start: datetime.datetime = base_date, end: datetime.datetime = final_date):
+        return [measurement for measurement in self.measurements if start <= measurement.date <= end]
 
-        # Get active_medicines and consumptions
+    def get_active_medicines_with_consumptions(self,
+                                               start: datetime.datetime = base_date,
+                                               end: datetime.datetime = final_date):
+        active_medicines = []
+        consumptions = []
         for medicine in self.medicines:
             if medicine.active:
                 d = medicine.start_date
                 medicine.start_date = datetime.datetime(d.year, d.month, d.day)
                 d = medicine.end_date
                 medicine.end_date = datetime.datetime(d.year, d.month, d.day) if d else None
-                calendar["active_medicines"].append(medicine)
+                active_medicines.append(medicine)
             if medicine.start_date > end or (
-                medicine.end_date and medicine.end_date < start
+                    medicine.end_date and medicine.end_date < start
             ):
                 continue
-            calendar["consumptions"] += medicine.get_consumptions(start, end, self.db)
-        return calendar
+            consumptions += medicine.get_consumptions(start, end, self.db)
+        return active_medicines, consumptions
+
+    def get_calendar(self, start: datetime.datetime, end: datetime.datetime):
+        active_medicines, consumptions = self.get_active_medicines_with_consumptions(start, end)
+        return {
+            "consumptions": consumptions,
+            "appointments": self.get_appointments(start, end),
+            "measurements": self.get_measurements(start, end),
+            "active_medicines": active_medicines,
+        }

@@ -3,9 +3,16 @@ from fastapi import APIRouter, Depends
 from dependencies import auth
 from models.calendar.appointment import Appointment
 from models.utils import raise_errorcode
-from schemas.calendar.appointment import AddAppointmentSchema
+from schemas.calendar.appointment import AddAppointmentSchema, AppointmentSchema
 
 router = APIRouter(prefix="/calendar/appointment")
+
+
+@router.get("", status_code=200, response_model=list[AppointmentSchema], include_in_schema=False)
+@router.get("/", status_code=200, response_model=list[AppointmentSchema], summary="Get all appointments")
+def get_appointments(authentication=Depends(auth.authenticate)):
+    user, _ = authentication
+    return user.get_appointments()
 
 
 @router.post("", status_code=201, include_in_schema=False)

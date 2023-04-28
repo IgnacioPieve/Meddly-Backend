@@ -3,9 +3,15 @@ from fastapi import APIRouter, Depends
 from dependencies import auth
 from models.calendar.measurement import Measurement
 from models.utils import raise_errorcode
-from schemas.calendar.measurement import AddMeasurementSchema
+from schemas.calendar.measurement import AddMeasurementSchema, MeasurementSchema
 
 router = APIRouter(prefix="/calendar/measurement")
+
+@router.get("", status_code=200, response_model=list[MeasurementSchema], include_in_schema=False)
+@router.get("/", status_code=200, response_model=list[MeasurementSchema], summary="Get all measurements")
+def get_measurements(authentication=Depends(auth.authenticate)):
+    user, _ = authentication
+    return user.get_measurements()
 
 
 @router.post("", status_code=201, include_in_schema=False)

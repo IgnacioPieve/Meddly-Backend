@@ -17,13 +17,9 @@ symptoms = model_trained.feature_names_in_
 symptoms_template = {symptom: 0 for symptom in symptoms}
 diseases = model_trained.classes_
 
-code_index_en = index.open_dir("indexes/symptom_index_en")
 code_index_es = index.open_dir("indexes/symptom_index_es")
-searcher = {"en": code_index_en.searcher(), "es": code_index_es.searcher()}
-query_parser = {
-    "en": QueryParser("description", schema=code_index_en.schema),
-    "es": QueryParser("description", schema=code_index_es.schema),
-}
+searcher = {"es": code_index_es.searcher()}
+query_parser = {"es": QueryParser("description", schema=code_index_es.schema)}
 
 
 class DiseaseSymptoms(CRUD):
