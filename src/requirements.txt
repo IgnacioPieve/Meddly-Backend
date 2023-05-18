@@ -13,6 +13,7 @@ scikit-learn==1.2.0             # ML / Machine Learning Library
 pandas==1.5.3                   # ML / Data Analysis Library
 tensorflow==2.11.0              # ML / Machine Learning Library
 Pillow==9.4.0                   # ML / Machine Learning Library
+numpy==1.24.3                   # ML / Data Analysis Library
 Whoosh==2.7.4                   # Searching
 jinja2==3.1.2                   # PDF / HTML to PDF
 pdfkit==1.0.0                   # PDF / HTML to PDF
@@ -24,3 +25,4 @@ httpx==0.23.3                   # Testing
 flake8==6.0.0                   # Check code quality
 isort==5.11.4                   # Fix Imports order
 python-dotenv==0.21.1           # Load environment variables from .env file, used only in /scripts folder
+openpyxl==3.1.2                 # Read and write Excel files, used only in /scripts folder

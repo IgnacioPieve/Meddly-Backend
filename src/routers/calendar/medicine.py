@@ -3,13 +3,10 @@ from fastapi import APIRouter, Depends
 from dependencies import auth
 from models.calendar.medicine import Consumption, Medicine
 from models.utils import raise_errorcode
-from schemas.calendar.medicine import (
-    AddConsumptionSchema,
-    DeleteConsumptionSchema,
-    MedicineAddSchema,
-    MedicineSchema,
-    MedicineUpdateSchema,
-)
+from schemas.calendar.medicine import (AddConsumptionSchema,
+                                       DeleteConsumptionSchema,
+                                       MedicineAddSchema, MedicineSchema,
+                                       MedicineUpdateSchema)
 from schemas.utils import SearchResultSchema
 
 router = APIRouter(prefix="/calendar/medicines")

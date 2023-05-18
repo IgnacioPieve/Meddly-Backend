@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends
 from dependencies import auth
 from models.calendar.measurement import Measurement
 from models.utils import raise_errorcode
-from schemas.calendar.measurement import AddMeasurementSchema, MeasurementSchema
+from schemas.calendar.measurement import (AddMeasurementSchema,
+                                          MeasurementSchema)
 
 router = APIRouter(prefix="/calendar/measurement")
 

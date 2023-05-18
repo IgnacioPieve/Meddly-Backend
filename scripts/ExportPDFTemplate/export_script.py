@@ -1,5 +1,5 @@
-import pdfkit
 import jinja2
+import pdfkit
 
 template_loader = jinja2.FileSystemLoader(searchpath=".")
 template_env = jinja2.Environment(loader=template_loader)

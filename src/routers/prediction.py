@@ -6,11 +6,8 @@ from models.image import Image as ImageModel
 from models.predictions.by_image import PredictionByImage
 from models.predictions.by_symptom import PredictionBySymptom
 from models.utils import raise_errorcode
-from schemas.prediction import (
-    PredictionByImageSchema,
-    PredictionBySymptomSchema,
-    ProbabilitySchema,
-)
+from schemas.prediction import (PredictionByImageSchema,
+                                PredictionBySymptomSchema, ProbabilitySchema)
 from schemas.utils import SearchResultSchema
 
 router = APIRouter(prefix="/prediction", tags=["Predictions"])

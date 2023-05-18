@@ -1,26 +1,17 @@
 import datetime
 
 from dateutil.rrule import DAILY, WEEKLY, rrule
-from sqlalchemy import (
-    Boolean,
-    Column,
-    Date,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    PickleType,
-    String,
-)
+from sqlalchemy import (Boolean, Column, Date, DateTime, Float, ForeignKey,
+                        Integer, PickleType, String)
 from sqlalchemy.orm import relationship
 from whoosh import index
 from whoosh.qparser import QueryParser
 
 from models.utils import CRUD, raise_errorcode
 
-medicine_index_es = index.open_dir("indexes/medicine_index_es")
-searcher = medicine_index_es.searcher()
-query_parser = QueryParser("description", schema=medicine_index_es.schema)
+medicines_index = index.open_dir("indexes/medicines_index")
+searcher = medicines_index.searcher()
+query_parser = QueryParser("description", schema=medicines_index.schema)
 
 
 class Consumption(CRUD):
