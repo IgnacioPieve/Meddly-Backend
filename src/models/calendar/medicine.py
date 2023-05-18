@@ -1,8 +1,17 @@
 import datetime
 
 from dateutil.rrule import DAILY, WEEKLY, rrule
-from sqlalchemy import (Boolean, Column, Date, DateTime, Float, ForeignKey,
-                        Integer, PickleType, String)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    Date,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    PickleType,
+    String,
+)
 from sqlalchemy.orm import relationship
 from whoosh import index
 from whoosh.qparser import QueryParser

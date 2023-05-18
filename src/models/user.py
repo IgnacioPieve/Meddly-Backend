@@ -1,8 +1,16 @@
 import datetime
 import threading
 
-from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
-                        String, and_)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    and_,
+)
 from sqlalchemy.orm import relationship
 
 from models.message import Message, NewSupervisedMessage, NewSupervisorMessage

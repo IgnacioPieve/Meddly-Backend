@@ -3,8 +3,7 @@ from fastapi import APIRouter, Depends
 from dependencies import auth
 from models.calendar.appointment import Appointment
 from models.utils import raise_errorcode
-from schemas.calendar.appointment import (AddAppointmentSchema,
-                                          AppointmentSchema)
+from schemas.calendar.appointment import AddAppointmentSchema, AppointmentSchema
 
 router = APIRouter(prefix="/calendar/appointment")
 
