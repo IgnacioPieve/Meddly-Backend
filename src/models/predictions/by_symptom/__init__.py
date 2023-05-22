@@ -77,14 +77,15 @@ class PredictionBySymptom(CRUD):
             for result in results
         ]
 
-    def verify(self, disease: str):
+    def verify(self, disease: str, approval_to_save: bool = False):
         if self.verified:
             raise_errorcode(701)
-        DiseaseSymptoms(
-            self.db,
-            symptoms=self.symptoms,
-            predicted_disease=self.prediction[0]["disease"],
-            real_disease=disease,
-        ).create()
+        if approval_to_save:
+            DiseaseSymptoms(
+                self.db,
+                symptoms=self.symptoms,
+                predicted_disease=self.prediction[0]["disease"],
+                real_disease=disease,
+            ).create()
         self.verified = True
         self.save()

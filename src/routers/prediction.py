@@ -85,7 +85,7 @@ def symptom_prediction_list(authentication=Depends(auth.authenticate)):
     summary="Verify a prediction by symptoms",
 )
 def verify_prediction_by_symptoms(
-    prediction_id: int, real_disease: str, authentication=Depends(auth.authenticate)
+    prediction_id: int, real_disease: str, approval_to_save: bool = False, authentication=Depends(auth.authenticate)
 ):
     user, db = authentication
     prediction = PredictionBySymptom(
@@ -95,7 +95,7 @@ def verify_prediction_by_symptoms(
     ).get()
     if not prediction:
         raise_errorcode(702)
-    prediction.verify(real_disease)
+    prediction.verify(real_disease, approval_to_save)
 
 
 @router.post(
@@ -148,7 +148,7 @@ def image_prediction_list(authentication=Depends(auth.authenticate)):
     summary="Verify a prediction by image",
 )
 def verify_prediction_by_image(
-    prediction_id: str, real_disease: str, authentication=Depends(auth.authenticate)
+    prediction_id: str, real_disease: str, approval_to_save: bool = False, authentication=Depends(auth.authenticate)
 ):
     user, db = authentication
 
@@ -157,4 +157,4 @@ def verify_prediction_by_image(
     ).get()
     if prediction is None:
         raise_errorcode(702)
-    prediction.verify(real_disease)
+    prediction.verify(real_disease, approval_to_save)
