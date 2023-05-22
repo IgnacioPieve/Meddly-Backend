@@ -2,8 +2,8 @@ import os
 
 # ---------- METADATA ----------
 title = "Meddly"
-version = .9
-description = f"""
+version = 0.9
+description = """
 # Welcome to MeddlyApi!
 
 This is the API for the Meddly project, a mobile application that aims to help people with health issues.
@@ -31,7 +31,7 @@ metadata = {
 
 # ---------- CONFIG VARIABLES ----------
 
-DB_URL = f"postgresql+psycopg2://meddly:meddly@meddly-database:5432/app"
+DB_URL = "postgresql+psycopg2://meddly:meddly@meddly-database:5432/app"
 
 SENDGRID_CONFIG = {
     "api_key": os.getenv("SENDGRID_API_KEY"),

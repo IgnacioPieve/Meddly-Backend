@@ -85,7 +85,10 @@ def symptom_prediction_list(authentication=Depends(auth.authenticate)):
     summary="Verify a prediction by symptoms",
 )
 def verify_prediction_by_symptoms(
-    prediction_id: int, real_disease: str, approval_to_save: bool = False, authentication=Depends(auth.authenticate)
+    prediction_id: int,
+    real_disease: str,
+    approval_to_save: bool = False,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
     prediction = PredictionBySymptom(
@@ -148,7 +151,10 @@ def image_prediction_list(authentication=Depends(auth.authenticate)):
     summary="Verify a prediction by image",
 )
 def verify_prediction_by_image(
-    prediction_id: str, real_disease: str, approval_to_save: bool = False, authentication=Depends(auth.authenticate)
+    prediction_id: str,
+    real_disease: str,
+    approval_to_save: bool = False,
+    authentication=Depends(auth.authenticate),
 ):
     user, db = authentication
 

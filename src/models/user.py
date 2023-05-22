@@ -19,6 +19,7 @@ from models.utils import CRUD, generate_code, raise_errorcode
 base_date = datetime.datetime(1900, 1, 1)
 final_date = datetime.datetime(2100, 1, 1)
 
+
 class Supervised(CRUD):
     __tablename__ = "supervised"
     id = Column(Integer, primary_key=True, index=True)
@@ -61,13 +62,13 @@ class User(CRUD):
         if supervisor.id == self.id:
             raise_errorcode(204)
         already_supervised = (
-                Supervised(
-                    self.db,
-                    and_(
-                        Supervised.supervisor == supervisor, Supervised.supervised == self
-                    ),
-                ).get()
-                is not None
+            Supervised(
+                self.db,
+                and_(
+                    Supervised.supervisor == supervisor, Supervised.supervised == self
+                ),
+            ).get()
+            is not None
         )
         if already_supervised:
             raise_errorcode(200)
@@ -90,15 +91,27 @@ class User(CRUD):
             )
             thread.start()
 
-    def get_appointments(self, start: datetime.datetime = base_date, end: datetime.datetime = final_date):
-        return [appointment for appointment in self.appointments if start <= appointment.date <= end]
+    def get_appointments(
+        self, start: datetime.datetime = base_date, end: datetime.datetime = final_date
+    ):
+        return [
+            appointment
+            for appointment in self.appointments
+            if start <= appointment.date <= end
+        ]
 
-    def get_measurements(self, start: datetime.datetime = base_date, end: datetime.datetime = final_date):
-        return [measurement for measurement in self.measurements if start <= measurement.date <= end]
+    def get_measurements(
+        self, start: datetime.datetime = base_date, end: datetime.datetime = final_date
+    ):
+        return [
+            measurement
+            for measurement in self.measurements
+            if start <= measurement.date <= end
+        ]
 
-    def get_active_medicines_with_consumptions(self,
-                                               start: datetime.datetime = base_date,
-                                               end: datetime.datetime = final_date):
+    def get_active_medicines_with_consumptions(
+        self, start: datetime.datetime = base_date, end: datetime.datetime = final_date
+    ):
         active_medicines = []
         consumptions = []
         for medicine in self.medicines:
@@ -106,17 +119,21 @@ class User(CRUD):
                 d = medicine.start_date
                 medicine.start_date = datetime.datetime(d.year, d.month, d.day)
                 d = medicine.end_date
-                medicine.end_date = datetime.datetime(d.year, d.month, d.day) if d else None
+                medicine.end_date = (
+                    datetime.datetime(d.year, d.month, d.day) if d else None
+                )
                 active_medicines.append(medicine)
             if medicine.start_date > end or (
-                    medicine.end_date and medicine.end_date < start
+                medicine.end_date and medicine.end_date < start
             ):
                 continue
             consumptions += medicine.get_consumptions(start, end, self.db)
         return active_medicines, consumptions
 
     def get_calendar(self, start: datetime.datetime, end: datetime.datetime):
-        active_medicines, consumptions = self.get_active_medicines_with_consumptions(start, end)
+        active_medicines, consumptions = self.get_active_medicines_with_consumptions(
+            start, end
+        )
         return {
             "consumptions": consumptions,
             "appointments": self.get_appointments(start, end),
@@ -126,22 +143,38 @@ class User(CRUD):
 
     def get_age(self):
         today = datetime.date.today()
-        return today.year - self.birth.year - ((today.month, today.day) < (self.birth.month, self.birth.day))
+        return (
+            today.year
+            - self.birth.year
+            - ((today.month, today.day) < (self.birth.month, self.birth.day))
+        )
 
     def get_fullname(self):
         if self.first_name and self.last_name:
-            return f'{self.first_name} {self.last_name}'
+            return f"{self.first_name} {self.last_name}"
         elif self.last_name:
             return self.last_name
         elif self.first_name:
             return self.first_name
         else:
-            return self.email.split('@')[0]
+            return self.email.split("@")[0]
 
     def get_birth_text(self):
         if self.birth:
-            months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-                        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
-            return f'{self.birth.day} de {months[self.birth.month - 1]} del {self.birth.year}'
+            months = [
+                "enero",
+                "febrero",
+                "marzo",
+                "abril",
+                "mayo",
+                "junio",
+                "julio",
+                "agosto",
+                "septiembre",
+                "octubre",
+                "noviembre",
+                "diciembre",
+            ]
+            return f"{self.birth.day} de {months[self.birth.month - 1]} del {self.birth.year}"
         else:
             return None

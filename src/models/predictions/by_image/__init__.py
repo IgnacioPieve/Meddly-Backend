@@ -19,8 +19,8 @@ classes = [
 ]
 classes = [
     "Actinic keratoses",
-    "Cancer bro",           # TODO: Correct this
-    "No es cancer bro",     # TODO: Correct this
+    "Cancer bro",  # TODO: Correct this
+    "No es cancer bro",  # TODO: Correct this
     "Dermatofibroma",
     "Melanoma",
     "Melanocytic nevi",

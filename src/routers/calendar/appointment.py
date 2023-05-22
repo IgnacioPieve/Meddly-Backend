@@ -8,8 +8,15 @@ from schemas.calendar.appointment import AddAppointmentSchema, AppointmentSchema
 router = APIRouter(prefix="/calendar/appointment")
 
 
-@router.get("", status_code=200, response_model=list[AppointmentSchema], include_in_schema=False)
-@router.get("/", status_code=200, response_model=list[AppointmentSchema], summary="Get all appointments")
+@router.get(
+    "", status_code=200, response_model=list[AppointmentSchema], include_in_schema=False
+)
+@router.get(
+    "/",
+    status_code=200,
+    response_model=list[AppointmentSchema],
+    summary="Get all appointments",
+)
 def get_appointments(authentication=Depends(auth.authenticate)):
     user, _ = authentication
     return user.get_appointments()
