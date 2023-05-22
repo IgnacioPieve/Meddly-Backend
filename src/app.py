@@ -7,6 +7,7 @@ from routers import (
     dev_tools,
     image,
     notification,
+    export,
     prediction,
     supervisor,
     user,
@@ -26,6 +27,7 @@ app.include_router(calendar.router)
 app.include_router(notification.router)
 app.include_router(prediction.router)
 app.include_router(image.router)
+app.include_router(export.router)
 
 if __name__ == "__main__":
     import uvicorn

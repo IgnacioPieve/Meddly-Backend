@@ -17,6 +17,7 @@ numpy==1.24.3                   # ML / Data Analysis Library
 Whoosh==2.7.4                   # Searching
 jinja2==3.1.2                   # PDF / HTML to PDF
 pdfkit==1.0.0                   # PDF / HTML to PDF
+PyPDF2==3.0.1                   # PDF / Merge PDFs
 
 
 # Testing and Linting. These libraries are not required for the application to run

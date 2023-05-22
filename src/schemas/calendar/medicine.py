@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 class MedicineUpdateSchema(BaseModel):
     name: str | None
+    start_date: datetime.datetime
     end_date: datetime.datetime | None
     stock: int | None
     stock_warning: int | None

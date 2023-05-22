@@ -123,3 +123,25 @@ class User(CRUD):
             "measurements": self.get_measurements(start, end),
             "active_medicines": active_medicines,
         }
+
+    def get_age(self):
+        today = datetime.date.today()
+        return today.year - self.birth.year - ((today.month, today.day) < (self.birth.month, self.birth.day))
+
+    def get_fullname(self):
+        if self.first_name and self.last_name:
+            return f'{self.first_name} {self.last_name}'
+        elif self.last_name:
+            return self.last_name
+        elif self.first_name:
+            return self.first_name
+        else:
+            return self.email.split('@')[0]
+
+    def get_birth_text(self):
+        if self.birth:
+            months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+            return f'{self.birth.day} de {months[self.birth.month - 1]} del {self.birth.year}'
+        else:
+            return None

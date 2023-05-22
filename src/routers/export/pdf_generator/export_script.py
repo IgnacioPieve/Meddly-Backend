@@ -1,10 +1,14 @@
 
 import base64
+import datetime
 import io
 
 import jinja2
 import pdfkit
 import PyPDF2
+
+import models.calendar.medicine
+from models.user import User
 
 template_loader = jinja2.FileSystemLoader(searchpath=".")
 template_env = jinja2.Environment(loader=template_loader)
@@ -91,52 +95,17 @@ class BMI:
                                                                                               bmi_group_index)
 
 
-def generate_base_file():
-    template = template_env.get_template("index.html")
-    data = {
-        "name": "Ignacio Pieve Roiger",
-        "weight": 90,
-        "height": 170,
-        "age": 23,
-        "medicines": [
-            {
-                "name": "Paracetamol",
-                "instructions": "Disolver la pastilla en agua",
-                "presentation": "Pastilla",
-                "dosis_unit": "mg",
-                "dosis": 1.5,
-                "hours": ["08:00", "11:30", "18:00"],
-                "days": [
-                    {"day": "L", "enabled": False},
-                    {"day": "M", "enabled": True},
-                    {"day": "M", "enabled": True},
-                    {"day": "J", "enabled": False},
-                    {"day": "V", "enabled": False},
-                    {"day": "S", "enabled": True},
-                    {"day": "D", "enabled": False},
-                ],
-                "percetage": "50%",
-            },
-        ],
-        "measurements": [
-            {
-                "date": "2020-01-01",
-                "type": "Glucosa",
-                "result": '130 mg/dL'
-            },
-            {
-                "date": "2020-01-01",
-                "type": "Glucosa",
-                "result": '130 mg/dL'
-            },
-            {
-                "date": "2020-01-01",
-                "type": "Glucosa",
-                "result": '130 mg/dL'
-            },
-        ]
-    }
-    data['bmi'], data['groups'] = BMI.get_bmi_html_percentage_and_groups(data['weight'], data['height'], data['age'])
+def generate_base_file(data):
+    template = template_env.get_template("routers/export/pdf_generator/assets/index.html")
+    if (str(data['weight']).replace('.','',1).isdigit()
+            and str(data['height']).replace('.','',1).isdigit()
+            and str(data['age']).replace('.','',1).isdigit()):
+        data['bmi'], data['groups'] = BMI.get_bmi_html_percentage_and_groups(data['weight'], data['height'], data['age'])
+    else:
+        data['bmi'], data['groups'] = 0, [
+            "Bajo peso",
+            f"<span style='color: #516EB4; font-weight: bold'>Peso saludable</span>",
+            "Sobrepeso"]
     template_string = template.render(**data)
     options = {
         'page-size': 'A4',
@@ -145,26 +114,26 @@ def generate_base_file():
         'margin-left': '3mm',
         "enable-local-file-access": ""
     }
-    return pdfkit.from_string(template_string, css='assets/styles.css', options=options)
+    return pdfkit.from_string(template_string, css='routers/export/pdf_generator/assets/styles.css', options=options)
 
 
 
 def generate_footer_list(pages):
     def get_image_logo():
-        with open('assets/logo.png', 'rb') as image_file:
+        with open('routers/export/pdf_generator/assets/logo.png', 'rb') as image_file:
             return base64.b64encode(image_file.read()).decode("utf-8")
 
     data = {
         'image': get_image_logo,
         'pages': pages,
     }
-    template = template_env.get_template("assets/footer.html")
+    template = template_env.get_template("routers/export/pdf_generator/assets/footer.html")
     template_string = template.render(**data)
     options = {
         'page-size': 'A4',
         "enable-local-file-access": ""
     }
-    return pdfkit.from_string(template_string, css='assets/styles.css', options=options)
+    return pdfkit.from_string(template_string, css='routers/export/pdf_generator/assets/styles.css', options=options)
 
 
 def add_footer(base_file):
@@ -180,3 +149,68 @@ def add_footer(base_file):
 
     return result
 
+
+def get_user_data(user: User):
+    medicine_objects, _ = user.get_active_medicines_with_consumptions()
+    medicines = []
+    for medicine_object in medicine_objects:
+        medicine_object: models.calendar.medicine.Medicine
+        possible_days = ["L", "M", "M", "J", "V", "S", "D"]
+        if medicine_object.days:
+            days = [{
+                    "day": possible_days[i],
+                    "enabled": True if (i + 1) in medicine_object.days else False
+                } for i in range(len(possible_days))]
+        else:
+            days = None
+        if medicine_object.end_date:
+            total_days = (medicine_object.end_date - medicine_object.start_date).days
+            to_now_days = (datetime.datetime.now() - medicine_object.start_date).days
+            percentage = max(1, int((to_now_days * 100) / total_days))
+
+        medicines.append({
+            "name": medicine_object.name,
+            "instructions": medicine_object.instructions,
+            "presentation": medicine_object.presentation,
+            "dosis_unit": medicine_object.dosis_unit,
+            "dosis": medicine_object.dosis,
+            "hours": medicine_object.hours,
+            "days": days,
+            "interval": medicine_object.interval,
+            "percentage": percentage if medicine_object.end_date else None
+        })
+    measurements = [
+        {
+            "date": measurement.date,
+            "type": measurement.type,
+            "result": f'{measurement.value} {measurement.unit}'
+        } for measurement in user.get_measurements(start=datetime.datetime.now() - datetime.timedelta(days=30))
+    ]
+    last_month_predictions_by_symptom = len(
+        [
+            True for prediction in user.predictions_by_symptoms
+            if prediction.date > datetime.datetime.now() - datetime.timedelta(days=30)
+        ]
+    )
+    last_month_predictions_by_image = len(
+        [
+            True for prediction in user.predictions_by_image
+            if prediction.date > datetime.datetime.now() - datetime.timedelta(days=30)
+        ]
+    )
+    return {
+        "name": user.get_fullname(),
+        "weight": user.weight if user.weight else 'N/A',
+        "height": user.height if user.height else 'N/A',
+        "age": user.get_age() if user.birth else 'N/A',
+        "text_age": user.get_birth_text() if user.birth else 'No hay información',
+        "last_month_predictions": last_month_predictions_by_symptom + last_month_predictions_by_image,
+        "medicines": medicines,
+        'measurements': measurements,
+        "supervisors": len(user.supervisors_list)
+    }
+
+
+def generate_pdf(user: User):
+    base_file = generate_base_file(get_user_data(user))
+    return add_footer(base_file)

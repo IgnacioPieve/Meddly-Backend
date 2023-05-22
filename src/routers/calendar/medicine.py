@@ -20,7 +20,6 @@ router = APIRouter(prefix="/calendar/medicines")
 def get_medicines(authentication=Depends(auth.authenticate)):
     user, _ = authentication
     active_medicines, _ = user.get_active_medicines_with_consumptions()
-    print(active_medicines)
     return active_medicines
 
 
