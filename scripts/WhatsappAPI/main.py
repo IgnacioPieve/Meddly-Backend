@@ -1,9 +1,10 @@
+import os
 from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path=Path('src/credentials/.env'))
+load_dotenv(dotenv_path=Path("src/credentials/.env"))
 
 # The WhatsApp API key is stored in the config.py file
 WHATSAPP_API_KEY = (
@@ -53,7 +54,10 @@ def request_verification_code():
     Use this edge to request a verification code for your phone number.
     Docs: https://developers.facebook.com/docs/whatsapp/cloud-api/reference/phone-numbers
     """
-    url = f"https://graph.facebook.com/v15.0/{WA_NUMBER_ID}/request_code?code_method=SMS&language=en_US&access_token={WHATSAPP_API_KEY}"
+    url = (
+        f"https://graph.facebook.com/"
+        f"v15.0/{WA_NUMBER_ID}/request_code?code_method=SMS&language=en_US&access_token={WHATSAPP_API_KEY}"
+    )
     headers = {
         "Authorization": f"Bearer {WHATSAPP_API_KEY}",
         "Content-Type": "application/json",
@@ -64,7 +68,8 @@ def request_verification_code():
 def verificate_code():
     """
     Use this edge to verify your phone number.
-    Docs: https://developers.facebook.com/docs/graph-api/reference/whats-app-business-account-to-number-current-status/verify_code/
+    Docs: https://developers.facebook.com/
+            docs/graph-api/reference/whats-app-business-account-to-number-current-status/verify_code/
     """
     url = f"https://graph.facebook.com/v15.0/{WA_NUMBER_ID}/verify_code?code=788922&access_token={WHATSAPP_API_KEY}"
     headers = {
@@ -80,9 +85,7 @@ def send_message():
     Docs: https://developers.facebook.com/docs/whatsapp/on-premises/reference/messages
     """
     url = f"https://graph.facebook.com/v15.0/{WA_NUMBER_ID}/messages"
-    message_data = [
-        {"type": "text", "text": EXAMPLE_MESSAGE}
-    ]
+    message_data = [{"type": "text", "text": EXAMPLE_MESSAGE}]
     headers = {
         "Authorization": f"Bearer {WHATSAPP_API_KEY}",
         "Content-Type": "application/json",
@@ -98,6 +101,7 @@ def send_message():
         },
     }
     return requests.post(url, headers=headers, json=body)
+
 
 # We can use the functions to send a message (i.e. send_message())
 # send_message()
