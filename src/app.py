@@ -20,8 +20,9 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(**config.metadata)
 
 # ----- ROUTERS -----
-app.include_router(calendar_router.router)
 app.include_router(dev_tools_router.router)
+
+app.include_router(calendar_router.router)
 app.include_router(export_router.router)
 app.include_router(image_router.router)
 app.include_router(notification_router.router)

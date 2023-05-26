@@ -8,16 +8,18 @@ load_dotenv(dotenv_path=Path("src/credentials/.env"))
 
 # The WhatsApp API key is stored in the config.py file
 WHATSAPP_API_KEY = (
-    "EAAIZAuL7Po9kBANjsVcKJIVwR9V6WTuwWyaMpW325sVotcnZCCzPvO2AP0SLzV"
-    "FjZArsFjWFRpZAZC8EA8I29cOUcZC1h6C1EJjULlEGTwr9GZCuefgZBRbMJTvdt"
-    "jjZBk41EdUt3rDfSvHKjFN4lHeZBadsnKAswRBV79mosZBaXBZCfOnc6Rii2ZAr"
-    "DwacZB4yvKjdIY9Kke3r5darTzqaDhp1Na"
+    "EAAIZAuL7Po9kBAMW2SJUPJLH1o1PZBMDtX96TACj5RO"
+    "NC9v0mXhO0nhK69OyE9KB9NZBZCWnc8Qs8bKdbD3ofZA"
+    "EZCQtSjBm3xrhihEnrJjLA9X1c3qvmg4FjrHsAfwuZBq"
+    "kmBHLTsFZBorHwKHZAUMQDmcHwiWL0U8BHOv4nDkPRvB"
+    "UYHFPT7jmPeL3qcMOZAaDEHA9MsGQpYhItIZCUH0vkfx"
+    "2ZA8QWTTy6kgZD"
 )
 WA_BUSINESS_ACCOUNT_ID = 101547182706329  # ID of Meddly's WhatsApp Business Account
 
 # ID of Meddly's WhatsApp number
 # Can be obtained using the get_phone_numbers() function
-WA_NUMBER_ID = os.getenv("WA_NUMBER_ID")
+WA_NUMBER_ID = '100370432826961'
 PIN = "100220"
 
 # Example data to send the message
@@ -107,4 +109,5 @@ def send_message():
 # send_message()
 
 # Or, if we want to show the response, we can use the following code:
+print(get_phone_numbers().json())
 # print(send_message().text)

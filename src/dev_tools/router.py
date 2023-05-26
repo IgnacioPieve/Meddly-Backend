@@ -1,5 +1,8 @@
 import datetime
 import random
+
+from sendgrid import SendGridAPIClient, Mail
+
 from user_calendar.models.appointment import Appointment
 from user_calendar.models.measurement import Measurement
 from user_calendar.models.medicine import Medicine
@@ -11,7 +14,7 @@ from firebase_admin._auth_utils import UserNotFoundError
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
-from config import FIREBASE_KEY
+from config import FIREBASE_KEY, SENDGRID_CONFIG, WHATSAPP_API_KEY
 from database import Base, engine, get_db
 from user.models import User
 
@@ -87,6 +90,56 @@ def reset_database():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     return {"status": "ok"}
+
+
+@router.post("/send_notification", include_in_schema=False)
+@router.post("/send_notification/")
+def send_notification(email: str | None = None, phone_number: str | None = None):
+    def send_email():
+        message_constructor = Mail(
+            from_email=SENDGRID_CONFIG["email"],
+            to_emails=email,
+        )
+        message_constructor.template_id = "d-5e634cd5cd6548b4b440f188c1d2a40a"
+        message_constructor.dynamic_template_data = {
+            "hi_message": 'Hola usuario de prueba!',
+            "message": 'mensaje de prueba',
+            "subject": 'mensaje de prueba',
+        }
+        sg = SendGridAPIClient(SENDGRID_CONFIG["api_key"])
+        response = sg.send(message_constructor)
+        print(f'Email sent to: {email}. Response: {response.status_code}')
+
+    def send_whatsapp():
+        message_data = [{"type": "text", "text": 'Mensaje de prueba'}]
+        headers = {
+            "Authorization": f"Bearer {WHATSAPP_API_KEY}",
+            "Content-Type": "application/json",
+        }
+        body = {
+            "messaging_product": "whatsapp",
+            "to": phone_number,
+            "type": "template",
+            "template": {
+                "name": "generic_message",
+                "language": {"code": "es"},
+                "components": [{"type": "body", "parameters": message_data}],
+            },
+        }
+        response = requests.post(
+            "https://graph.facebook.com/v15.0/100370432826961/messages",
+            headers=headers,
+            json=body,
+        )
+        print(
+            f"Message Sent via Whatsapp to {phone_number}. Response: {response.text}"
+        )
+
+    if email:
+        send_email()
+    if phone_number:
+        send_whatsapp()
+
 
 
 @router.post("/load-example-data", include_in_schema=False)
