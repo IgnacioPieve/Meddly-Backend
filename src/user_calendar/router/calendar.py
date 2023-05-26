@@ -6,12 +6,12 @@ from fastapi import APIRouter, Depends
 from auth.dependencies import authenticate_with_supervisor
 from user.models import User
 
-router = APIRouter(prefix="/schemas")
+router = APIRouter(prefix="/calendar")
 
 
 @router.get("", response_model=CalendarSchema, status_code=200, include_in_schema=False)
 @router.get(
-    "/", response_model=CalendarSchema, status_code=200, summary="Get the schemas"
+    "/", response_model=CalendarSchema, status_code=200, summary="Get the calendar"
 )
 def get_calendar(
     start: datetime.date = None,

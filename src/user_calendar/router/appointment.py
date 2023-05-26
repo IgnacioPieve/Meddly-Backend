@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from auth.dependencies import authenticate
 from models import raise_errorcode
 
-router = APIRouter(prefix="/schemas/appointment")
+router = APIRouter(prefix="/appointment")
 
 
 @router.get(
