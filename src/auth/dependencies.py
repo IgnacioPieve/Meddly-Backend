@@ -7,15 +7,16 @@ from sqlalchemy.orm import Session
 from config import FIREBASE_JSON
 from database import get_db
 from models import raise_errorcode
-from user.models import Supervised, User
+from user.models import Device, Supervised, User
 
-cred = credentials.Certificate(FIREBASE_JSON)
-firebase_admin.initialize_app(cred)
+firebase_cred = credentials.Certificate(FIREBASE_JSON)
+firebase_admin.initialize_app(firebase_cred)
 
 
 async def authenticate(
     cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
     db: Session = Depends(get_db),
+    device: str | None = Header(default=None),
 ):
     """
     Authenticate a user with a Bearer token.
@@ -40,19 +41,22 @@ async def authenticate(
         user = User(
             db, id=decoded_token["user_id"], email=decoded_token["email"]
         ).create()
+    if device not in user.devices:
+        Device(db, user=user, token=device).create()
     return user, db
 
 
 async def authenticate_with_supervisor(
     cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
     db=Depends(get_db),
+    device: str | None = Header(default=None),
     supervised_id: str | None = Header(default=None),
 ):
     """
     Authenticate a user with a Bearer token.
     This supports the supervisor role.
     """
-    user, db = await authenticate(cred, db)
+    user, db = await authenticate(cred, db, device=device)
     if supervised_id is not None:
         supervised = Supervised(
             db, Supervised.supervisor == user, Supervised.supervised_id == supervised_id

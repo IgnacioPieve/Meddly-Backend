@@ -1,6 +1,6 @@
-from user_calendar.router.appointment import router as appointment_router
-
 from fastapi import APIRouter
+
+from user_calendar.router.appointment import router as appointment_router
 from user_calendar.router.calendar import router as calendar_router
 from user_calendar.router.measurement import router as measurement_router
 from user_calendar.router.medicine import router as medicine_router

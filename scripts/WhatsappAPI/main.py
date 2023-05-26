@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import requests
@@ -19,7 +18,7 @@ WA_BUSINESS_ACCOUNT_ID = 101547182706329  # ID of Meddly's WhatsApp Business Acc
 
 # ID of Meddly's WhatsApp number
 # Can be obtained using the get_phone_numbers() function
-WA_NUMBER_ID = '100370432826961'
+WA_NUMBER_ID = "100370432826961"
 PIN = "100220"
 
 # Example data to send the message

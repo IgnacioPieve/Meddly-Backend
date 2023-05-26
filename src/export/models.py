@@ -1,5 +1,4 @@
 import base64
-import user_calendar.models.medicine
 import datetime
 import io
 
@@ -7,6 +6,7 @@ import jinja2
 import pdfkit
 import PyPDF2
 
+import user_calendar.models.medicine
 from user.models import User
 
 template_loader = jinja2.FileSystemLoader(searchpath=".")

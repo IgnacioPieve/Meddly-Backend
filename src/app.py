@@ -1,5 +1,3 @@
-from user_calendar import router as calendar_router
-
 from fastapi import FastAPI
 
 import config
@@ -12,6 +10,7 @@ from prediction import router as prediction_router
 from search import router as search_router
 from supervisor import router as supervisor_router
 from user import router as user_router
+from user_calendar import router as calendar_router
 
 # ----- DATABASE -----
 Base.metadata.create_all(bind=engine)

@@ -1,10 +1,9 @@
-from user_calendar.models.appointment import Appointment
-from user_calendar.schemas.appointment import AddAppointmentSchema, AppointmentSchema
-
 from fastapi import APIRouter, Depends
 
 from auth.dependencies import authenticate
 from models import raise_errorcode
+from user_calendar.models.appointment import Appointment
+from user_calendar.schemas.appointment import AddAppointmentSchema, AppointmentSchema
 
 router = APIRouter(prefix="/appointment")
 

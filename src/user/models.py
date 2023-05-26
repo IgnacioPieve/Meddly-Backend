@@ -182,3 +182,12 @@ class User(CRUD):
             return f"{self.birth.day} de {months[self.birth.month - 1]} del {self.birth.year}"
         else:
             return None
+
+
+class Device(CRUD):
+    __tablename__ = "device"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(String(255), ForeignKey("user.id"), nullable=False, index=True)
+    user = relationship("User", backref="devices", foreign_keys=[user_id])
+    token = Column(String(255), nullable=False, index=True)

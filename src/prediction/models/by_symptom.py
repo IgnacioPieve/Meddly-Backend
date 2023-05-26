@@ -9,9 +9,7 @@ from whoosh.qparser import QueryParser
 
 from models import CRUD, raise_errorcode
 
-model_trained: DecisionTreeClassifier = load(
-    "prediction/trained/by_symptom.trained"
-)
+model_trained: DecisionTreeClassifier = load("prediction/trained/by_symptom.trained")
 
 symptoms = model_trained.feature_names_in_
 symptoms_template = {symptom: 0 for symptom in symptoms}

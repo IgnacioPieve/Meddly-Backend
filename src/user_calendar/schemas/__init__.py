@@ -1,8 +1,8 @@
+from pydantic import BaseModel
+
 from user_calendar.schemas.appointment import AppointmentSchema
 from user_calendar.schemas.measurement import MeasurementSchema
 from user_calendar.schemas.medicine import ConsumptionSchema, MedicineSchema
-
-from pydantic import BaseModel
 
 
 class CalendarSchema(BaseModel):

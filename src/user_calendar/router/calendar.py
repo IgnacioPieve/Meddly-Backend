@@ -1,10 +1,10 @@
 import datetime
-from user_calendar.schemas import CalendarSchema
 
 from fastapi import APIRouter, Depends
 
 from auth.dependencies import authenticate_with_supervisor
 from user.models import User
+from user_calendar.schemas import CalendarSchema
 
 router = APIRouter(prefix="/calendar")
 

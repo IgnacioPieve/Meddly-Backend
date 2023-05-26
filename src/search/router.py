@@ -1,5 +1,3 @@
-
-
 from fastapi import APIRouter, Depends
 
 from auth.dependencies import authenticate
