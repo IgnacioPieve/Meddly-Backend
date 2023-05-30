@@ -1,0 +1,2 @@
+#!/bin/sh
+docker compose exec app pytest --cov-report term-missing --cov

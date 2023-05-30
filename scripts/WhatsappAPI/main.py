@@ -70,7 +70,7 @@ def verificate_code():
     """
     Use this edge to verify your phone number.
     Docs: https://developers.facebook.com/
-            docs/graph-api/reference/whats-app-business-account-to-number-current-status/verify_code/
+            docs/graph-delete_this/reference/whats-app-business-account-to-number-current-status/verify_code/
     """
     url = f"https://graph.facebook.com/v15.0/{WA_NUMBER_ID}/verify_code?code=788922&access_token={WHATSAPP_API_KEY}"
     headers = {
