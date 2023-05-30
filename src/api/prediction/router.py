@@ -40,7 +40,6 @@ async def predict_by_symptoms(
 )
 async def get_predictions_by_symptoms(user: User = Depends(authenticate)):
     result = await get_predictions_by_symptoms_service(user)
-    print(type(result[0].prediction))
     return result
 
 

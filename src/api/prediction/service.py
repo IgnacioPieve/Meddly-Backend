@@ -17,6 +17,10 @@ from api.prediction.models.by_symptom import symptoms, symptoms_template
 from api.user.models import User
 from database import database
 
+file = 'api/search/indexes/codes_translated.json'
+with open(file, 'r', encoding='utf-8') as f:
+    codes = json.load(f)
+
 
 async def predict_by_symptoms(symptoms_typed: list[str], user: User):
     for symptom in symptoms_typed:
@@ -46,6 +50,9 @@ async def predict_by_symptoms(symptoms_typed: list[str], user: User):
         prediction=results,
     )
     await database.execute(query=insert_query)
+
+    for i in range(len(results)):
+        results[i]['disease'] = codes[results[i]['disease']]
     return results
 
 
@@ -56,18 +63,20 @@ async def get_predictions_by_symptoms(user: User):
     results = await database.fetch_all(query=select_query)
     for result in results:
         result.prediction = json.loads(result.prediction)
+        for i in range(len(result.prediction)):
+            result.prediction[i]['disease'] = codes[result.prediction[i]['disease']]
     return results
 
 
 async def predict_by_image(file: UploadFile, user: User):
     classes = [
-        "Actinic keratoses",
-        "Cancer bro",  # TODO: Correct this
-        "No es cancer bro",  # TODO: Correct this
+        "Queratosis actínica",
+        "Carcinoma de células basales",
+        "Lesiones benignas similares a queratosis",
         "Dermatofibroma",
         "Melanoma",
-        "Melanocytic nevi",
-        "Vascular lesions",
+        "Nevus melanocíticos",
+        "Lesiones vasculares",
     ]
 
     image = Image.open(file.file).resize((512, 512))

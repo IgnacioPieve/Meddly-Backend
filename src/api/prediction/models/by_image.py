@@ -1,6 +1,7 @@
 from sklearn.preprocessing import LabelEncoder
 from sqlalchemy import JSON, Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import expression
 from tensorflow.keras.models import load_model
 
 from models import CRUD, raise_errorcode
@@ -49,7 +50,7 @@ class PredictionByImage(CRUD):
     prediction = Column(JSON, nullable=False)
     user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=False)
     user = relationship("User", backref="predictions_by_image", foreign_keys=[user_id])
-    verified = Column(Boolean, default=False)
+    verified = Column(Boolean, server_default=expression.false(), nullable=False)
 
     def verify(self, disease: str, approval_to_save: bool = False):
         if self.verified:
