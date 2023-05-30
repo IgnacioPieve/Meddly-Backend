@@ -312,52 +312,52 @@ async def load_example_data():
     test_measurements = [
         {
             "date": datetime.datetime.now(),
-            "type": "Glucosa",
-            "unit": "mg/dL",
+            "type": "bloodGlucose",
+            "unit": "mgPerDL",
             "value": 95.0,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(hours=2),
-            "type": "Presión Arterial",
+            "type": "bloodPressure",
             "unit": "mmHg",
             "value": 114,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(days=1),
-            "type": "Glucosa",
-            "unit": "mg/dL",
+            "type": "bloodGlucose",
+            "unit": "mgPerDL",
             "value": 100.0,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(days=2),
-            "type": "Glucosa",
-            "unit": "mg/dL",
+            "type": "bloodGlucose",
+            "unit": "mgPerDL",
             "value": 115.0,
         },
         {
             "date": datetime.datetime.now()
             + datetime.timedelta(days=2)
             + datetime.timedelta(hours=2),
-            "type": "Presión Arterial",
+            "type": "bloodPressure",
             "unit": "mmHg",
             "value": 102,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(days=3),
-            "type": "Glucosa",
-            "unit": "mg/dL",
+            "type": "bloodGlucose",
+            "unit": "mgPerDL",
             "value": 103.0,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(days=4),
-            "type": "Glucosa",
-            "unit": "mg/dL",
+            "type": "bloodGlucose",
+            "unit": "mgPerDL",
             "value": 235.0,
         },
         {
             "date": datetime.datetime.now() + datetime.timedelta(days=5),
-            "type": "Glucosa",
-            "unit": "mg/dL",
+            "type": "bloodGlucose",
+            "unit": "mgPerDL",
             "value": 105.0,
         },
     ]
