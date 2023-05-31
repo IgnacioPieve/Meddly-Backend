@@ -51,7 +51,7 @@ async def add_notification_preference(
 
     select_query = select(NotificationPreference).where(
         NotificationPreference.user_id == user.id,
-        NotificationPreference.notification_preference == notification_preference
+        NotificationPreference.notification_preference == notification_preference,
     )
     result = await database.fetch_one(query=select_query)
     if result:
@@ -90,18 +90,17 @@ async def delete_notification_preference(
 
     select_query = select(NotificationPreference).where(
         NotificationPreference.user_id == user.id,
-        NotificationPreference.notification_preference == notification_preference
+        NotificationPreference.notification_preference == notification_preference,
     )
     result = await database.fetch_one(query=select_query)
     if not result:
         raise ERROR501
 
-
     delete_query = (
         delete(NotificationPreference)
         .where(
             NotificationPreference.user_id == user.id,
-            NotificationPreference.notification_preference == notification_preference
+            NotificationPreference.notification_preference == notification_preference,
         )
         .returning(NotificationPreference)
     )

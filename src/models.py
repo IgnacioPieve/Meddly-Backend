@@ -1,6 +1,4 @@
-from fastapi import HTTPException
 from sqlalchemy import Column, DateTime, Integer, func
-from starlette import status
 
 from database import Base
 
