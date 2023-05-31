@@ -58,10 +58,12 @@ async def predict_by_symptoms(symptoms_typed: list[str], user: User):
 
 
 async def get_predictions_by_symptoms(
-    user: User, start: datetime, page: int, per_page: int
+    user: User, start: datetime = None, page: int = None, per_page: int = None
 ):
-    select_query = select(PredictionBySymptom).where(
-        PredictionBySymptom.user_id == user.id
+    select_query = (
+        select(PredictionBySymptom)
+        .where(PredictionBySymptom.user_id == user.id)
+        .order_by(PredictionBySymptom.created_at.desc())
     )
     if start:
         select_query = select_query.where(PredictionBySymptom.created_at >= start)
@@ -127,13 +129,18 @@ async def predict_by_image(file: UploadFile, user: User):
 async def get_predictions_by_image(
     user: User, start: datetime = None, page: int = None, per_page: int = None
 ):
-    select_query = select(PredictionByImage).where(PredictionByImage.user_id == user.id)
+    select_query = (
+        select(PredictionByImage)
+        .where(PredictionByImage.user_id == user.id)
+        .order_by(PredictionByImage.created_at.desc())
+    )
     if start:
         select_query = select_query.where(PredictionByImage.created_at >= start)
     if page and per_page:
         select_query = select_query.limit(per_page).offset((page - 1) * per_page)
     if (page or per_page) and not (page and per_page):
         raise ERROR703
+    select_query = select_query.order_by(PredictionByImage.created_at.desc())
     results = await database.fetch_all(query=select_query)
     for result in results:
         result.prediction = json.loads(result.prediction)

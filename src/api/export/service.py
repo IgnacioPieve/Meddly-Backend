@@ -8,7 +8,7 @@ import PyPDF2
 
 from api.measurement.service import get_measurements
 from api.medicine.service import get_medicines
-from api.prediction.service import get_predictions_by_image
+from api.prediction.service import get_predictions_by_image, get_predictions_by_symptoms
 from api.user.models import User
 
 template_loader = jinja2.FileSystemLoader(searchpath=".")
@@ -131,7 +131,7 @@ class UserDataPDFGenerator:
             )
         ]
         last_month_predictions_by_symptom = len(
-            await get_predictions_by_image(
+            await get_predictions_by_symptoms(
                 user, start=datetime.datetime.now() - datetime.timedelta(days=31)
             )
         )

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, UploadFile
 
 from api.auth.dependencies import authenticate
@@ -38,8 +40,13 @@ async def predict_by_symptoms(
     status_code=200,
     summary="List all prediction by symptoms",
 )
-async def get_predictions_by_symptoms(user: User = Depends(authenticate)):
-    result = await get_predictions_by_symptoms_service(user)
+async def get_predictions_by_symptoms(
+    start: datetime = None,
+    page: int = 1,
+    per_page: int = 10,
+    user: User = Depends(authenticate),
+):
+    result = await get_predictions_by_symptoms_service(user, start, page, per_page)
     return result
 
 
@@ -87,8 +94,13 @@ async def predict_by_image(file: UploadFile, user: User = Depends(authenticate))
     status_code=200,
     summary="List all prediction by image",
 )
-async def get_predictions_by_image(user: User = Depends(authenticate)):
-    result = await get_predictions_by_image_service(user)
+async def get_predictions_by_image(
+    start: datetime = None,
+    page: int = 1,
+    per_page: int = 10,
+    user: User = Depends(authenticate),
+):
+    result = await get_predictions_by_image_service(user, start, page, per_page)
     return result
 
 
