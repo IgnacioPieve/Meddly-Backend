@@ -24,6 +24,23 @@ router = APIRouter(prefix="/notification", tags=["Notifications"])
     summary="Get notification preferences",
 )
 async def get_notification_preferences(user: User = Depends(authenticate)):
+    """
+    Get notification preferences.
+
+    Parameters:
+    - user (User): The authenticated user.
+
+    Returns:
+    - list[str]: A list of notification preferences.
+
+    Summary:
+    This function retrieves the notification preferences for the authenticated user.
+
+    Responses:
+    - 200: If the notification preferences are successfully retrieved, the response will contain a list of notification preferences.
+
+    """
+
     results = await get_notification_preferences_service(user)
     return results
 
@@ -38,6 +55,24 @@ async def add_notification_preference(
     notification_preference: Literal["email", "whatsapp", "push"],
     user: User = Depends(authenticate),
 ):
+    """
+    Add a notification preference.
+
+    Parameters:
+    - notification_preference (Literal["email", "whatsapp", "push"]): The notification preference to add.
+    - user (User): The authenticated user.
+
+    Returns:
+    - list[str]: A list of updated notification preferences.
+
+    Summary:
+    This function adds a notification preference for the authenticated user.
+
+    Responses:
+    - 201: If the notification preference is successfully added, the response will contain a list of updated notification preferences.
+
+    """
+
     result = await add_notification_preference_service(notification_preference, user)
     return result
 
@@ -52,5 +87,23 @@ async def delete_notification_preference(
     notification_preference: Literal["email", "whatsapp", "push"],
     user: User = Depends(authenticate),
 ):
+    """
+    Delete a notification preference.
+
+    Parameters:
+    - notification_preference (Literal["email", "whatsapp", "push"]): The notification preference to delete.
+    - user (User): The authenticated user.
+
+    Returns:
+    - list[str]: A list of updated notification preferences.
+
+    Summary:
+    This function deletes a notification preference for the authenticated user.
+
+    Responses:
+    - 200: If the notification preference is successfully deleted, the response will contain a list of updated notification preferences.
+
+    """
+
     result = await delete_notification_preference_service(notification_preference, user)
     return result

@@ -19,7 +19,10 @@ async def accept_invitation(code: str, user: User = Depends(authenticate)):
 
 
 @router.get(
-    "/supervisor", response_model=list[UserSchema], status_code=200, summary="Get supervisors"
+    "/supervisor",
+    response_model=list[UserSchema],
+    status_code=200,
+    summary="Get supervisors",
 )
 async def get_supervisors(user: User = Depends(authenticate)):
     supervisors = await get_supervisors_service(user)

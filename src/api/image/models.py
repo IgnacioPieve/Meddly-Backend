@@ -16,15 +16,6 @@ class Image(CRUD):
     user = relationship("User", backref="images", foreign_keys=[user_id])
     tag = Column(String(255), nullable=False)
 
-    def set_image(self, image: PILImage):
-        folder = "store/images"
-        file_name = f"{uuid4()}.jpg"
-        # Assert that the folder exists
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-        image.save(f"{folder}/{file_name}")
-        self.name = file_name
-
     def get_anonymous_copy(self, tag: str = None):
         folder = "store/images"
         file_name = f"{uuid4()}.jpg"

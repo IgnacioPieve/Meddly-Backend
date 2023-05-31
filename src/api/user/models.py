@@ -9,7 +9,8 @@ from api.notification.models.message import (
     NewSupervisedMessage,
     NewSupervisorMessage,
 )
-from models import CRUD, raise_errorcode
+from api.supervisor.exceptions import ERROR200, ERROR201, ERROR204
+from models import CRUD
 
 base_date = datetime.datetime(1900, 1, 1)
 final_date = datetime.datetime(2100, 1, 1)
@@ -48,9 +49,9 @@ class User(CRUD):
     def accept_invitation(self, invitation_code):
         supervisor = User(self.db, User.invitation == invitation_code).get()
         if supervisor is None:
-            raise_errorcode(201)
+            raise ERROR201
         if supervisor.id == self.id:
-            raise_errorcode(204)
+            raise ERROR204
         already_supervised = (
             Supervised(
                 self.db,
@@ -61,7 +62,7 @@ class User(CRUD):
             is not None
         )
         if already_supervised:
-            raise_errorcode(200)
+            raise ERROR200
         supervisor.invitation = """generate_code()"""
 
         supervisor.save()

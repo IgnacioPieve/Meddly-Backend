@@ -40,13 +40,17 @@ async def accept_invitation(user: User, code: str):
 
 
 async def get_supervisors(user: User):
-    query = select(User).where(Supervised.supervised_id == user.id, User.id == Supervised.supervisor_id)
+    query = select(User).where(
+        Supervised.supervised_id == user.id, User.id == Supervised.supervisor_id
+    )
     supervisors = await database.fetch_all(query)
     return supervisors
 
 
 async def get_supervised(user: User):
-    query = select(User).where(Supervised.supervisor_id == user.id, User.id == Supervised.supervised_id)
+    query = select(User).where(
+        Supervised.supervisor_id == user.id, User.id == Supervised.supervised_id
+    )
     supervised = await database.fetch_all(query)
     return supervised
 

@@ -15,3 +15,10 @@ ERROR501 = HTTPException(
         "description": "You tried to delete a notification preference that you don't have.",
     },
 )
+ERROR502 = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail={
+        "code": 502,
+        "description": "You tried to add a notification preference that is not in the list of available preferences.",
+    },
+)

@@ -15,9 +15,3 @@ class CRUD(Base):
         server_default=func.now(),
         onupdate=func.current_timestamp(),
     )
-
-
-def raise_errorcode(status_code):
-    raise HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST, detail={"code": status_code}
-    )
