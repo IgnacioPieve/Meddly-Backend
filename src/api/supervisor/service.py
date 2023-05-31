@@ -1,5 +1,6 @@
 from sqlalchemy import delete, insert, select, update
 
+from api.supervisor.exceptions import ERROR200, ERROR201, ERROR204
 from api.user.models import Supervised, User
 from api.user.utils import generate_code
 from database import database
@@ -9,11 +10,9 @@ async def accept_invitation(user: User, code: str):
     select_query = select(User).where(User.invitation == code)
     supervisor = await database.fetch_one(select_query)
     if supervisor is None:
-        pass
-        # TODO: Raise error 201
+        raise ERROR201
     if supervisor.id == user.id:
-        pass
-        # Todo: raise error 204
+        raise ERROR204
 
     already_supervised_query = select(Supervised).where(
         Supervised.supervisor_id == supervisor.id,
@@ -21,8 +20,7 @@ async def accept_invitation(user: User, code: str):
     )
     already_supervised = bool(await database.fetch_one(already_supervised_query))
     if already_supervised:
-        pass
-        # Todo: raise error 200
+        raise ERROR200
 
     update_query = (
         update(User)
@@ -42,15 +40,15 @@ async def accept_invitation(user: User, code: str):
 
 
 async def get_supervisors(user: User):
-    query = select(Supervised).where(Supervised.supervised_id == user.id)
+    query = select(User).where(Supervised.supervised_id == user.id, User.id == Supervised.supervisor_id)
     supervisors = await database.fetch_all(query)
-    return [supervisor.supervisor_id for supervisor in supervisors]
+    return supervisors
 
 
 async def get_supervised(user: User):
-    query = select(Supervised).where(Supervised.supervisor_id == user.id)
+    query = select(User).where(Supervised.supervisor_id == user.id, User.id == Supervised.supervised_id)
     supervised = await database.fetch_all(query)
-    return [supervised.supervised_id for supervised in supervised]
+    return supervised
 
 
 async def delete_supervisor(supervisor_id: str, user: User) -> bool:

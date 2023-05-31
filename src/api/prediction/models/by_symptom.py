@@ -1,11 +1,12 @@
 from joblib import load
 from sklearn.tree import DecisionTreeClassifier
-from sqlalchemy import JSON, Boolean, Column, ForeignKey, String
+from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import expression
 
-from models import CRUD, raise_errorcode
+from api.prediction.exceptions import ERROR701
+from api.prediction.models.prediction import Prediction
+from models import CRUD
 
 model_trained: DecisionTreeClassifier = load(
     "api/prediction/trained/by_symptom.trained"
@@ -23,19 +24,17 @@ class DiseaseSymptoms(CRUD):
     real_disease = Column(String(255), nullable=False)
 
 
-class PredictionBySymptom(CRUD):
+class PredictionBySymptom(Prediction):
     __tablename__ = "prediction_by_symptom"
     symptoms = Column(ARRAY(String), nullable=False)
-    prediction = Column(JSON, nullable=False)
     user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=False)
     user = relationship(
         "User", backref="predictions_by_symptoms", foreign_keys=[user_id]
     )
-    verified = Column(Boolean, server_default=expression.false(), nullable=False)
 
     def verify(self, disease: str, approval_to_save: bool = False):
         if self.verified:
-            raise_errorcode(701)
+            raise ERROR701
         if approval_to_save:
             DiseaseSymptoms(
                 self.db,

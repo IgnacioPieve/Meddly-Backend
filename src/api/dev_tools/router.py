@@ -1,5 +1,6 @@
 import datetime
 import random
+from typing import Literal
 
 import requests
 from fastapi import APIRouter
@@ -7,12 +8,13 @@ from firebase_admin import auth, messaging
 from firebase_admin._auth_utils import UserNotFoundError
 from pydantic import BaseModel, EmailStr
 from sendgrid import Mail, SendGridAPIClient
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 
 import database
 from api.appointment.models import Appointment
 from api.measurement.models import Measurement
 from api.medicine.models import Medicine
+from api.supervisor.service import accept_invitation
 from api.user.models import User
 from config import FIREBASE_KEY, SENDGRID_CONFIG, WHATSAPP_API_KEY
 from database import Base, engine
@@ -26,6 +28,23 @@ class UserRequestModel(BaseModel):
 
     class Config:
         schema_extra = {"example": {"email": "test@test.com", "password": "password"}}
+
+
+@router.post("/get-user")
+def get_user(
+    user: Literal[
+        "ignacio.pieve@gmail.com", "soficibello@gmail.com", "salalorennn@gmail.com"
+    ]
+):
+    user_data = {"email": user, "password": "password", "returnSecureToken": True}
+    url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={FIREBASE_KEY}"
+    response = requests.post(url, json=user_data)
+    try:
+        return response.json()["idToken"]
+    except KeyError:
+        url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_KEY}"
+        response = requests.post(url, json=user_data)
+        return response.json()["idToken"]
 
 
 @router.post("/get-some-users")
@@ -223,14 +242,15 @@ async def load_example_data():
         .returning(User)
     )
 
-    # TODO: FIX THIS
     # # Ignacio supervises Lorenzo and Sofía, Sofía supervises Lorenzo, Lorenzo supervises Ignacio
-    # user_loren.accept_invitation(user_igna.invitation)
-    # user_loren.accept_invitation(user_sofi.invitation)
-    #
-    # user_sofi.accept_invitation(user_igna.invitation)
-    #
-    # user_igna.accept_invitation(user_loren.invitation)
+    await accept_invitation(user_loren, user_igna.invitation)
+    user_igna = await db.fetch_one(query=select(User).where(User.id == user_igna.id))
+    await accept_invitation(user_loren, user_sofi.invitation)
+    user_sofi = await db.fetch_one(query=select(User).where(User.id == user_sofi.id))
+    await accept_invitation(user_sofi, user_igna.invitation)
+    user_igna = await db.fetch_one(query=select(User).where(User.id == user_igna.id))
+    await accept_invitation(user_igna, user_loren.invitation)
+    user_loren = await db.fetch_one(query=select(User).where(User.id == user_loren.id))
 
     test_medicines = [
         {

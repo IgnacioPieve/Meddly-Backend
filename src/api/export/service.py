@@ -8,6 +8,7 @@ import PyPDF2
 
 from api.measurement.service import get_measurements
 from api.medicine.service import get_medicines
+from api.prediction.service import get_predictions_by_image
 from api.user.models import User
 
 template_loader = jinja2.FileSystemLoader(searchpath=".")
@@ -129,22 +130,17 @@ class UserDataPDFGenerator:
                 end=datetime.datetime.now(),
             )
         ]
-        last_month_predictions_by_symptom = 0  # TODO: len(
-        #     [
-        #         True
-        #         for prediction in user.predictions_by_symptoms
-        #         if prediction.date
-        #         > datetime.datetime.now() - datetime.timedelta(days=30)
-        #     ]
-        # )
-        last_month_predictions_by_image = 0  # TODO: len(
-        #     [
-        #         True
-        #         for prediction in user.predictions_by_image
-        #         if prediction.date
-        #         > datetime.datetime.now() - datetime.timedelta(days=30)
-        #     ]
-        # )
+        last_month_predictions_by_symptom = len(
+            await get_predictions_by_image(
+                user, start=datetime.datetime.now() - datetime.timedelta(days=31)
+            )
+        )
+        last_month_predictions_by_image = len(
+            await get_predictions_by_image(
+                user, start=datetime.datetime.now() - datetime.timedelta(days=31)
+            )
+        )
+
         return {
             "name": user.get_fullname(),
             "weight": user.weight if user.weight else "N/A",

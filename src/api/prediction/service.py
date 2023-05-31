@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 from uuid import uuid4
 
 import numpy as np
@@ -9,6 +10,7 @@ from PIL import Image
 from sqlalchemy import insert, select
 
 from api.image.models import Image as ImageModel
+from api.prediction.exceptions import ERROR703
 from api.prediction.models.by_image import PredictionByImage
 from api.prediction.models.by_image import model_trained as model_trained_by_image
 from api.prediction.models.by_symptom import PredictionBySymptom
@@ -17,16 +19,15 @@ from api.prediction.models.by_symptom import symptoms, symptoms_template
 from api.user.models import User
 from database import database
 
-file = 'api/search/indexes/codes_translated.json'
-with open(file, 'r', encoding='utf-8') as f:
+file = "api/search/indexes/codes_translated.json"
+with open(file, "r", encoding="utf-8") as f:
     codes = json.load(f)
 
 
 async def predict_by_symptoms(symptoms_typed: list[str], user: User):
     for symptom in symptoms_typed:
         if symptom not in symptoms:
-            raise Exception(700)
-            # TODO: raise error
+            raise ERROR700
 
     symptoms_df = pd.DataFrame(
         [{**symptoms_template, **{symptom: 1 for symptom in symptoms_typed}}]
@@ -52,19 +53,28 @@ async def predict_by_symptoms(symptoms_typed: list[str], user: User):
     await database.execute(query=insert_query)
 
     for i in range(len(results)):
-        results[i]['disease'] = codes[results[i]['disease']]
+        results[i]["disease"] = codes[results[i]["disease"]]
     return results
 
 
-async def get_predictions_by_symptoms(user: User):
+async def get_predictions_by_symptoms(
+    user: User, start: datetime, page: int, per_page: int
+):
     select_query = select(PredictionBySymptom).where(
         PredictionBySymptom.user_id == user.id
     )
+    if start:
+        select_query = select_query.where(PredictionBySymptom.created_at >= start)
+    if page and per_page:
+        select_query = select_query.limit(per_page).offset((page - 1) * per_page)
+    if (page or per_page) and not (page and per_page):
+        raise ERROR703
+
     results = await database.fetch_all(query=select_query)
     for result in results:
         result.prediction = json.loads(result.prediction)
         for i in range(len(result.prediction)):
-            result.prediction[i]['disease'] = codes[result.prediction[i]['disease']]
+            result.prediction[i]["disease"] = codes[result.prediction[i]["disease"]]
     return results
 
 
@@ -100,7 +110,7 @@ async def predict_by_image(file: UploadFile, user: User):
 
     prediction = model_trained_by_image.predict(img)
     prediction = [
-        {"disease": classes[i], "probability": float(prediction[0][i])}
+        {"disease": classes[i], "probability": round(float(prediction[0][i]), 2)}
         for i in np.argsort(prediction[0])[::-1]
     ]
 
@@ -114,8 +124,16 @@ async def predict_by_image(file: UploadFile, user: User):
     return prediction
 
 
-async def get_predictions_by_image(user: User):
+async def get_predictions_by_image(
+    user: User, start: datetime = None, page: int = None, per_page: int = None
+):
     select_query = select(PredictionByImage).where(PredictionByImage.user_id == user.id)
+    if start:
+        select_query = select_query.where(PredictionByImage.created_at >= start)
+    if page and per_page:
+        select_query = select_query.limit(per_page).offset((page - 1) * per_page)
+    if (page or per_page) and not (page and per_page):
+        raise ERROR703
     results = await database.fetch_all(query=select_query)
     for result in results:
         result.prediction = json.loads(result.prediction)

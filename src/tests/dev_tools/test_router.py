@@ -1,3 +1,4 @@
+from starlette.status import HTTP_200_OK
 from starlette.testclient import TestClient
 
 
@@ -10,4 +11,4 @@ def test_endpoints(client: TestClient):
     ]
     for endpoint in endpoints:
         response = getattr(client, endpoint["method"])(f"/dev{endpoint['endpoint']}")
-        assert response.status_code == 200
+        assert response.status_code == HTTP_200_OK

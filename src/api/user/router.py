@@ -1,5 +1,3 @@
-# TODO: Refactored: True
-
 from fastapi import APIRouter, Depends
 
 from api.auth.dependencies import authenticate

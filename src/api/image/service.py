@@ -1,5 +1,6 @@
 from sqlalchemy import select
 
+from api.image.exceptions import ERROR800
 from api.image.models import Image as ImageModel
 from api.user.models import User
 from database import database
@@ -12,8 +13,7 @@ async def get_image(name: str, user: User):
     )
     image = await database.fetch_one(select_query)
     if image is None:
-        pass
-        # TODO: raise 800
+        raise ERROR800
     folder = "store/images"
     path = f"{folder}/{image.name}"
     with open(path, "rb") as file:

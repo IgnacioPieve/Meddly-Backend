@@ -1,5 +1,6 @@
 from sqlalchemy import delete, insert, select
 
+from api.notification.exceptions import ERROR500, ERROR501
 from api.notification.models.notification import NotificationPreference
 from api.user.models import User
 from database import database
@@ -23,8 +24,7 @@ async def add_notification_preference(
     )
     success = bool(await database.execute(query=insert_query))
     if not success:
-        pass
-        # TODO: raise error
+        raise ERROR500
     preferences = await get_notification_preferences(user)
     return preferences
 
@@ -42,7 +42,6 @@ async def delete_notification_preference(
     )
     success = bool(await database.execute(query=delete_query))
     if not success:
-        pass
-        # TODO: raise error
+        raise ERROR501
     preferences = await get_notification_preferences(user)
     return preferences

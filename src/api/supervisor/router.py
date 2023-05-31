@@ -7,6 +7,7 @@ from api.supervisor.service import delete_supervisor as delete_supervisor_servic
 from api.supervisor.service import get_supervised as get_supervised_service
 from api.supervisor.service import get_supervisors as get_supervisors_service
 from api.user.models import User
+from api.user.schemas import UserSchema
 
 router = APIRouter(prefix="/supervisors", tags=["Supervisors"])
 
@@ -18,7 +19,7 @@ async def accept_invitation(code: str, user: User = Depends(authenticate)):
 
 
 @router.get(
-    "/supervisor", response_model=list[str], status_code=200, summary="Get supervisors"
+    "/supervisor", response_model=list[UserSchema], status_code=200, summary="Get supervisors"
 )
 async def get_supervisors(user: User = Depends(authenticate)):
     supervisors = await get_supervisors_service(user)
@@ -27,7 +28,7 @@ async def get_supervisors(user: User = Depends(authenticate)):
 
 @router.get(
     "/supervised",
-    response_model=list[str],
+    response_model=list[UserSchema],
     status_code=200,
     summary="Get supervised users",
 )

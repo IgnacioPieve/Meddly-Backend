@@ -1,24 +1,16 @@
 from sklearn.preprocessing import LabelEncoder
-from sqlalchemy import JSON, Boolean, Column, ForeignKey, String
+from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import expression
 from tensorflow.keras.models import load_model
 
-from models import CRUD, raise_errorcode
+from api.prediction.exceptions import ERROR701
+from api.prediction.models.prediction import Prediction
+from models import CRUD
 
 classes = [
     "Actinic keratoses",
     "Basal cell carcinoma",
     "Benign keratosis-like lesions",
-    "Dermatofibroma",
-    "Melanoma",
-    "Melanocytic nevi",
-    "Vascular lesions",
-]
-classes = [
-    "Actinic keratoses",
-    "Cancer bro",  # TODO: Correct this
-    "No es cancer bro",  # TODO: Correct this
     "Dermatofibroma",
     "Melanoma",
     "Melanocytic nevi",
@@ -41,20 +33,18 @@ class DiseaseImage(CRUD):
     real_disease = Column(String(255), nullable=False)
 
 
-class PredictionByImage(CRUD):
+class PredictionByImage(Prediction):
     __tablename__ = "prediction_by_image"
     image_name = Column(
         String(255), ForeignKey("image.name"), index=True, nullable=False
     )
     image = relationship("Image", foreign_keys=[image_name])
-    prediction = Column(JSON, nullable=False)
     user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=False)
     user = relationship("User", backref="predictions_by_image", foreign_keys=[user_id])
-    verified = Column(Boolean, server_default=expression.false(), nullable=False)
 
     def verify(self, disease: str, approval_to_save: bool = False):
         if self.verified:
-            raise_errorcode(701)
+            raise ERROR701
         self.image.db = self.db
         if approval_to_save:
             DiseaseImage(
