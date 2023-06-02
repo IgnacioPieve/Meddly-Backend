@@ -21,3 +21,10 @@ ERROR204 = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
     detail={"code": 204, "description": "You can't supervise yourself."},
 )
+ERROR205 = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail={
+        "code": 205,
+        "description": "Some of the selected users are not supervised by you or do not exist.",
+    },
+)

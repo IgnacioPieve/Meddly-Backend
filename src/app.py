@@ -9,6 +9,7 @@ from api.calendar.router import router as calendar_router
 from api.dev_tools.router import router as dev_tools_router
 from api.export.router import router as export_router
 from api.image.router import router as image_router
+from api.jobs.router import router as jobs_router
 from api.measurement.router import router as measurement_router
 from api.medicine.router import router as medicine_router
 from api.notification.router import router as notification_router
@@ -47,6 +48,7 @@ routers = [
     search_router,
     notification_router,
     prediction_router,
+    jobs_router,
 ]
 
 for router in routers:

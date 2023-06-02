@@ -3,7 +3,7 @@ import random
 from typing import Literal
 
 import requests
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks
 from firebase_admin import auth, messaging
 from firebase_admin._auth_utils import UserNotFoundError
 from pydantic import BaseModel, EmailStr
@@ -108,6 +108,7 @@ def reset_database():
 
 @router.post("/send_notification")
 def send_notification(
+    background_tasks: BackgroundTasks,
     email: str | None = None,
     phone_number: str | None = None,
     device_id: str | None = None,
@@ -120,7 +121,7 @@ def send_notification(
         message_constructor.template_id = "d-5e634cd5cd6548b4b440f188c1d2a40a"
         message_constructor.dynamic_template_data = {
             "hi_message": "Hola usuario de prueba!",
-            "message": "mensaje de prueba",
+            "message": "SEEE PUTARDOOOO",
             "subject": "mensaje de prueba",
         }
         sg = SendGridAPIClient(SENDGRID_CONFIG["api_key"])
@@ -162,11 +163,15 @@ def send_notification(
         print(f"Message Sent via Push to {device_id}. Response {response}")
 
     if email:
-        send_email()
+        print("Sending email")
+        background_tasks.add_task(send_email)
     if phone_number:
-        send_whatsapp()
+        print("Sending whatsapp")
+        background_tasks.add_task(send_whatsapp)
     if device_id:
-        send_push()
+        print("Sending push")
+        background_tasks.add_task(send_push)
+    print("Workers working!")
 
 
 @router.post("/load-example-data")

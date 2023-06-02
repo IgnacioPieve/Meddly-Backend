@@ -1,8 +1,12 @@
+from fastapi import BackgroundTasks
+from sendgrid import Mail, SendGridAPIClient
 from sqlalchemy import delete, insert, select
 
 from api.notification.exceptions import ERROR500, ERROR501
-from api.notification.models.notification import NotificationPreference
+from api.notification.models.message import Message
+from api.notification.models.notification_preference import NotificationPreference
 from api.user.models import User
+from config import SENDGRID_CONFIG
 from database import database
 
 
@@ -107,3 +111,38 @@ async def delete_notification_preference(
     await database.execute(query=delete_query)
     preferences = await get_notification_preferences(user)
     return preferences
+
+
+async def send_notification(
+    message: Message, user: User, background_tasks: BackgroundTasks
+):
+    def send_email(message: Message, user: User):
+        message_constructor = Mail(
+            from_email=SENDGRID_CONFIG["email"],
+            to_emails=user.email,
+        )
+        message_constructor.template_id = "d-5e634cd5cd6548b4b440f188c1d2a40a"
+        message_data = message.email()
+        message_constructor.dynamic_template_data = {
+            "hi_message": f"Hola {user.get_fullname()}!",
+            "message": message_data["message"],
+            "subject": message_data["subject"],
+        }
+        sg = SendGridAPIClient(SENDGRID_CONFIG["api_key"])
+        sg.send(message_constructor)
+
+    def send_whatsapp(message: Message, user: User):
+        print("Acá se debería haber enviado un mensaje de WhatsApp")
+
+    def send_push(message: Message, user: User):
+        print("Acá se debería haber enviado un mensaje de Push")
+
+    notification_preferences = await get_notification_preferences(user)
+
+    for notification_preference in notification_preferences:
+        if notification_preference == "email":
+            background_tasks.add_task(send_email, message, user)
+        if notification_preference == "whatsapp":
+            background_tasks.add_task(send_whatsapp, message, user)
+        if notification_preference == "push":
+            background_tasks.add_task(send_push, message, user)

@@ -36,6 +36,26 @@ async def get_medicines(user: User) -> list[Record]:
     return await database.fetch_all(query=select_query)
 
 
+async def get_medicine(user: User, medicine_id: int) -> Record | None:
+    """
+    Get a medicine for a user.
+
+    Args:
+        user (User): The user who owns the medicine.
+        medicine_id (int): The ID of the medicine to retrieve.
+
+    Returns:
+        Record | None: The medicine record, or None if not found.
+
+    """
+
+    select_query = select(Medicine).where(
+        Medicine.id == medicine_id, Medicine.user_id == user.id
+    )
+    medicine = await database.fetch_one(query=select_query)
+    return medicine
+
+
 async def create_medicine(user: User, medicine: CreateMedicineSchema) -> Record | None:
     """
     Create a new medicine for a user.

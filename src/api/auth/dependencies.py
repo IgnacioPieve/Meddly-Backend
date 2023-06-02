@@ -3,8 +3,7 @@ from fastapi import Depends, Header, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from firebase_admin import auth, credentials
 
-from api.auth.exceptions import ERROR203
-from api.user.service import assert_device, get_or_create_user, get_user
+from api.user.service import assert_device, get_or_create_user
 from config import FIREBASE_JSON
 
 firebase_cred = credentials.Certificate(FIREBASE_JSON)
@@ -37,21 +36,4 @@ async def authenticate(
     user = await get_or_create_user(decoded_token["user_id"], decoded_token["email"])
     if device:
         await assert_device(user, device)
-    return user
-
-
-async def authenticate_with_supervisor(
-    cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
-    device: str | None = Header(default=None),
-    supervised_id: str | None = Header(default=None),
-):
-    """
-    Authenticate a user with a Bearer token.
-    This supports the supervisor role.
-    """
-    user = await authenticate(cred, device=device)
-    if supervised_id is not None:
-        user = get_user(supervised_id)
-        if not user:
-            raise ERROR203
     return user
