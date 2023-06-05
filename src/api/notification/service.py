@@ -131,7 +131,7 @@ async def send_notification(
             "subject": message_data["subject"],
         }
         sg = SendGridAPIClient(SENDGRID_CONFIG["api_key"])
-        sg.send(message_constructor)
+        print(sg.send(message_constructor))
 
     def send_whatsapp(message: Message, user: User):
         print("Acá se debería haber enviado un mensaje de WhatsApp")

@@ -269,7 +269,10 @@ async def get_consumptions(user: User, start: datetime, end: datetime) -> list[R
         for consumption in consumption.values()
     ]
 
-async def get_consumptions_on_date(user: User, date: datetime, only_not_taken: bool = False) -> list[Record]:
+
+async def get_consumptions_on_date(
+    user: User, date: datetime, only_not_taken: bool = False
+) -> list[Record]:
     """
     Retrieves consumption records of medicines for a specific user on a specific date.
 
@@ -281,9 +284,13 @@ async def get_consumptions_on_date(user: User, date: datetime, only_not_taken: b
         list[Record]: A list of consumption records.
     """
 
-    start = date.replace(hour=23, minute=59, second=59, microsecond=0) - timedelta(days=1)
+    start = date.replace(hour=23, minute=59, second=59, microsecond=0) - timedelta(
+        days=1
+    )
     end = date.replace(hour=0, minute=0, second=1, microsecond=0) + timedelta(days=1)
-    return [consumption
-            for consumption in await get_consumptions(user, start, end)
-            if consumption.date.date() == date.date() and (not only_not_taken or not consumption.consumed)]
-
+    return [
+        consumption
+        for consumption in await get_consumptions(user, start, end)
+        if consumption.date.date() == date.date()
+        and (not only_not_taken or not consumption.consumed)
+    ]
