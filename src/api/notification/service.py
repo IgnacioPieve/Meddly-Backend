@@ -1,11 +1,13 @@
 from fastapi import BackgroundTasks
+from firebase_admin import messaging
 from sendgrid import Mail, SendGridAPIClient
 from sqlalchemy import delete, insert, select
 
 from api.notification.exceptions import ERROR500, ERROR501
 from api.notification.models.message import Message
 from api.notification.models.notification_preference import NotificationPreference
-from api.user.models import User
+from api.user.models import Device, User
+from api.user.service import get_user_devices
 from config import SENDGRID_CONFIG
 from database import database
 
@@ -134,8 +136,20 @@ async def send_notification(
     def send_whatsapp(message: Message, user: User):
         print("Acá se debería haber enviado un mensaje de WhatsApp")
 
-    def send_push(message: Message, user: User):
-        print("Acá se debería haber enviado un mensaje de Push")
+    async def send_push(message: Message, user: User):
+        devices = await get_user_devices(user)
+        message_data = message.push()
+
+        for device in devices:
+            device: Device
+            message_constructor = messaging.Message(
+                notification=messaging.Notification(
+                    title=message_data["title"],
+                    body=message_data["body"],
+                ),
+                token=device.token,
+            )
+            messaging.send(message_constructor)
 
     notification_preferences = await get_notification_preferences(user)
 

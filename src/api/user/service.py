@@ -71,6 +71,22 @@ async def assert_device(user: User, device_token: str) -> bool:
     return device
 
 
+async def get_user_devices(user: User) -> list[Record]:
+    """
+    Retrieves a user's devices from the database.
+
+    Args:
+        user (User): The user object to retrieve devices for.
+
+    Returns:
+        list[Record]: The list of devices associated with the user.
+    """
+
+    select_query = select(Device).where(Device.user_id == user.id)
+    devices = await database.fetch_all(query=select_query)
+    return devices
+
+
 def get_user(user_id: str) -> User | None:
     """
     Retrieves a user from the database based on the given user ID.

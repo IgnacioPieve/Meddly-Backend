@@ -103,90 +103,50 @@ class TodayUserAppointments(Message):
         }
 
 
-# class TodayUserMedicines(Message):
-#     def __init__(self, user, **kwargs):
-#         self.user = User(**user)
-#         today_consumptions = await get_consumptions(
-#             self.user,
-#             datetime.now().replace(hour=0, minute=0, second=0, microsecond=0),
-#             datetime.now().replace(hour=23, minute=59, second=59, microsecond=0),
-#         )
-#         self.today_medicines = {}
-#         for consumption in today_consumptions:
-#             if consumption.medicine.id not in self.today_medicines:
-#                 self.today_medicines[consumption.medicine.id] = {
-#                     "name": await get_medicine(self.user, consumption.medicine.id),
-#                     "hours": [],
-#                 }
-#             self.today_medicines[consumption.medicine.id]["hours"].append(
-#                 consumption.date.strftime("%H:%M")
-#             )
-#
-#         super().__init__(**kwargs)
-#
-#     def whatsapp(self):
-#         m = f"Buenos días {self.user.get_fullname()}! Recuerda que tienes que tomar los siguientes medicamentos hoy:\n\n"
-#         for medicine in self.today_medicines:
-#             m += f'- {medicine["name"]} a las {", ".join(medicine["hours"])}\n'
-#         return {"message": m}
-#
-#     def email(self):
-#         m = f"Buenos días {self.user.get_fullname()}! Recuerda que tienes que tomar los siguientes medicamentos hoy:\n\n"
-#         for medicine in self.today_medicines:
-#             m += f'- {medicine["name"]} a las {", ".join(medicine["hours"])}\n'
-#         return {"subject": f"Recordatorio de medicamentos", "message": m}
-#
-#     def push(self):
-#         return {
-#             "title": "Recordatorio de Meddly",
-#             "body": f"Buenos días {self.user.get_fullname()}! Ingresa a la app para ver tus medicamentos de hoy",
-#         }
-#
-#
-# class YesterdarUserDidntTakeMedicine(Message):
-#     def __init__(self, user, **kwargs):
-#         self.user = User(**user)
-#         yesterday_consumptions = await get_consumptions(
-#             self.user,
-#             datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-#             - timedelta(days=1),
-#             datetime.now().replace(hour=23, minute=59, second=59, microsecond=0)
-#             - timedelta(days=1),
-#         )
-#         self.yesterday_medicines = {}
-#         for consumption in yesterday_consumptions:
-#             if consumption.consumed:
-#                 if consumption.medicine.id not in self.yesterday_medicines:
-#                     self.yesterday_medicines[consumption.medicine.id] = {
-#                         "name": await get_medicine(self.user, consumption.medicine.id),
-#                         "hours": [],
-#                     }
-#                 self.yesterday_medicines[consumption.medicine.id]["hours"].append(
-#                     consumption.date.strftime("%H:%M")
-#                 )
-#
-#         super().__init__(**kwargs)
-#
-#     def whatsapp(self):
-#         m = f"Buenos días {self.user.get_fullname()}! Recuerda que ayer no tomaste los siguientes medicamentos:\n\n"
-#         for medicine in self.yesterday_medicines:
-#             m += f'- {medicine["name"]} a las {", ".join(medicine["hours"])}\n'
-#         return {"message": m}
-#
-#     def email(self):
-#         m = f"Buenos días {self.user.get_fullname()}! Recuerda que ayer no tomaste los siguientes medicamentos:\n\n"
-#         for medicine in self.yesterday_medicines:
-#             m += f'- {medicine["name"]} a las {", ".join(medicine["hours"])}\n'
-#         return {"subject": f"Recordatorio de medicamentos", "message": m}
-#
-#     def push(self):
-#         return {
-#             "title": "Recordatorio de Meddly",
-#             "body": f"Buenos días {self.user.get_fullname()}! Ingresa a la app para ver "
-#             f"tus medicamentos no consumidos de ayer.",
-#         }
-#
-#
+class TodayUserMedicines(Message):
+    def whatsapp(self):
+        m = f"Buenos días {self.user.get_fullname()}! Recuerda que tienes que tomar los siguientes medicamentos hoy:\n\n"
+        for medicine in self.medicines.values():
+            m += f'- {medicine["name"]} a las {", ".join(medicine["hours"])}\n'
+        m += "\nPuedes ver información más detallada sobre sus medicamentos de hoy desde la app."
+        return {"message": m}
+
+    def email(self):
+        m = f"Buenos días! Recuerda que tienes que tomar los siguientes medicamentos hoy:<br><br>"
+        for medicine in self.medicines.values():
+            m += f'- <b>{medicine["name"]}</b> a las <b>{", ".join(medicine["hours"])}</b>.<br>'
+        m += f"<br>Puedes ver información más detallada sobre tus medicamentos de hoy desde la app."
+        return {"subject": f"Recordatorio de medicamentos", "message": m}
+
+    def push(self):
+        return {
+            "title": "Recordatorio de Meddly",
+            "body": f"Buenos días {self.user.get_fullname()}! Ingresa a la app para ver tus medicamentos de hoy",
+        }
+
+
+class YesterdarUserDidntTakeMedicine(Message):
+    def whatsapp(self):
+        m = f"Buenos días {self.user.get_fullname()}! Recuerda que ayer no tomaste los siguientes medicamentos:\n\n"
+        for medicine in self.medicines.values():
+            m += f'- {medicine["name"]} a las {", ".join(medicine["hours"])}\n'
+        return {"message": m}
+
+    def email(self):
+        m = f"Buenos días! Recuerda que ayer no tomaste los siguientes medicamentos:<br><br>"
+        for medicine in self.medicines.values():
+            m += f'- <b>{medicine["name"]}</b> a las <b>{", ".join(medicine["hours"])}</b><br>'
+        m += f"<br>Recuerda que puedes ver tus medicamentos desde la app."
+        return {"subject": f"Recordatorio de medicamentos", "message": m}
+
+    def push(self):
+        return {
+            "title": "Recordatorio de Meddly",
+            "body": f"Buenos días {self.user.get_fullname()}! Ingresa a la app para ver "
+            f"tus medicamentos no consumidos de ayer.",
+        }
+
+
 # class TodaySupervisedAppointments(Message):
 #     def __init__(self, user, supervised, **kwargs):
 #         self.user = User(**user)

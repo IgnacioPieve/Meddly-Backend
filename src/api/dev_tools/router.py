@@ -154,8 +154,8 @@ def send_notification(
     def send_push():
         message = messaging.Message(
             notification=messaging.Notification(
-                title="Titulo de prueba",
-                body="Mensaje de prueba",
+                title="Spiniiiiii",
+                body="Loren Puto",
             ),
             token=device_id,
         )
@@ -260,7 +260,7 @@ async def load_example_data():
     test_medicines = [
         {
             "name": "Ibuprofeno",
-            "start_date": datetime.datetime.now(),
+            "start_date": datetime.datetime.now() - datetime.timedelta(days=3),
             "end_date": datetime.datetime.now() + datetime.timedelta(days=20),
             "stock": 15,
             "stock_warning": 5,
@@ -269,7 +269,7 @@ async def load_example_data():
             "dosis": 1.5,
             "instructions": "Disolver la pastilla en agua",
             "interval": 3,
-            "hours": ["08:00", "11:00", "18:00"],
+            "hours": ["08:00", "11:00", "18:00", "23:30"],
         },
         {
             "name": "Paracetamol",
@@ -284,7 +284,7 @@ async def load_example_data():
         },
         {
             "name": "Amoxidal",
-            "start_date": datetime.datetime.now(),
+            "start_date": datetime.datetime.now() - datetime.timedelta(days=3),
             "end_date": datetime.datetime.now() + datetime.timedelta(days=30),
             "stock": 20,
             "stock_warning": 4,
@@ -293,7 +293,20 @@ async def load_example_data():
             "dosis": 20,
             "instructions": "Tomarmelo entero",
             "days": [1, 3, 5, 7],
-            "hours": ["08:00", "13:00", "20:00"],
+            "hours": ["08:00", "13:00", "20:00", "23:30"],
+        },
+        {
+            "name": "Vitamina C",
+            "start_date": datetime.datetime.now() - datetime.timedelta(days=4),
+            "end_date": datetime.datetime.now() + datetime.timedelta(days=30),
+            "stock": 20,
+            "stock_warning": 4,
+            "presentation": "liquid",
+            "dosis_unit": "mL",
+            "dosis": 20,
+            "instructions": "Tomarmelo entero",
+            "days": [2, 4, 6],
+            "hours": ["08:00", "13:00", "20:00", "23:30"],
         },
     ]
     users = [user_igna, user_sofi, user_loren]

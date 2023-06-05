@@ -8,12 +8,12 @@ def test_get_empty_calendar(client: TestClient):
     response = client.get("/calendar")
     assert response.status_code == HTTP_200_OK
     calendar = response.json()
-    assert "appointments" in calendar
-    assert "measurements" in calendar
-    assert "consumptions" in calendar
-    assert len(calendar["appointments"]) == 0
-    assert len(calendar["measurements"]) == 0
-    assert len(calendar["consumptions"]) == 0
+    assert "appointments" in calendar['test_user']
+    assert "measurements" in calendar['test_user']
+    assert "consumptions" in calendar['test_user']
+    assert len(calendar['test_user']["appointments"]) == 0
+    assert len(calendar['test_user']["measurements"]) == 0
+    assert len(calendar['test_user']["consumptions"]) == 0
 
 
 def test_appointments(client: TestClient):
@@ -171,9 +171,9 @@ def test_appointments(client: TestClient):
     response = client.get("/calendar")
     assert response.status_code == HTTP_200_OK
     calendar = response.json()
-    assert "appointments" in calendar
-    assert "measurements" in calendar
-    assert "consumptions" in calendar
-    assert len(calendar["appointments"]) == 3
-    assert len(calendar["measurements"]) == 3
-    assert len(calendar["consumptions"]) == 106
+    assert "appointments" in calendar['test_user']
+    assert "measurements" in calendar['test_user']
+    assert "consumptions" in calendar['test_user']
+    assert len(calendar['test_user']["appointments"]) == 3
+    assert len(calendar['test_user']["measurements"]) == 3
+    assert len(calendar['test_user']["consumptions"]) == 103
