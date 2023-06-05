@@ -234,7 +234,7 @@ async def get_consumptions(user: User, start: datetime, end: datetime) -> list[R
         if medicine.hours:
             frequency_rule = medicine.get_frequency().between(range_start, range_end)
             for date in frequency_rule:
-                consumptions[medicine.id][date] = {}
+                consumptions[medicine.id][date.date()] = {}
                 for hour in medicine.hours:
                     c_date = datetime.combine(
                         date, datetime.strptime(hour, "%H:%M").time()
@@ -245,7 +245,7 @@ async def get_consumptions(user: User, start: datetime, end: datetime) -> list[R
                         medicine_id=medicine.id,
                     )
                     c.consumed = False
-                    consumptions[medicine.id][date][hour] = c
+                    consumptions[medicine.id][date.date()][hour] = c
 
         consumptions_taken = await database.fetch_all(
             select(Consumption).where(
@@ -256,9 +256,9 @@ async def get_consumptions(user: User, start: datetime, end: datetime) -> list[R
         for consumption_taken in consumptions_taken:
             consumption_taken = Consumption(**consumption_taken)
             consumption_taken.consumed = True
-            if consumption_taken.date not in consumptions[medicine.id]:
-                consumptions[medicine.id][consumption_taken.date] = {}
-            consumptions[medicine.id][consumption_taken.date][
+            if consumption_taken.date.date() not in consumptions[medicine.id]:
+                consumptions[medicine.id][consumption_taken.date.date()] = {}
+            consumptions[medicine.id][consumption_taken.date.date()][
                 consumption_taken.date.strftime("%H:%M")
             ] = consumption_taken
 
