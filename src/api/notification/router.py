@@ -3,6 +3,7 @@ from typing import Literal
 from fastapi import APIRouter, Depends
 
 from api.auth.dependencies import authenticate
+from api.notification.schemas import NotificationSchema
 from api.notification.service import (
     add_notification_preference as add_notification_preference_service,
 )
@@ -12,13 +13,14 @@ from api.notification.service import (
 from api.notification.service import (
     get_notification_preferences as get_notification_preferences_service,
 )
+from api.notification.service import get_notifications as get_notifications_service
 from api.user.models import User
 
 router = APIRouter(prefix="/notification", tags=["Notifications"])
 
 
 @router.get(
-    "",
+    "/preference",
     response_model=list[str],
     status_code=200,
     summary="Get notification preferences",
@@ -46,7 +48,7 @@ async def get_notification_preferences(user: User = Depends(authenticate)):
 
 
 @router.post(
-    "",
+    "/preference",
     response_model=list[str],
     status_code=201,
     summary="Add a notification preference",
@@ -78,7 +80,7 @@ async def add_notification_preference(
 
 
 @router.delete(
-    "",
+    "/preference",
     response_model=list[str],
     status_code=200,
     summary="Delete a notification preference",
@@ -107,3 +109,16 @@ async def delete_notification_preference(
 
     result = await delete_notification_preference_service(notification_preference, user)
     return result
+
+
+@router.get(
+    "",
+    response_model=list[NotificationSchema],
+    status_code=200,
+    summary="Get notifications",
+)
+async def get_notifications(
+    page: int = 1, per_page: int = 10, user: User = Depends(authenticate)
+):
+    results = await get_notifications_service(user, page=page, per_page=per_page)
+    return results

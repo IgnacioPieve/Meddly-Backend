@@ -30,10 +30,12 @@ class NotificationPreference(CRUD):
         return f"{self.notification_preference}"
 
     def validate(self):
+        # TODO: This should be refactored
         if self.notification_preference not in self.OPTIONS:
             raise ERROR502
 
     def send_notification(self, message):
+        # TODO: This and the subclasses methods should be refactored
         raise Exception("NotImplementedException")
 
 

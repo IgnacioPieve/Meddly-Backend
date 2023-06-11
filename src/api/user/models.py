@@ -3,6 +3,7 @@ import threading
 
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, and_, func
 from sqlalchemy.orm import relationship
+from starlette.background import BackgroundTasks
 
 from api.notification.models.message import (
     Message,
@@ -46,7 +47,7 @@ class User(CRUD):
     birth = Column(DateTime, nullable=True)
     phone = Column(String(20), nullable=True)
 
-    def accept_invitation(self, invitation_code):
+    def accept_invitation(self, invitation_code, background_tasks: BackgroundTasks):
         supervisor = User(self.db, User.invitation == invitation_code).get()
         if supervisor is None:
             raise ERROR201

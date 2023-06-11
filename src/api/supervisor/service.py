@@ -1,12 +1,15 @@
 from sqlalchemy import delete, insert, select, update
+from starlette.background import BackgroundTasks
 
+from api.notification.models.message import NewSupervisedMessage, NewSupervisorMessage
+from api.notification.service import send_notification
 from api.supervisor.exceptions import ERROR200, ERROR201, ERROR204
 from api.user.models import Supervised, User
 from api.user.utils import generate_code
 from database import database
 
 
-async def accept_invitation(user: User, code: str):
+async def accept_invitation(user: User, code: str, background_tasks: BackgroundTasks):
     select_query = select(User).where(User.invitation == code)
     supervisor = await database.fetch_one(select_query)
     if supervisor is None:
@@ -34,9 +37,20 @@ async def accept_invitation(user: User, code: str):
     await database.execute(insert_query)
     await database.execute(update_query)
 
-    # TODO: Notificaciones
-    # self.send_notification(NewSupervisorMessage(supervisor=supervisor))
-    # supervisor.send_notification(NewSupervisedMessage(supervised=self))
+    await send_notification(
+        NewSupervisorMessage(
+            supervisor=User(**supervisor),
+        ),
+        user=User(**user),
+        background_tasks=background_tasks,
+    )
+    await send_notification(
+        NewSupervisedMessage(
+            supervised=User(**user),
+        ),
+        user=User(**supervisor),
+        background_tasks=background_tasks,
+    )
 
 
 async def get_supervisors(user: User):

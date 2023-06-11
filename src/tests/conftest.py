@@ -2,17 +2,13 @@ import pytest
 from fastapi.testclient import TestClient
 
 from api.auth.dependencies import authenticate
-from api.user.service import get_or_create_user
+from api.user.service import assert_device, get_or_create_user
 from app import app
 
 
-async def override_auth(
-    cred=None,
-    device: str = None,
-):
+async def override_auth():
     user = await get_or_create_user("test_user", "test_user@test.com")
-    if device:
-        pass  # TODO
+    await assert_device(user, "test_device")
     return user
 
 

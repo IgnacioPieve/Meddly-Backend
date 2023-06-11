@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from starlette.background import BackgroundTasks
 
 from api.auth.dependencies import authenticate
 from api.supervisor.service import accept_invitation as accept_invitation_service
@@ -13,8 +14,12 @@ router = APIRouter(prefix="/supervisors", tags=["Supervisors"])
 
 
 @router.post("/invitation", status_code=200, summary="Accept invitation")
-async def accept_invitation(code: str, user: User = Depends(authenticate)):
-    await accept_invitation_service(user, code)
+async def accept_invitation(
+    code: str,
+    background_tasks: BackgroundTasks,
+    user: User = Depends(authenticate),
+):
+    await accept_invitation_service(user, code, background_tasks)
     return True
 
 

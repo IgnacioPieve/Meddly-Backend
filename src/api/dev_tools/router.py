@@ -175,7 +175,7 @@ def send_notification(
 
 
 @router.post("/load-example-data")
-async def load_example_data():
+async def load_example_data(background_tasks: BackgroundTasks):
     def assure_user_exists(email):
         try:
             return auth.get_user_by_email(email).uid
@@ -248,13 +248,13 @@ async def load_example_data():
     )
 
     # # Ignacio supervises Lorenzo and Sofía, Sofía supervises Lorenzo, Lorenzo supervises Ignacio
-    await accept_invitation(user_loren, user_igna.invitation)
+    await accept_invitation(user_loren, user_igna.invitation, background_tasks)
     user_igna = await db.fetch_one(query=select(User).where(User.id == user_igna.id))
-    await accept_invitation(user_loren, user_sofi.invitation)
+    await accept_invitation(user_loren, user_sofi.invitation, background_tasks)
     user_sofi = await db.fetch_one(query=select(User).where(User.id == user_sofi.id))
-    await accept_invitation(user_sofi, user_igna.invitation)
+    await accept_invitation(user_sofi, user_igna.invitation, background_tasks)
     user_igna = await db.fetch_one(query=select(User).where(User.id == user_igna.id))
-    await accept_invitation(user_igna, user_loren.invitation)
+    await accept_invitation(user_igna, user_loren.invitation, background_tasks)
     user_loren = await db.fetch_one(query=select(User).where(User.id == user_loren.id))
 
     test_medicines = [

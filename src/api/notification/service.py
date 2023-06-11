@@ -5,6 +5,7 @@ from sqlalchemy import delete, insert, select
 
 from api.notification.exceptions import ERROR500, ERROR501
 from api.notification.models.message import Message
+from api.notification.models.notification import Notification
 from api.notification.models.notification_preference import NotificationPreference
 from api.user.models import Device, User
 from api.user.service import get_user_devices
@@ -130,8 +131,8 @@ async def send_notification(
             "message": message_data["message"],
             "subject": message_data["subject"],
         }
-        sg = SendGridAPIClient(SENDGRID_CONFIG["api_key"])
-        print(sg.send(message_constructor))
+        client = SendGridAPIClient(SENDGRID_CONFIG["api_key"])
+        client.send(message_constructor)
 
     def send_whatsapp(message: Message, user: User):
         print("Acá se debería haber enviado un mensaje de WhatsApp")
@@ -153,6 +154,14 @@ async def send_notification(
 
     notification_preferences = await get_notification_preferences(user)
 
+    message_data = message.push()
+    insert_query = insert(Notification).values(
+        user_id=user.id,
+        title=message_data["title"],
+        body=message_data["body"],
+    )
+    await database.execute(query=insert_query)
+
     for notification_preference in notification_preferences:
         if notification_preference == "email":
             background_tasks.add_task(send_email, message, user)
@@ -160,3 +169,14 @@ async def send_notification(
             background_tasks.add_task(send_whatsapp, message, user)
         if notification_preference == "push":
             background_tasks.add_task(send_push, message, user)
+
+
+async def get_notifications(user: User, page: int, per_page: int) -> list[Notification]:
+    select_query = (
+        select(Notification)
+        .where(Notification.user_id == user.id)
+        .order_by(Notification.created_at.desc())
+        .offset((page - 1) * per_page)
+        .limit(per_page)
+    )
+    return await database.fetch_all(query=select_query)
