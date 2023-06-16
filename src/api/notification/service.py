@@ -3,7 +3,7 @@ from typing import List
 from fastapi import BackgroundTasks
 from firebase_admin import messaging
 from sendgrid import Mail, SendGridAPIClient
-from sqlalchemy import delete, insert, select
+from sqlalchemy import delete, insert, select, update
 
 from api.notification.exceptions import ERROR500, ERROR501
 from api.notification.models.message import Message
@@ -189,4 +189,20 @@ async def get_notifications(
     )
     if type:
         select_query = select_query.where(Notification.type.in_(type))
-    return await database.fetch_all(query=select_query)
+    notifications = await database.fetch_all(query=select_query)
+    update_query = (
+        update(Notification)
+        .where(Notification.id.in_([notification.id for notification in notifications]))
+        .values(is_read=True)
+    )
+    await database.execute(query=update_query)
+    return notifications
+
+async def delete_notification(notification_id: int, user: User):
+    delete_query = (
+        delete(Notification)
+        .where(Notification.id == notification_id, Notification.user_id == user.id)
+        .returning(Notification)
+    )
+    result = await database.execute(query=delete_query)
+    return result

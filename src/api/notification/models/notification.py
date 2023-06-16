@@ -13,4 +13,4 @@ class Notification(CRUD):
     title = Column(String(255), nullable=False)
     body = Column(String(255), nullable=False)
     type = Column(String(255), nullable=False)
-    is_read = Column(Boolean, server_default=expression.true(), nullable=False)
+    is_read = Column(Boolean, server_default=expression.false(), nullable=False)

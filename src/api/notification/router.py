@@ -13,6 +13,9 @@ from api.notification.service import (
 from api.notification.service import (
     get_notification_preferences as get_notification_preferences_service,
 )
+from api.notification.service import (
+    delete_notification as delete_notification_service,
+)
 from api.notification.service import get_notifications as get_notifications_service
 from api.user.models import User
 
@@ -54,8 +57,8 @@ async def get_notification_preferences(user: User = Depends(authenticate)):
     summary="Add a notification preference",
 )
 async def add_notification_preference(
-    notification_preference: Literal["email", "whatsapp", "push"],
-    user: User = Depends(authenticate),
+        notification_preference: Literal["email", "whatsapp", "push"],
+        user: User = Depends(authenticate),
 ):
     """
     Add a notification preference.
@@ -86,8 +89,8 @@ async def add_notification_preference(
     summary="Delete a notification preference",
 )
 async def delete_notification_preference(
-    notification_preference: Literal["email", "whatsapp", "push"],
-    user: User = Depends(authenticate),
+        notification_preference: Literal["email", "whatsapp", "push"],
+        user: User = Depends(authenticate),
 ):
     """
     Delete a notification preference.
@@ -118,12 +121,25 @@ async def delete_notification_preference(
     summary="Get notifications",
 )
 async def get_notifications(
-    type: Annotated[list[str] | None, Query()] = None,
-    page: int = 1,
-    per_page: int = 10,
-    user: User = Depends(authenticate),
+        type: Annotated[list[str] | None, Query()] = None,
+        page: int = 1,
+        per_page: int = 10,
+        user: User = Depends(authenticate),
 ):
     results = await get_notifications_service(
         user, page=page, per_page=per_page, type=type
     )
     return results
+
+
+@router.delete(
+    "",
+    status_code=200,
+    summary="Delete a notification",
+)
+async def delete_notification(
+        notification_id: int,
+        user: User = Depends(authenticate),
+):
+    success = await delete_notification_service(notification_id=notification_id, user=user)
+    # TODO: raise exception if success is False
