@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import BackgroundTasks
 from firebase_admin import messaging
 from sendgrid import Mail, SendGridAPIClient
@@ -159,6 +161,7 @@ async def send_notification(
         user_id=user.id,
         title=message_data["title"],
         body=message_data["body"],
+        type=message.type,
     )
     await database.execute(query=insert_query)
 
@@ -171,7 +174,12 @@ async def send_notification(
             background_tasks.add_task(send_push, message, user)
 
 
-async def get_notifications(user: User, page: int, per_page: int) -> list[Notification]:
+async def get_notifications(
+    user: User,
+    page: int,
+    per_page: int,
+    type: List[str] = None,
+) -> list[Notification]:
     select_query = (
         select(Notification)
         .where(Notification.user_id == user.id)
@@ -179,4 +187,6 @@ async def get_notifications(user: User, page: int, per_page: int) -> list[Notifi
         .offset((page - 1) * per_page)
         .limit(per_page)
     )
+    if type:
+        select_query = select_query.where(Notification.type.in_(type))
     return await database.fetch_all(query=select_query)

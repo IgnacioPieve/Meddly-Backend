@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel
 
@@ -8,6 +9,8 @@ class NotificationSchema(BaseModel):
     title: str
     body: str
     created_at: datetime
+    type: Literal["supervisors", "appointment", "medicine"]
+    is_read: bool
 
     class Config:
         schema_extra = {
@@ -16,5 +19,7 @@ class NotificationSchema(BaseModel):
                 "title": "Nuevo supervisado",
                 "body": f"Has añadido a Ignacio como supervisado.",
                 "created_at": datetime.now(),
+                "type": "supervisors",
+                "is_read": False,
             }
         }

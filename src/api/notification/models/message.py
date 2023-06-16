@@ -1,4 +1,6 @@
 class Message:
+    type: str
+
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -40,6 +42,8 @@ class Message:
 
 
 class NewSupervisorMessage(Message):
+    type = "supervisors"
+
     def whatsapp(self):
         return {
             "message": f"Felicitaciones! Has añadido a {self.supervisor.get_fullname()} como supervisor. "
@@ -61,6 +65,8 @@ class NewSupervisorMessage(Message):
 
 
 class NewSupervisedMessage(Message):
+    type = "supervisors"
+
     def whatsapp(self):
         return {
             "message": f"Felicitaciones! Has añadido a {self.supervised.get_fullname()} como supervisado. "
@@ -82,6 +88,8 @@ class NewSupervisedMessage(Message):
 
 
 class TodayUserAppointments(Message):
+    type = "appointment"
+
     def whatsapp(self):
         m = f"Buenos días {self.user.get_fullname()}!\n\n"
         if self.appointments:
@@ -122,6 +130,8 @@ class TodayUserAppointments(Message):
 
 
 class TodayUserMedicines(Message):
+    type = "medicine"
+
     def whatsapp(self):
         m = f"Buenos días {self.user.get_fullname()}!\n"
         if self.medicines:
@@ -162,6 +172,8 @@ class TodayUserMedicines(Message):
 
 
 class YesterdarUserDidntTakeMedicine(Message):
+    type = "medicine"
+
     def whatsapp(self):
         m = f"Buenos días {self.user.get_fullname()}!\n"
         if self.medicines:

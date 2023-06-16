@@ -1,6 +1,6 @@
-from typing import Literal
+from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 
 from api.auth.dependencies import authenticate
 from api.notification.schemas import NotificationSchema
@@ -118,7 +118,12 @@ async def delete_notification_preference(
     summary="Get notifications",
 )
 async def get_notifications(
-    page: int = 1, per_page: int = 10, user: User = Depends(authenticate)
+    type: Annotated[list[str] | None, Query()] = None,
+    page: int = 1,
+    per_page: int = 10,
+    user: User = Depends(authenticate),
 ):
-    results = await get_notifications_service(user, page=page, per_page=per_page)
+    results = await get_notifications_service(
+        user, page=page, per_page=per_page, type=type
+    )
     return results
