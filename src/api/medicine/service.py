@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from databases.interfaces import Record
-from sqlalchemy import and_, delete, insert, or_, select
+from sqlalchemy import and_, delete, insert, or_, select, update
 
 from api.medicine.exceptions import ConsumptionAlreadyExists, MedicineNotFound
 from api.medicine.models import Consumption, Medicine
@@ -162,6 +162,15 @@ async def create_consumption(
     )
     consumption = await database.fetch_one(query=insert_query)
     consumption.consumed = True
+
+    if medicine.stock:
+        update_query = (
+            update(Medicine)
+            .where(Medicine.id == consumption.medicine_id)
+            .values(stock=max(medicine.stock - 1, 0))
+        )
+        await database.execute(query=update_query)
+
     return consumption
 
 
