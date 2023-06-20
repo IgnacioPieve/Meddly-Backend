@@ -134,9 +134,9 @@ async def create_consumption(
     medicine = await database.fetch_one(
         select(Medicine).where(Medicine.id == consumption.medicine_id)
     )
-    if medicine.user_id != user.id and medicine.user_id not in [
+    if not medicine or (medicine.user_id != user.id and medicine.user_id not in [
         supervised.id for supervised in await get_supervised(user)
-    ]:
+    ]):
         raise MedicineNotFound
 
     medicine = Medicine(**medicine)
@@ -193,12 +193,12 @@ async def delete_consumption(user: User, consumption: DeleteConsumptionSchema) -
 
     medicine = await database.fetch_one(
         select(Medicine).where(
-            Medicine.id == consumption.medicine_id, Medicine.user_id == user.id
+            Medicine.id == consumption.medicine_id
         )
     )
-    if medicine.user_id != user.id and medicine.user_id not in [
+    if not medicine or (medicine.user_id != user.id and medicine.user_id not in [
         supervised.id for supervised in await get_supervised(user)
-    ]:
+    ]):
         raise MedicineNotFound
 
     consumption.date = consumption.date.replace(second=0, microsecond=0)
