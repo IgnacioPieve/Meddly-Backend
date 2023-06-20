@@ -2,7 +2,7 @@ import os
 from uuid import uuid4
 
 from PIL import Image as PILImage
-from sqlalchemy import Column, ForeignKey, String
+from sqlalchemy import Column, ForeignKey, String, insert
 from sqlalchemy.orm import relationship
 
 from models import CRUD
@@ -23,8 +23,8 @@ class Image(CRUD):
         if not os.path.exists(folder):
             os.makedirs(folder)
         PILImage.open(f"{folder}/{self.name}").save(f"{folder}/{file_name}")
-        image = Image(self.db)
-        image.name = file_name
-        image.tag = tag if tag else self.tag
-        image.create()
-        return image
+        insert_query = insert(Image).values(
+            name = file_name,
+            tag = tag if tag else self.tag,
+        )
+

@@ -1,6 +1,7 @@
 from sklearn.preprocessing import LabelEncoder
-from sqlalchemy import Column, ForeignKey, String
+from sqlalchemy import Column, ForeignKey, String, Boolean
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import expression
 from tensorflow.keras.models import load_model
 
 from api.prediction.exceptions import ERROR701
@@ -41,17 +42,3 @@ class PredictionByImage(Prediction):
     image = relationship("Image", foreign_keys=[image_name])
     user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=False)
     user = relationship("User", backref="predictions_by_image", foreign_keys=[user_id])
-
-    def verify(self, disease: str, approval_to_save: bool = False):
-        if self.verified:
-            raise ERROR701
-        self.image.db = self.db
-        if approval_to_save:
-            DiseaseImage(
-                self.db,
-                image=self.image.get_anonymous_copy(tag="DiseaseImage"),
-                predicted_disease=self.prediction[0]["disease"],
-                real_disease=disease,
-            ).create()
-        self.verified = True
-        self.save()

@@ -13,6 +13,7 @@ class PredictionSchema(BaseModel):
     created_at: datetime.datetime
     prediction: list[ProbabilitySchema]
     verified: bool
+    real_disease: str = None
 
     class Config:
         orm_mode = True
@@ -24,6 +25,7 @@ class PredictionSchema(BaseModel):
                     {"disease": "Gripe", "probability": 0.1},
                 ],
                 "verified": False,
+                "real_disease": "COVID-19",
             }
         }
 

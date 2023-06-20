@@ -31,16 +31,3 @@ class PredictionBySymptom(Prediction):
     user = relationship(
         "User", backref="predictions_by_symptoms", foreign_keys=[user_id]
     )
-
-    def verify(self, disease: str, approval_to_save: bool = False):
-        if self.verified:
-            raise ERROR701
-        if approval_to_save:
-            DiseaseSymptoms(
-                self.db,
-                symptoms=self.symptoms,
-                predicted_disease=self.prediction[0]["disease"],
-                real_disease=disease,
-            ).create()
-        self.verified = True
-        self.save()

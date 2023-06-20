@@ -44,3 +44,7 @@ FIREBASE_KEY = os.getenv("FIREBASE_KEY")
 WHATSAPP_API_KEY = os.getenv("WHATSAPP_API_KEY")
 WA_NUMBER_ID = os.getenv("WA_NUMBER_ID")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "DEV")
+
+IMAGES_FOLDER = os.getenv("IMAGES_FOLDER", "store/images")
+if not os.path.exists(IMAGES_FOLDER):
+    os.makedirs(IMAGES_FOLDER)

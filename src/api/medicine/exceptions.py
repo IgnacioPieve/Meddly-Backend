@@ -1,6 +1,8 @@
 from fastapi import HTTPException
 from starlette import status
 
+from api.exceptions import GenericException
+
 # Medicines has the 3xx errors
 ERROR300 = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
@@ -59,15 +61,6 @@ ERROR307 = HTTPException(
     },
 )
 
-
-class GenericException(Exception):
-    http_exception = HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        detail={
-            "code": 0,
-            "description": "Generic exception.",
-        },
-    )
 
 
 class IntervalAndDays(GenericException):

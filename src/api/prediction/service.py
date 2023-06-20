@@ -7,13 +7,14 @@ import numpy as np
 import pandas as pd
 from fastapi import UploadFile
 from PIL import Image
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update
 
 from api.image.models import Image as ImageModel
-from api.prediction.exceptions import ERROR703
-from api.prediction.models.by_image import PredictionByImage
+from api.image.service import save_image, anonymous_copy_image
+from api.prediction.exceptions import ERROR703, ERROR700, ERROR701, ERROR702
+from api.prediction.models.by_image import PredictionByImage, DiseaseImage
 from api.prediction.models.by_image import model_trained as model_trained_by_image
-from api.prediction.models.by_symptom import PredictionBySymptom
+from api.prediction.models.by_symptom import PredictionBySymptom, DiseaseSymptoms
 from api.prediction.models.by_symptom import model_trained as model_trained_by_symptom
 from api.prediction.models.by_symptom import symptoms, symptoms_template
 from api.user.models import User
@@ -79,8 +80,58 @@ async def get_predictions_by_symptoms(
             result.prediction[i]["disease"] = codes[result.prediction[i]["disease"]]
     return results
 
+async def verify_prediction_by_symptom(
+    user: User,
+    prediction_id: int,
+    real_disease: str,
+    approval_to_save: bool = False,
+) -> bool:
+    select_query = select(PredictionBySymptom).where(
+        PredictionBySymptom.user_id == user.id,
+        PredictionBySymptom.id == prediction_id,
+    )
+    prediction: PredictionBySymptom = await database.fetch_one(query=select_query)
+
+    if not prediction:
+        raise ERROR702
+    if prediction.verified:
+        raise ERROR701
+
+    if approval_to_save:
+        insert_query = insert(DiseaseSymptoms).values(
+            symptoms=prediction.symptoms,
+            predicted_disease=json.loads(prediction.prediction)[0]["disease"],
+            real_disease=real_disease,
+        )
+        await database.execute(query=insert_query)
+
+    update_query = (
+        update(PredictionBySymptom)
+        .where(PredictionBySymptom.id == prediction_id)
+        .values(
+            verified=True,
+            real_disease=real_disease,
+        )
+    )
+    await database.execute(query=update_query)
+
+    return True
+
+
+
 
 async def predict_by_image(file: UploadFile, user: User):
+    def _predict():
+        img = np.asarray(Image.open(file.file).resize((32, 32)))
+        img = img / 255.0  # Scale pixel values
+        img = np.expand_dims(img, axis=0)  # Get it tready as input to the network
+
+        prediction = model_trained_by_image.predict(img)
+        return [
+            {"disease": classes[i], "probability": round(float(prediction[0][i]), 2)}
+            for i in np.argsort(prediction[0])[::-1]
+        ]
+
     classes = [
         "Queratosis actínica",
         "Carcinoma de células basales",
@@ -91,30 +142,8 @@ async def predict_by_image(file: UploadFile, user: User):
         "Lesiones vasculares",
     ]
 
-    image = Image.open(file.file).resize((512, 512))
-    folder = "store/images"
-    file_name = f"{uuid4()}.jpg"
-
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-    image.save(f"{folder}/{file_name}")
-
-    insert_query = insert(ImageModel).values(
-        user_id=user.id,
-        tag="prediction_by_image",
-        name=file_name,
-    )
-    await database.execute(query=insert_query)
-
-    img = np.asarray(Image.open(file.file).resize((32, 32)))
-    img = img / 255.0  # Scale pixel values
-    img = np.expand_dims(img, axis=0)  # Get it tready as input to the network
-
-    prediction = model_trained_by_image.predict(img)
-    prediction = [
-        {"disease": classes[i], "probability": round(float(prediction[0][i]), 2)}
-        for i in np.argsort(prediction[0])[::-1]
-    ]
+    file_name = await save_image(file.file, user=user, tag='prediction_by_image')
+    prediction = _predict()
 
     insert_query = insert(PredictionByImage).values(
         image_name=file_name,
@@ -145,3 +174,45 @@ async def get_predictions_by_image(
     for result in results:
         result.prediction = json.loads(result.prediction)
     return results
+
+async def verify_prediction_by_image(
+    user: User,
+    prediction_id: int,
+    real_disease: str,
+    approval_to_save: bool = False,
+) -> bool:
+    select_query = select(PredictionByImage).where(
+        PredictionByImage.user_id == user.id,
+        PredictionByImage.id == prediction_id,
+    )
+    prediction: PredictionByImage = await database.fetch_one(query=select_query)
+
+    if not prediction:
+        raise ERROR702
+    if prediction.verified:
+        raise ERROR701
+
+    if approval_to_save:
+        file_name = await anonymous_copy_image(prediction.image_name, tag='prediction_by_image')
+        insert_query = insert(DiseaseImage).values(
+            image_name=file_name,
+            predicted_disease=json.loads(prediction.prediction)[0]["disease"],
+            real_disease=real_disease
+        )
+        await database.execute(query=insert_query)
+
+    update_query = (
+        update(PredictionByImage)
+        .where(PredictionByImage.id == prediction_id)
+        .values(
+            verified=True,
+            real_disease=real_disease,
+        )
+    )
+    await database.execute(query=update_query)
+
+    return True
+
+
+
+
