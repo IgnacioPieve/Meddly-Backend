@@ -20,9 +20,9 @@ class UserDataPDFGenerator:
     def generate_base_file(data):
         template = template_env.get_template("api/export/assets/index.html")
         if (
-            str(data["weight"]).replace(".", "", 1).isdigit()
-            and str(data["height"]).replace(".", "", 1).isdigit()
-            and str(data["age"]).replace(".", "", 1).isdigit()
+                str(data["weight"]).replace(".", "", 1).isdigit()
+                and str(data["height"]).replace(".", "", 1).isdigit()
+                and str(data["age"]).replace(".", "", 1).isdigit()
         ):
             data["bmi"], data["groups"] = BMI.get_bmi_html_percentage_and_groups(
                 data["weight"], data["height"], data["age"]
@@ -98,10 +98,10 @@ class UserDataPDFGenerator:
                 days = None
             if medicine_object.end_date:
                 total_days = (
-                    medicine_object.end_date - medicine_object.start_date
+                        medicine_object.end_date - medicine_object.start_date
                 ).days
                 to_now_days = (
-                    datetime.datetime.now() - medicine_object.start_date
+                        datetime.datetime.now() - medicine_object.start_date
                 ).days
                 percentage = max(1, int((to_now_days * 100) / total_days))
 
@@ -118,10 +118,38 @@ class UserDataPDFGenerator:
                     "percentage": percentage if medicine_object.end_date else None,
                 }
             )
+        measurement_types = {
+            "bloodPressure": "Presión arterial",
+            "bloodGlucose": "Glucosa en sangre",
+            "weight": "Peso",
+            "height": "Altura",
+            "temperature": "Temperatura",
+            "heartRate": "Frecuencia cardíaca",
+            "oxygenSaturation": "Saturación de oxígeno",
+            "respiratoryRate": "Frecuencia respiratoria",
+            "cholesterol": "Colesterol",
+            "bodyMassIndex": "Índice de masa corporal",
+            "visionAcuity": "Agudeza visual",
+            "hearingAcuity": "Agudeza auditiva",
+            "urineAnalysis": "Análisis de orina",
+            "liverFunction": "Función hepática",
+            "kidneyFunction": "Función renal",
+            "thyroidFunction": "Función tiroidea",
+            "electrolyteLevels": "Niveles de electrolitos",
+            "whiteBloodCellCount": "Conteo de glóbulos blancos",
+            "redBloodCellCount": "Conteo de glóbulos rojos",
+            "plateletCount": "Conteo de plaquetas",
+            "hemoglobinLevel": "Nivel de hemoglobina",
+            "glucoseTolerance": "Tolerancia a la glucosa",
+            "vitaminDLevels": "Niveles de vitamina D",
+            "ironLevels": "Niveles de hierro",
+            "prostateSpecificAntigen": "Antígeno específico de próstata",
+            "other": "Otro"
+        }
         measurements = [
             {
                 "date": measurement.date,
-                "type": measurement.type,
+                "type": measurement_types[measurement.type],
                 "result": f"{measurement.value} {measurement.unit}",
             }
             for measurement in await get_measurements(
@@ -148,7 +176,7 @@ class UserDataPDFGenerator:
             "age": user.get_age() if user.birth else "N/A",
             "text_age": user.get_birth_text() if user.birth else "No hay información",
             "last_month_predictions": last_month_predictions_by_symptom
-            + last_month_predictions_by_image,
+                                      + last_month_predictions_by_image,
             "medicines": medicines,
             "measurements": measurements,
             "supervisors": len(user.supervisors_list),
@@ -169,7 +197,7 @@ class BMI:
     @staticmethod
     def calculate_bmi(weight, height):
         height = height / 100  # Convert height from cm to m
-        return weight / (height**2)
+        return weight / (height ** 2)
 
     @staticmethod
     def get_bmi_data(bmi, age):
@@ -234,27 +262,27 @@ class BMI:
         groups = {
             0: {
                 "value": f"<span style='color: #516EB4; font-weight: bold'>Muy bajo peso "
-                f"<span style='color: darkred'>({bmi})</span></span>",
+                         f"<span style='color: darkred'>({bmi})</span></span>",
                 "order": 0,
             },
             1: {
                 "value": f"<span style='color: #516EB4; font-weight: bold'>Bajo peso "
-                f"<span style='color: #374A79FF'>({bmi})</span></span>",
+                         f"<span style='color: #374A79FF'>({bmi})</span></span>",
                 "order": 0,
             },
             2: {
                 "value": f"<span style='color: #516EB4; font-weight: bold'>Peso saludable "
-                f"<span style='color: #374A79FF'>({bmi})</span></span>",
+                         f"<span style='color: #374A79FF'>({bmi})</span></span>",
                 "order": 1,
             },
             3: {
                 "value": f"<span style='color: #516EB4; font-weight: bold'>Sobrepeso "
-                f"<span style='color: #374A79FF'>({bmi})</span></span>",
+                         f"<span style='color: #374A79FF'>({bmi})</span></span>",
                 "order": 2,
             },
             4: {
                 "value": f"<span style='color: #516EB4; font-weight: bold'>Obesidad "
-                f"<span style='color: darkred'>({bmi})</span></span>",
+                         f"<span style='color: darkred'>({bmi})</span></span>",
                 "order": 2,
             },
         }
