@@ -113,7 +113,7 @@ async def delete_medicine(user: User, medicine_id: int) -> bool:
 
 
 async def create_consumption(
-    user: User, consumption: CreateConsumptionSchema
+        user: User, consumption: CreateConsumptionSchema
 ) -> Record | None:
     """
     Create a new consumption for a user.
@@ -283,7 +283,7 @@ async def get_consumptions(user: User, start: datetime, end: datetime) -> list[R
 
 
 async def get_consumptions_on_date(
-    user: User, date: datetime, only_not_taken: bool = False
+        user: User, date: datetime, only_not_taken: bool = False
 ) -> list[Record]:
     """
     Retrieves consumption records of medicines for a specific user on a specific date.
@@ -304,5 +304,21 @@ async def get_consumptions_on_date(
         consumption
         for consumption in await get_consumptions(user, start, end)
         if consumption.date.date() == date.date()
-        and (not only_not_taken or not consumption.consumed)
+           and (not only_not_taken or not consumption.consumed)
     ]
+
+
+async def get_medicines_between_dates(
+        user: User,
+        start: datetime,
+        end: datetime,
+) -> list[Record]:
+    select_query = select(Medicine).where(
+        Medicine.user_id == user.id,
+        and_(
+            Medicine.start_date <= end,
+            or_(Medicine.end_date == None, Medicine.end_date >= start),
+        ),
+    )
+    medicines = await database.fetch_all(query=select_query)
+    return medicines
