@@ -1,7 +1,5 @@
 import json
-import os
 from datetime import datetime
-from uuid import uuid4
 
 import numpy as np
 import pandas as pd
@@ -9,12 +7,11 @@ from fastapi import UploadFile
 from PIL import Image
 from sqlalchemy import insert, select, update
 
-from api.image.models import Image as ImageModel
-from api.image.service import save_image, anonymous_copy_image
-from api.prediction.exceptions import ERROR703, ERROR700, ERROR701, ERROR702
-from api.prediction.models.by_image import PredictionByImage, DiseaseImage
+from api.image.service import anonymous_copy_image, save_image
+from api.prediction.exceptions import ERROR700, ERROR701, ERROR702, ERROR703
+from api.prediction.models.by_image import DiseaseImage, PredictionByImage
 from api.prediction.models.by_image import model_trained as model_trained_by_image
-from api.prediction.models.by_symptom import PredictionBySymptom, DiseaseSymptoms
+from api.prediction.models.by_symptom import DiseaseSymptoms, PredictionBySymptom
 from api.prediction.models.by_symptom import model_trained as model_trained_by_symptom
 from api.prediction.models.by_symptom import symptoms, symptoms_template
 from api.user.models import User
@@ -80,6 +77,7 @@ async def get_predictions_by_symptoms(
             result.prediction[i]["disease"] = codes[result.prediction[i]["disease"]]
     return results
 
+
 async def verify_prediction_by_symptom(
     user: User,
     prediction_id: int,
@@ -118,8 +116,6 @@ async def verify_prediction_by_symptom(
     return True
 
 
-
-
 async def predict_by_image(file: UploadFile, user: User):
     def _predict():
         img = np.asarray(Image.open(file.file).resize((32, 32)))
@@ -142,7 +138,7 @@ async def predict_by_image(file: UploadFile, user: User):
         "Lesiones vasculares",
     ]
 
-    file_name = await save_image(file.file, user=user, tag='prediction_by_image')
+    file_name = await save_image(file.file, user=user, tag="prediction_by_image")
     prediction = _predict()
 
     insert_query = insert(PredictionByImage).values(
@@ -175,6 +171,7 @@ async def get_predictions_by_image(
         result.prediction = json.loads(result.prediction)
     return results
 
+
 async def verify_prediction_by_image(
     user: User,
     prediction_id: int,
@@ -193,11 +190,13 @@ async def verify_prediction_by_image(
         raise ERROR701
 
     if approval_to_save:
-        file_name = await anonymous_copy_image(prediction.image_name, tag='prediction_by_image')
+        file_name = await anonymous_copy_image(
+            prediction.image_name, tag="prediction_by_image"
+        )
         insert_query = insert(DiseaseImage).values(
             image_name=file_name,
             predicted_disease=json.loads(prediction.prediction)[0]["disease"],
-            real_disease=real_disease
+            real_disease=real_disease,
         )
         await database.execute(query=insert_query)
 
@@ -212,7 +211,3 @@ async def verify_prediction_by_image(
     await database.execute(query=update_query)
 
     return True
-
-
-
-

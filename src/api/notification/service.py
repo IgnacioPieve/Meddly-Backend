@@ -198,6 +198,7 @@ async def get_notifications(
     await database.execute(query=update_query)
     return notifications
 
+
 async def delete_notification(notification_id: int, user: User):
     delete_query = (
         delete(Notification)

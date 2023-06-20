@@ -62,7 +62,6 @@ ERROR307 = HTTPException(
 )
 
 
-
 class IntervalAndDays(GenericException):
     http_exception = ERROR300
 

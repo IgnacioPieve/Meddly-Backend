@@ -24,7 +24,6 @@ class Image(CRUD):
             os.makedirs(folder)
         PILImage.open(f"{folder}/{self.name}").save(f"{folder}/{file_name}")
         insert_query = insert(Image).values(
-            name = file_name,
-            tag = tag if tag else self.tag,
+            name=file_name,
+            tag=tag if tag else self.tag,
         )
-

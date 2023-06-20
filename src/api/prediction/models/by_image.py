@@ -1,10 +1,8 @@
 from sklearn.preprocessing import LabelEncoder
-from sqlalchemy import Column, ForeignKey, String, Boolean
+from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import expression
 from tensorflow.keras.models import load_model
 
-from api.prediction.exceptions import ERROR701
 from api.prediction.models.prediction import Prediction
 from models import CRUD
 

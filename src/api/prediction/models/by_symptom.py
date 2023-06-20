@@ -4,7 +4,6 @@ from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 
-from api.prediction.exceptions import ERROR701
 from api.prediction.models.prediction import Prediction
 from models import CRUD
 

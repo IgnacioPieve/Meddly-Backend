@@ -1,10 +1,8 @@
-import os
 from typing import BinaryIO
 from uuid import uuid4
 
 from PIL import Image
-from fastapi import UploadFile
-from sqlalchemy import select, insert
+from sqlalchemy import insert, select
 
 from api.image.exceptions import ERROR800
 from api.image.models import Image as ImageModel
@@ -44,7 +42,12 @@ async def get_image(name: str, user: User) -> bytes:
         return file.read()
 
 
-async def save_image(file: bytes | BinaryIO, user: User = None, size: tuple[int, int] = (512, 512), tag: str = 'Untagged') -> str:
+async def save_image(
+    file: bytes | BinaryIO,
+    user: User = None,
+    size: tuple[int, int] = (512, 512),
+    tag: str = "Untagged",
+) -> str:
     image = Image.open(file).resize(size)
     file_name = f"{uuid4()}.jpg"
 
@@ -61,7 +64,8 @@ async def save_image(file: bytes | BinaryIO, user: User = None, size: tuple[int,
 
     return file_name
 
-async def anonymous_copy_image(name: str, tag: str = 'Untagged') -> str:
+
+async def anonymous_copy_image(name: str, tag: str = "Untagged") -> str:
     image = Image.open(f"{IMAGES_FOLDER}/{name}")
     file_name = f"{uuid4()}.jpg"
 
