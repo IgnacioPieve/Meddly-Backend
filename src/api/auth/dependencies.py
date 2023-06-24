@@ -1,4 +1,3 @@
-import firebase_admin
 from fastapi import Depends, Header, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from firebase_admin import auth

@@ -20,8 +20,6 @@ services:
     tty: true
     ports:
       - "11001:11001"
-    env_file:
-      - src/credentials/.env
     volumes:
       - .:/app
     command: python app.py
