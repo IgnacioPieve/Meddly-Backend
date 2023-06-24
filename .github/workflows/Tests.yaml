@@ -20,5 +20,7 @@ jobs:
           apt-get update && apt-get install -y wkhtmltopdf
           pip3 install -r requirements/base.txt
       - name: Run tests
+        env:
+          ENVIRONMENT: "TEST"
         run: |
           pytest

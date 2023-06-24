@@ -1,4 +1,6 @@
 # Meddly ❤️‍🩹
+[![Push image to DockerHub](https://github.com/Meddly-Health/Backend/actions/workflows/BuildAndPushDockerImage.yml/badge.svg)](https://github.com/Meddly-Health/Backend/actions/workflows/BuildAndPushDockerImage.yml)
+[![Tests](https://github.com/Meddly-Health/Backend/actions/workflows/Tests.yaml/badge.svg)](https://github.com/Meddly-Health/Backend/actions/workflows/Tests.yaml)
 > Meddly is a medical application that uses artificial intelligence to generate self-diagnosis based on symptoms.
 
 The application is built using Python, FastApi, and Docker.

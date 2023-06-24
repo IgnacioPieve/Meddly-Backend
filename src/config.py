@@ -1,10 +1,13 @@
 import os
 
+import firebase_admin
+
 # ---------- METADATA ----------
 title = "Meddly"
 version = 0.9
 description = """
 # Welcome to MeddlyApi!
+https://badgen.net/#static/Environment/{ENVIRONMENT}/blue
 
 This is the API for the Meddly project, a mobile application that aims to help people with health issues.
 The project was developed as part of the final project for the UTN FRC's Software Engineering career.
@@ -31,7 +34,16 @@ metadata = {
 
 # ---------- CONFIG VARIABLES ----------
 
-DB_URL = "postgresql+psycopg2://meddly:meddly@meddly-database:5432/app"
+ENVIRONMENT = os.getenv("ENVIRONMENT", "DEV")
+description = description.replace("{ENVIRONMENT}", ENVIRONMENT)
+PROD = ENVIRONMENT == "PROD"
+TEST = ENVIRONMENT == "TEST"
+DEV = ENVIRONMENT == "DEV"
+
+DB_URL = os.getenv(
+    "DB_URL",
+    "postgresql+psycopg2://meddly:meddly@meddly-database:5432/app"
+)
 
 SENDGRID_CONFIG = {
     "api_key": os.getenv("SENDGRID_API_KEY"),
@@ -40,10 +52,11 @@ SENDGRID_CONFIG = {
 
 FIREBASE_JSON = "credentials/firebase.json"
 FIREBASE_KEY = os.getenv("FIREBASE_KEY")
+if not TEST:
+    firebase_admin.initialize_app(firebase_admin.credentials.Certificate(FIREBASE_JSON))
 
 WHATSAPP_API_KEY = os.getenv("WHATSAPP_API_KEY")
 WA_NUMBER_ID = os.getenv("WA_NUMBER_ID")
-ENVIRONMENT = os.getenv("ENVIRONMENT", "DEV")
 
 IMAGES_FOLDER = os.getenv("IMAGES_FOLDER", "store/images")
 if not os.path.exists(IMAGES_FOLDER):
