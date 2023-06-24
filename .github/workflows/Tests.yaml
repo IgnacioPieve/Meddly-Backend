@@ -8,6 +8,8 @@ jobs:
   tests:
     name: "Run Tests"
     runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: "TEST"
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -20,7 +22,5 @@ jobs:
           apt-get update && apt-get install -y wkhtmltopdf
           pip3 install -r requirements/base.txt
       - name: Run tests
-        env:
-          ENVIRONMENT: "TEST"
         run: |
           pytest
