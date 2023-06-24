@@ -27,3 +27,16 @@ async def symptom_search(query):
         {"code": result["code"], "description": result["description"]}
         for result in results
     ]
+
+
+diseases_index = index.open_dir("api/search/indexes/diseases_index")
+diseases_searcher = diseases_index.searcher()
+diseases_query_parser = QueryParser("description", schema=diseases_index.schema)
+
+
+async def disease_search(query):
+    results = diseases_searcher.search(diseases_query_parser.parse(f"{query.strip()}*"))
+    return [
+        {"code": result["code"], "description": result["description"]}
+        for result in results
+    ]
