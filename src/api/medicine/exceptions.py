@@ -89,5 +89,6 @@ class MedicineNotFound(GenericException):
 class ConsumptionAlreadyExists(GenericException):
     http_exception = ERROR306
 
+
 class ConsumptionDoesNotExist(GenericException):
     http_exception = ERROR307

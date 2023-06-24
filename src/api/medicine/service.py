@@ -3,7 +3,11 @@ from datetime import datetime, timedelta
 from databases.interfaces import Record
 from sqlalchemy import and_, delete, insert, or_, select, update
 
-from api.medicine.exceptions import ConsumptionAlreadyExists, MedicineNotFound, ConsumptionDoesNotExist
+from api.medicine.exceptions import (
+    ConsumptionAlreadyExists,
+    ConsumptionDoesNotExist,
+    MedicineNotFound,
+)
 from api.medicine.models import Consumption, Medicine
 from api.medicine.schemas import (
     CreateConsumptionSchema,

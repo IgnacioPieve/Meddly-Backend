@@ -7,8 +7,8 @@ from api.user.service import assert_device, get_or_create_user
 
 
 async def authenticate(
-        cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
-        device: str | None = Header(default=None),
+    cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+    device: str | None = Header(default=None),
 ) -> User:  # pragma: no cover
     """
     Authenticate a user with a Bearer token.
@@ -39,7 +39,9 @@ async def authenticate(
             detail=f"Invalid authentication credentials. {err}",
         )
 
-    user: User = await get_or_create_user(decoded_token["user_id"], decoded_token["email"])
+    user: User = await get_or_create_user(
+        decoded_token["user_id"], decoded_token["email"]
+    )
     if device:
         await assert_device(user, device)
     return user

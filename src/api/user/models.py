@@ -1,16 +1,8 @@
 import datetime
-import threading
 
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, and_, func
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, func
 from sqlalchemy.orm import relationship
-from starlette.background import BackgroundTasks
 
-from api.notification.models.message import (
-    Message,
-    NewSupervisedMessage,
-    NewSupervisorMessage,
-)
-from api.supervisor.exceptions import ERROR200, ERROR201, ERROR204
 from models import CRUD
 
 base_date = datetime.datetime(1900, 1, 1)
@@ -46,42 +38,6 @@ class User(CRUD):
     sex = Column(Boolean, nullable=True)
     birth = Column(DateTime, nullable=True)
     phone = Column(String(20), nullable=True)
-
-    def accept_invitation(self, invitation_code, background_tasks: BackgroundTasks):
-        supervisor = User(self.db, User.invitation == invitation_code).get()
-        if supervisor is None:
-            raise ERROR201
-        if supervisor.id == self.id:
-            raise ERROR204
-        already_supervised = (
-            Supervised(
-                self.db,
-                and_(
-                    Supervised.supervisor == supervisor, Supervised.supervised == self
-                ),
-            ).get()
-            is not None
-        )
-        if already_supervised:
-            raise ERROR200
-        supervisor.invitation = """generate_code()"""
-
-        supervisor.save()
-        Supervised(self.db, supervisor=supervisor, supervised=self).create()
-
-        self.send_notification(NewSupervisorMessage(supervisor=supervisor))
-        supervisor.send_notification(NewSupervisedMessage(supervised=self))
-
-    @property
-    def notification_preferences(self):
-        return [str(preference) for preference in self.notification_preferences_list]
-
-    def send_notification(self, message: Message):
-        for notification_preference in self.notification_preferences_list:
-            thread = threading.Thread(
-                target=notification_preference.send_notification, args=(message,)
-            )
-            thread.start()
 
     def get_age(self):
         today = datetime.date.today()

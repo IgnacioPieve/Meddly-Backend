@@ -67,7 +67,9 @@ async def add_notification_preference(
     - **list[str]**: A list of updated notification preferences.
     """
     try:
-        result = await add_notification_preference_service(notification_preference, user)
+        result = await add_notification_preference_service(
+            notification_preference, user
+        )
     except GenericException as e:
         raise e.http_exception
     return result
@@ -97,7 +99,9 @@ async def delete_notification_preference(
     """
 
     try:
-        result = await delete_notification_preference_service(notification_preference, user)
+        result = await delete_notification_preference_service(
+            notification_preference, user
+        )
     except GenericException as e:
         raise e.http_exception
     return result

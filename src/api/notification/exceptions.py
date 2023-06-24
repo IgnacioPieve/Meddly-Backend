@@ -36,11 +36,14 @@ ERROR503 = HTTPException(
 class YouAlreadyHaveThisNotificationPreference(GenericException):
     http_exception = ERROR500
 
+
 class YouDontHaveThisNotificationPreference(GenericException):
     http_exception = ERROR501
 
+
 class ThisNotificationPreferenceDoesNotExist(GenericException):
     http_exception = ERROR502
+
 
 class ThisNotificationDoesNotExist(GenericException):
     http_exception = ERROR503

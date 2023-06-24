@@ -12,5 +12,6 @@ ERROR600 = HTTPException(
     },
 )
 
+
 class MeasurementNotFound(GenericException):
     http_exception = ERROR600

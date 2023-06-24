@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from api.auth.dependencies import authenticate
-from api.medicine.exceptions import ERROR305, ERROR307, GenericException
+from api.medicine.exceptions import GenericException
 from api.medicine.schemas import (
     ConsumptionSchema,
     CreateConsumptionSchema,

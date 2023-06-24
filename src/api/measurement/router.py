@@ -50,7 +50,12 @@ async def get_measurements(
     return measurements
 
 
-@router.post("", response_model=MeasurementSchema, status_code=201, summary="Create a new measurement")
+@router.post(
+    "",
+    response_model=MeasurementSchema,
+    status_code=201,
+    summary="Create a new measurement",
+)
 async def create_measurement(
     measurement: CreateUpdateMeasurementSchema, user: User = Depends(authenticate)
 ):
@@ -71,7 +76,12 @@ async def create_measurement(
     return measurement
 
 
-@router.post("/{measurement_id}", response_model=MeasurementSchema, status_code=200, summary="Update a measurement")
+@router.post(
+    "/{measurement_id}",
+    response_model=MeasurementSchema,
+    status_code=200,
+    summary="Update a measurement",
+)
 async def update_measurement(
     measurement_id: int,
     measurement: CreateUpdateMeasurementSchema,

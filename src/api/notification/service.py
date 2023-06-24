@@ -5,8 +5,11 @@ from firebase_admin import messaging
 from sendgrid import Mail, SendGridAPIClient
 from sqlalchemy import delete, insert, select, update
 
-from api.notification.exceptions import ERROR500, ERROR501, YouDontHaveThisNotificationPreference, \
-    YouAlreadyHaveThisNotificationPreference, ThisNotificationDoesNotExist
+from api.notification.exceptions import (
+    ThisNotificationDoesNotExist,
+    YouAlreadyHaveThisNotificationPreference,
+    YouDontHaveThisNotificationPreference,
+)
 from api.notification.models.message import Message
 from api.notification.models.notification import Notification
 from api.notification.models.notification_preference import NotificationPreference

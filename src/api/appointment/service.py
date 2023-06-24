@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from databases.interfaces import Record
 from sqlalchemy import delete, insert, select, update
 
 from api.appointment.exceptions import AppointmentDoesNotExist
@@ -10,7 +9,9 @@ from api.user.models import User
 from database import database
 
 
-async def get_appointments(user: User, start: datetime, end: datetime) -> list[Appointment]:
+async def get_appointments(
+    user: User, start: datetime, end: datetime
+) -> list[Appointment]:
     """
     Get appointments.
 
@@ -34,7 +35,7 @@ async def get_appointments(user: User, start: datetime, end: datetime) -> list[A
 
 
 async def create_appointment(
-        user: User, appointment: CreateUpdateAppointmentSchema
+    user: User, appointment: CreateUpdateAppointmentSchema
 ) -> Appointment | None:
     """
     Create appointment.
@@ -59,7 +60,7 @@ async def create_appointment(
 
 
 async def update_appointment(
-        user: User, appointment_id: int, appointment: CreateUpdateAppointmentSchema
+    user: User, appointment_id: int, appointment: CreateUpdateAppointmentSchema
 ) -> Appointment | None:
     """
     Update appointment.
@@ -103,4 +104,3 @@ async def delete_appointment(appointment_id: int, user: User):
     )
     if not bool(await database.execute(query=delete_query)):
         raise AppointmentDoesNotExist
-

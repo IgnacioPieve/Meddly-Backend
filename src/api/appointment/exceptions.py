@@ -12,5 +12,6 @@ ERROR400 = HTTPException(
     },
 )
 
+
 class AppointmentDoesNotExist(GenericException):
     http_exception = ERROR400
