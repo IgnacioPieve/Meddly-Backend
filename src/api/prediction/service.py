@@ -56,7 +56,7 @@ async def predict_by_symptoms(symptoms_typed: list[str], user: User):
 
 
 async def get_predictions_by_symptoms(
-    user: User, start: datetime = None, page: int = None, per_page: int = None
+        user: User, start: datetime = None, page: int = None, per_page: int = None
 ):
     select_query = (
         select(PredictionBySymptom)
@@ -72,17 +72,22 @@ async def get_predictions_by_symptoms(
 
     results = await database.fetch_all(query=select_query)
     for result in results:
+        result.symptoms = [
+            {'code': symptom, 'description': codes[symptom]}
+            for symptom in result.symptoms
+        ]
         result.prediction = json.loads(result.prediction)
         for i in range(len(result.prediction)):
             result.prediction[i]["disease"] = codes[result.prediction[i]["disease"]]
+
     return results
 
 
 async def verify_prediction_by_symptom(
-    user: User,
-    prediction_id: int,
-    real_disease: str,
-    approval_to_save: bool = False,
+        user: User,
+        prediction_id: int,
+        real_disease: str,
+        approval_to_save: bool = False,
 ) -> bool:
     select_query = select(PredictionBySymptom).where(
         PredictionBySymptom.user_id == user.id,
@@ -152,7 +157,7 @@ async def predict_by_image(file: UploadFile, user: User):
 
 
 async def get_predictions_by_image(
-    user: User, start: datetime = None, page: int = None, per_page: int = None
+        user: User, start: datetime = None, page: int = None, per_page: int = None
 ):
     select_query = (
         select(PredictionByImage)
@@ -173,10 +178,10 @@ async def get_predictions_by_image(
 
 
 async def verify_prediction_by_image(
-    user: User,
-    prediction_id: int,
-    real_disease: str,
-    approval_to_save: bool = False,
+        user: User,
+        prediction_id: int,
+        real_disease: str,
+        approval_to_save: bool = False,
 ) -> bool:
     select_query = select(PredictionByImage).where(
         PredictionByImage.user_id == user.id,

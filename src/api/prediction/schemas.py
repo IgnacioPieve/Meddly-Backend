@@ -43,14 +43,22 @@ class PredictionByImageSchema(PredictionSchema):
         }
 
 
+class SymptomResultSchema(BaseModel):
+    code: str
+    description: str
+
+
 class PredictionBySymptomSchema(PredictionSchema):
-    symptoms: list[str]
+    symptoms: list[SymptomResultSchema]
 
     class Config:
         orm_mode = True
         schema_extra = {
             "example": {
                 **PredictionSchema.Config.schema_extra["example"],
-                "symptoms": ["Fiebre", "Tos"],
+                "symptoms": [
+                    {"code": "C123456789", "description": "Fiebre"},
+                    {"code": "C987654321", "description": "Dolor de cabeza"},
+                ],
             }
         }

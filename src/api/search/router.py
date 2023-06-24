@@ -10,7 +10,7 @@ from api.user.models import User
 router = APIRouter(prefix="/search", tags=["Search"])
 
 
-@router.post(
+@router.get(
     "/symptom_search",
     response_model=list[SearchResultSchema],
     status_code=200,
