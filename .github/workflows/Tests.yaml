@@ -8,19 +8,9 @@ jobs:
   tests:
     name: "Run Tests"
     runs-on: ubuntu-latest
-    env:
-      ENVIRONMENT: "TEST"
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.10"
-          architecture: x64
-      - name: Install dependencies
-        run: |
-          apt-get update && apt-get install -y wkhtmltopdf
-          pip3 install -r requirements/base.txt
+      - name: Run docker compose
+        run: docker-compose up -d
       - name: Run tests
-        run: |
-          pytest
+        run: . scripts/pytest
