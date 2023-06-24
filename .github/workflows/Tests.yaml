@@ -17,7 +17,8 @@ jobs:
           architecture: x64
       - name: Install dependencies
         run: |
-          pip3 install -r src/requirements.txt
+          apt-get update && apt-get install -y wkhtmltopdf
+          pip3 install -r requirements/base.txt
       - name: Run tests
         run: |
           pytest
