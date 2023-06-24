@@ -39,6 +39,7 @@ description = description.replace("{ENVIRONMENT}", ENVIRONMENT)
 PROD = ENVIRONMENT == "PROD"
 TEST = ENVIRONMENT == "TEST"
 DEV = ENVIRONMENT == "DEV"
+print(ENVIRONMENT)
 
 DB_URL = os.getenv(
     "DB_URL",
