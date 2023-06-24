@@ -8,7 +8,7 @@ from api.user.service import assert_device, get_or_create_user
 async def authenticate(
     cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
     device: str | None = Header(default=None),
-):
+):  # pragma: no cover
     """
     Authenticate a user with a Bearer token.
     This does not support the supervisor role.

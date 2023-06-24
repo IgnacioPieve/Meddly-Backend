@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from starlette.status import HTTP_200_OK, HTTP_201_CREATED
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from starlette.testclient import TestClient
 
 
@@ -112,55 +112,55 @@ def test_appointments(client: TestClient):
         {
             "medicine_id": medicines_ids[0],
             "date": (datetime.now() - timedelta(days=28))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
             "real_consumption_date": (datetime.now() - timedelta(days=28))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
         },
         {
             "medicine_id": medicines_ids[0],
             "date": (datetime.now() - timedelta(days=26))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
             "real_consumption_date": (datetime.now() - timedelta(days=26))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
         },
         {
             "medicine_id": medicines_ids[1],
             "date": (datetime.now() + timedelta(days=2))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
             "real_consumption_date": (datetime.now() + timedelta(days=2))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
         },
         {
             "medicine_id": medicines_ids[2],
             "date": (datetime.now() + timedelta(days=2))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
             "real_consumption_date": (datetime.now() + timedelta(days=2))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
         },
         {
             "medicine_id": medicines_ids[2],
             "date": (datetime.now() + timedelta(days=4))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
             "real_consumption_date": (datetime.now() + timedelta(days=4))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
         },
         {
             "medicine_id": medicines_ids[3],
             "date": (datetime.now() + timedelta(days=4))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
             "real_consumption_date": (datetime.now() + timedelta(days=4))
-            .replace(hour=11, minute=30)
+            .replace(hour=11, minute=30, second=0, microsecond=0)
             .isoformat(),
         },
     ]
@@ -174,7 +174,36 @@ def test_appointments(client: TestClient):
     assert "appointments" in calendar["test_user"]
     assert "measurements" in calendar["test_user"]
     assert "consumptions" in calendar["test_user"]
+    assert "medicines" in calendar["test_user"]
     assert len(calendar["test_user"]["appointments"]) == 3
     assert len(calendar["test_user"]["measurements"]) == 3
-    # TODO: Check this
-    # assert len(calendar["test_user"]["consumptions"]) == 103
+    assert len(calendar["test_user"]["consumptions"]) == 103
+    assert len(calendar["test_user"]["medicines"]) == 5
+
+    # Get full calendar
+    response = client.get(
+        f"/calendar"
+        f"?start={(datetime.now() - timedelta(days=45)).isoformat()}"
+        f"&end={(datetime.now() + timedelta(days=45)).isoformat()}"
+    )
+    assert response.status_code == HTTP_200_OK
+    calendar = response.json()
+
+    c = 0
+    for sent_consumption in consumptions:
+        coincidence = False
+        for consumption in calendar["test_user"]["consumptions"]:
+            if (
+                consumption["medicine_id"] == sent_consumption["medicine_id"]
+                and consumption["date"] == sent_consumption["date"]
+            ):
+                assert coincidence == False
+                coincidence = True
+                c += 1
+
+    assert c == len(consumptions)
+
+
+def test_get_not_supervised_user_calendar(client: TestClient):
+    response = client.get("/calendar?users=inexistent_user")
+    assert response.status_code == HTTP_400_BAD_REQUEST

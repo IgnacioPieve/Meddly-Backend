@@ -1,8 +1,4 @@
-import os
-from uuid import uuid4
-
-from PIL import Image as PILImage
-from sqlalchemy import Column, ForeignKey, String, insert
+from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 from models import CRUD
@@ -15,15 +11,3 @@ class Image(CRUD):
     user_id = Column(String(255), ForeignKey("user.id"), index=True, nullable=True)
     user = relationship("User", backref="images", foreign_keys=[user_id])
     tag = Column(String(255), nullable=False)
-
-    def get_anonymous_copy(self, tag: str = None):
-        folder = "store/images"
-        file_name = f"{uuid4()}.jpg"
-        # Assert that the folder exists
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-        PILImage.open(f"{folder}/{self.name}").save(f"{folder}/{file_name}")
-        insert_query = insert(Image).values(
-            name=file_name,
-            tag=tag if tag else self.tag,
-        )

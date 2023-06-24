@@ -8,7 +8,7 @@ from PIL import Image
 from sqlalchemy import insert, select, update
 
 from api.image.service import anonymous_copy_image, save_image
-from api.prediction.exceptions import ERROR700, ERROR701, ERROR702, ERROR703
+from api.prediction.exceptions import ERROR700, ERROR701, ERROR702
 from api.prediction.models.by_image import DiseaseImage, PredictionByImage
 from api.prediction.models.by_image import model_trained as model_trained_by_image
 from api.prediction.models.by_symptom import DiseaseSymptoms, PredictionBySymptom
@@ -56,7 +56,7 @@ async def predict_by_symptoms(symptoms_typed: list[str], user: User):
 
 
 async def get_predictions_by_symptoms(
-        user: User, start: datetime = None, page: int = None, per_page: int = None
+    user: User, start: datetime = None, page: int = None, per_page: int = None
 ):
     select_query = (
         select(PredictionBySymptom)
@@ -67,13 +67,11 @@ async def get_predictions_by_symptoms(
         select_query = select_query.where(PredictionBySymptom.created_at >= start)
     if page and per_page:
         select_query = select_query.limit(per_page).offset((page - 1) * per_page)
-    if (page or per_page) and not (page and per_page):
-        raise ERROR703
 
     results = await database.fetch_all(query=select_query)
     for result in results:
         result.symptoms = [
-            {'code': symptom, 'description': codes[symptom]}
+            {"code": symptom, "description": codes[symptom]}
             for symptom in result.symptoms
         ]
         result.prediction = json.loads(result.prediction)
@@ -84,10 +82,10 @@ async def get_predictions_by_symptoms(
 
 
 async def verify_prediction_by_symptom(
-        user: User,
-        prediction_id: int,
-        real_disease: str,
-        approval_to_save: bool = False,
+    user: User,
+    prediction_id: int,
+    real_disease: str,
+    approval_to_save: bool = False,
 ) -> bool:
     select_query = select(PredictionBySymptom).where(
         PredictionBySymptom.user_id == user.id,
@@ -157,7 +155,7 @@ async def predict_by_image(file: UploadFile, user: User):
 
 
 async def get_predictions_by_image(
-        user: User, start: datetime = None, page: int = None, per_page: int = None
+    user: User, start: datetime = None, page: int = None, per_page: int = None
 ):
     select_query = (
         select(PredictionByImage)
@@ -168,8 +166,7 @@ async def get_predictions_by_image(
         select_query = select_query.where(PredictionByImage.created_at >= start)
     if page and per_page:
         select_query = select_query.limit(per_page).offset((page - 1) * per_page)
-    if (page or per_page) and not (page and per_page):
-        raise ERROR703
+
     select_query = select_query.order_by(PredictionByImage.created_at.desc())
     results = await database.fetch_all(query=select_query)
     for result in results:
@@ -178,10 +175,10 @@ async def get_predictions_by_image(
 
 
 async def verify_prediction_by_image(
-        user: User,
-        prediction_id: int,
-        real_disease: str,
-        approval_to_save: bool = False,
+    user: User,
+    prediction_id: int,
+    real_disease: str,
+    approval_to_save: bool = False,
 ) -> bool:
     select_query = select(PredictionByImage).where(
         PredictionByImage.user_id == user.id,

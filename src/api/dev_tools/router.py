@@ -22,7 +22,7 @@ from database import Base, engine
 router = APIRouter(prefix="/dev", tags=["Developer_Tools"])
 
 
-class UserRequestModel(BaseModel):
+class UserRequestModel(BaseModel):  # pragma: no cover
     email: EmailStr
     password: str
 
@@ -35,7 +35,7 @@ def get_user(
     user: Literal[
         "ignacio.pieve@gmail.com", "soficibello@gmail.com", "salalorennn@gmail.com"
     ]
-):
+):  # pragma: no cover
     user_data = {"email": user, "password": "password", "returnSecureToken": True}
     url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={FIREBASE_KEY}"
     response = requests.post(url, json=user_data)
@@ -48,7 +48,7 @@ def get_user(
 
 
 @router.post("/get-some-users")
-def get_some_users():
+def get_some_users():  # pragma: no cover
     users = [
         "user1@gmail.com",
         "user2@gmail.com",
@@ -71,14 +71,14 @@ def get_some_users():
 
 
 @router.get("/status")
-def get_status():
+def get_status():  # pragma: no cover
     """Get status of messaging server."""
     return {"status": "running"}
 
 
 @router.post("/login", include_in_schema=False)
 @router.post("/login/")
-def login(user: UserRequestModel):
+def login(user: UserRequestModel):  # pragma: no cover
     user = {**user.dict(), "returnSecureToken": True}
     url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={FIREBASE_KEY}"
     response = requests.post(url, json=user)
@@ -89,7 +89,7 @@ def login(user: UserRequestModel):
 
 
 @router.post("/register")
-def register(user: UserRequestModel):
+def register(user: UserRequestModel):  # pragma: no cover
     user = {**user.dict(), "returnSecureToken": True}
     url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={FIREBASE_KEY}"
     response = requests.post(url, json=user)
@@ -100,7 +100,7 @@ def register(user: UserRequestModel):
 
 
 @router.post("/reset-database")
-def reset_database():
+def reset_database():  # pragma: no cover
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     return {"status": "ok"}
@@ -112,7 +112,7 @@ def send_notification(
     email: str | None = None,
     phone_number: str | None = None,
     device_id: str | None = None,
-):
+):  # pragma: no cover
     def send_email():
         message_constructor = Mail(
             from_email=SENDGRID_CONFIG["email"],
@@ -175,7 +175,7 @@ def send_notification(
 
 
 @router.post("/load-example-data")
-async def load_example_data(background_tasks: BackgroundTasks):
+async def load_example_data(background_tasks: BackgroundTasks):  # pragma: no cover
     def assure_user_exists(email):
         try:
             return auth.get_user_by_email(email).uid

@@ -19,6 +19,3 @@ app.dependency_overrides[authenticate] = override_auth
 def client():
     with TestClient(app) as client:
         yield client
-
-
-print("AAAAAHI VA")
