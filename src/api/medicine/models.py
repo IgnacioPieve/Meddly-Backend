@@ -98,7 +98,7 @@ class Medicine(CRUD):
         else:
             frequency = rrule(
                 WEEKLY,
-                byweekday=self.days,
+                byweekday=[day - 1 for day in self.days],
                 dtstart=self.start_date.date(),
                 until=self.end_date.date() if self.end_date else None,
             )

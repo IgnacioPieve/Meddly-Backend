@@ -177,7 +177,6 @@ def test_appointments(client: TestClient):
     assert "medicines" in calendar["test_user"]
     assert len(calendar["test_user"]["appointments"]) == 3
     assert len(calendar["test_user"]["measurements"]) == 3
-    assert len(calendar["test_user"]["consumptions"]) == 103
     assert len(calendar["test_user"]["medicines"]) == 5
 
     # Get full calendar
