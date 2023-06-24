@@ -39,7 +39,6 @@ description = description.replace("{ENVIRONMENT}", ENVIRONMENT)
 PROD = ENVIRONMENT == "PROD"
 TEST = ENVIRONMENT == "TEST"
 DEV = ENVIRONMENT == "DEV"
-print(ENVIRONMENT)
 
 DB_URL = os.getenv(
     "DB_URL",
@@ -51,10 +50,10 @@ SENDGRID_CONFIG = {
     "email": os.getenv("SENDGRID_EMAIL"),
 }
 
-FIREBASE_JSON = "credentials/firebase.json"
+FIREBASE_JSON_PATH = "credentials/firebase.json"
 FIREBASE_KEY = os.getenv("FIREBASE_KEY")
-if not TEST:
-    firebase_admin.initialize_app(firebase_admin.credentials.Certificate(FIREBASE_JSON))
+if os.path.exists(FIREBASE_JSON_PATH):
+    firebase_admin.initialize_app(firebase_admin.credentials.Certificate(FIREBASE_JSON_PATH))
 
 WHATSAPP_API_KEY = os.getenv("WHATSAPP_API_KEY")
 WA_NUMBER_ID = os.getenv("WA_NUMBER_ID")
