@@ -1,11 +1,10 @@
 # /credentials
+# TODO: This file must be refactored to use a single file for all credentials.
 This folder contains credentials for the various services used by the application.
 The following files are not included in the repository for security reasons, and should be created manually.
 
 ## Contents
 * .env
-* firebase.json
-
 
 ## .env
 This file contains the environment variables used by the application.
