@@ -1,6 +1,4 @@
 [report]
-omit =
-    */api/dev_tools/*
 
 exclude_also =
     ; Don't complain about missing debug-only code:

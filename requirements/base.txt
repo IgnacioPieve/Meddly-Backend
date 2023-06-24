@@ -19,19 +19,18 @@ Whoosh==2.7.4                   # Searching
 jinja2==3.1.2                   # PDF / HTML to PDF
 pdfkit==1.0.0                   # PDF / HTML to PDF
 PyPDF2==3.0.1                   # PDF / Merge PDFs
+python-dotenv==0.21.1           # Load environment variables from .env file
 
 
 # Testing and Linting. These libraries are not required for the application to run
 pytest==7.2.1                   # Testing
 pytest-env==0.8.1               # Testing
 httpx==0.23.3                   # Testing
-flake8==6.0.0                   # Linting
-isort==5.11.4                   # Linting
-black==23.3.0                   # Linting
-python-dotenv==0.21.1           # Load environment variables from .env file, used only in /scripts folder
-openpyxl==3.1.2                 # Read and write Excel files, used only in /scripts folder
 async-asgi-testclient==1.4.11   # Testing
 pytest-asyncio==0.21.0          # Testing
 coverage==7.0.3                 # Testing
 pytest-cov==4.1.0               # Testing
-
+flake8==6.0.0                   # Linting
+isort==5.11.4                   # Linting
+black==23.3.0                   # Linting
+openpyxl==3.1.2                 # Read and write Excel files, used only in /scripts folder

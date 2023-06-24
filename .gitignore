@@ -1,10 +1,8 @@
 .idea
-src/credentials/.env
+.pytest_cache/
 __pycache__/
 venv/
 src/.pytest_cache/
 src/store/
-src/credentials/
 src/.coverage
-!src/credentials/readme.md
-/.pytest_cache/
+src/credentials/.env
