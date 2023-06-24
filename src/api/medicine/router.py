@@ -27,13 +27,15 @@ router = APIRouter(prefix="/medicine", tags=["Medicine"])
 )
 async def get_medicines(user: User = Depends(authenticate)):
     """
-    Get all active medicines.
+    # Get all active medicines.
+
+    This endpoint returns all the active medicines of the authenticated user.
 
     Args:
-    - user (User): User object obtained from authentication.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-    - List[MedicineSchema]: List of MedicineSchema objects representing the active medicines.
+    - **List[MedicineSchema]**: List of MedicineSchema objects representing the active medicines.
     """
 
     medicines = await get_medicines_service(user)
@@ -50,14 +52,16 @@ async def create_medicine(
     medicine: CreateMedicineSchema, user: User = Depends(authenticate)
 ):
     """
-    Create a new medicine.
+    # Create a new medicine
+
+    This endpoint creates a new medicine for the authenticated user.
 
     Args:
-    - medicine (CreateMedicineSchema): Data required to create a new medicine.
-    - user (User): User object obtained from authentication.
+    - **medicine** (CreateMedicineSchema): Data required to create a new medicine.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-    - MedicineSchema: The created medicine.
+    - **MedicineSchema**: The created medicine.
     """
 
     try:
@@ -71,16 +75,19 @@ async def create_medicine(
 @router.delete("/medicine/{medicine_id}", status_code=200, summary="Delete a medicine")
 async def delete_medicine(medicine_id: int, user: User = Depends(authenticate)):
     """
-    Delete a medicine.
+    # Delete a medicine
+
+    This endpoint deletes a medicine for the authenticated user.
 
     Args:
-    - medicine_id (int): ID of the medicine to delete.
-    - user (User): User object obtained from authentication.
+    - **medicine_id** (int): ID of the medicine to delete.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
 
-    success = await delete_medicine_service(user, medicine_id)
-    if not success:
-        raise ERROR305
+    try:
+        await delete_medicine_service(user, medicine_id)
+    except GenericException as e:
+        raise e.http_exception
 
 
 @router.post(
@@ -93,14 +100,16 @@ async def create_consumption(
     consumption: CreateConsumptionSchema, user: User = Depends(authenticate)
 ):
     """
-    Create a new consumption.
+    # Create a new consumption
+
+    This endpoint creates a new consumption for the authenticated user and the selected medicine.
 
     Args:
-    - consumption (CreateConsumptionSchema): Data required to create a new consumption.
-    - user (User): User object obtained from authentication.
+    - **consumption** (CreateConsumptionSchema): Data required to create a new consumption.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-    - ConsumptionSchema: The created consumption.
+    - **ConsumptionSchema**: The created consumption.
     """
 
     try:
@@ -116,16 +125,16 @@ async def delete_consumption(
     consumption: DeleteConsumptionSchema, user: User = Depends(authenticate)
 ):
     """
-    Delete a consumption.
+    # Delete a consumption
+
+    This endpoint deletes a consumption for the authenticated user and the selected medicine.
 
     Args:
-    - consumption (DeleteConsumptionSchema): Data required to delete a consumption.
-    - user (User): User object obtained from authentication.
+    - **consumption** (DeleteConsumptionSchema): Data required to delete a consumption.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
 
     try:
-        success = await delete_consumption_service(user, consumption)
+        await delete_consumption_service(user, consumption)
     except GenericException as e:
         raise e.http_exception
-    if not success:
-        raise ERROR307

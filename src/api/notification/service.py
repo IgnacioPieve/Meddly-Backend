@@ -5,7 +5,8 @@ from firebase_admin import messaging
 from sendgrid import Mail, SendGridAPIClient
 from sqlalchemy import delete, insert, select, update
 
-from api.notification.exceptions import ERROR500, ERROR501
+from api.notification.exceptions import ERROR500, ERROR501, YouDontHaveThisNotificationPreference, \
+    YouAlreadyHaveThisNotificationPreference, ThisNotificationDoesNotExist
 from api.notification.models.message import Message
 from api.notification.models.notification import Notification
 from api.notification.models.notification_preference import NotificationPreference
@@ -64,7 +65,7 @@ async def add_notification_preference(
     )
     result = await database.fetch_one(query=select_query)
     if result:
-        raise ERROR500
+        raise YouAlreadyHaveThisNotificationPreference
 
     insert_query = (
         insert(NotificationPreference)
@@ -103,7 +104,7 @@ async def delete_notification_preference(
     )
     result = await database.fetch_one(query=select_query)
     if not result:
-        raise ERROR501
+        raise YouDontHaveThisNotificationPreference
 
     delete_query = (
         delete(NotificationPreference)
@@ -206,4 +207,6 @@ async def delete_notification(notification_id: int, user: User):
         .returning(Notification)
     )
     result = await database.execute(query=delete_query)
+    if not result:
+        raise ThisNotificationDoesNotExist
     return result

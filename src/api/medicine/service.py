@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from databases.interfaces import Record
 from sqlalchemy import and_, delete, insert, or_, select, update
 
-from api.medicine.exceptions import ConsumptionAlreadyExists, MedicineNotFound
+from api.medicine.exceptions import ConsumptionAlreadyExists, MedicineNotFound, ConsumptionDoesNotExist
 from api.medicine.models import Consumption, Medicine
 from api.medicine.schemas import (
     CreateConsumptionSchema,
@@ -90,17 +90,13 @@ async def create_medicine(user: User, medicine: CreateMedicineSchema) -> Record 
     return medicine
 
 
-async def delete_medicine(user: User, medicine_id: int) -> bool:
+async def delete_medicine(user: User, medicine_id: int):
     """
     Delete a medicine for a user.
 
     Args:
         user (User): The user who owns the medicine.
         medicine_id (int): The ID of the medicine to delete.
-
-    Returns:
-        bool: True if the medicine was successfully deleted, False otherwise.
-
     """
 
     delete_query = (
@@ -108,8 +104,8 @@ async def delete_medicine(user: User, medicine_id: int) -> bool:
         .where(Medicine.id == medicine_id, Medicine.user_id == user.id)
         .returning(Medicine)
     )
-    deleted = bool(await database.execute(query=delete_query))
-    return deleted
+    if not bool(await database.execute(query=delete_query)):
+        raise MedicineNotFound
 
 
 async def create_consumption(
@@ -177,20 +173,13 @@ async def create_consumption(
     return consumption
 
 
-async def delete_consumption(user: User, consumption: DeleteConsumptionSchema) -> bool:
+async def delete_consumption(user: User, consumption: DeleteConsumptionSchema):
     """
     Delete a consumption for a user.
 
     Args:
         user (User): The user who owns the consumption.
         consumption (DeleteConsumptionSchema): The data required to delete the consumption.
-
-    Returns:
-        bool: True if the consumption was successfully deleted, False otherwise.
-
-    Raises:
-        MedicineNotFound: Raised if the medicine associated with the consumption is not found.
-
     """
 
     medicine = await database.fetch_one(
@@ -212,8 +201,8 @@ async def delete_consumption(user: User, consumption: DeleteConsumptionSchema) -
         )
         .returning(Consumption)
     )
-    deleted = bool(await database.execute(query=delete_query))
-    return deleted
+    if not bool(await database.execute(query=delete_query)):
+        raise ConsumptionDoesNotExist
 
 
 async def get_consumptions(user: User, start: datetime, end: datetime) -> list[Record]:

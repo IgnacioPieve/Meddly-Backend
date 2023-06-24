@@ -21,10 +21,3 @@ ERROR702 = HTTPException(
         "description": "The prediction does not exist or you do not have permission to access it.",
     },
 )
-ERROR703 = HTTPException(
-    status_code=status.HTTP_400_BAD_REQUEST,
-    detail={
-        "code": 703,
-        "description": "If you want to use pagination, you have to send both page and per_page.",
-    },
-)

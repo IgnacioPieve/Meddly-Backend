@@ -17,6 +17,19 @@ router = APIRouter(prefix="/search", tags=["Search"])
     summary="Symptoms Search",
 )
 async def symptom_search(query: str, user: User = Depends(authenticate)):
+    """
+    # Symptom Search
+
+    This endpoint returns a list of symptoms that match the query. Requires authentication.
+
+    Args:
+    - **query** (str): The query to search for.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+
+    Returns:
+    - **list[SearchResultSchema]**: A list of symptoms that match the query.
+    """
+
     results = await symptom_search_service(query)
     return results
 
@@ -31,6 +44,19 @@ async def medicine_search(
     query: str,
     user: User = Depends(authenticate),
 ):
+    """
+    # Medicine Search
+
+    This endpoint returns a list of medicines that match the query. Requires authentication.
+
+    Args:
+    - **query** (str): The query to search for.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+
+    Returns:
+    - **list[SearchResultSchema]**: A list of medicines that match the query.
+    """
+
     results = await medicine_search_service(query)
     return results
 
@@ -45,5 +71,18 @@ async def disease_search(
     query: str,
     user: User = Depends(authenticate),
 ):
+    """
+    # Disease Search
+
+    This endpoint returns a list of diseases that match the query. Requires authentication.
+
+    Args:
+    - **query** (str): The query to search for.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+
+    Returns:
+    - **list[SearchResultSchema]**: A list of diseases that match the query.
+    """
+
     results = await disease_search_service(query)
     return results

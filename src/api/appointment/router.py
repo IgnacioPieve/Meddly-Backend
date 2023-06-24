@@ -9,6 +9,7 @@ from api.appointment.service import delete_appointment as delete_appointment_ser
 from api.appointment.service import get_appointments as get_appointments_service
 from api.appointment.service import update_appointment as update_appointment_service
 from api.auth.dependencies import authenticate
+from api.exceptions import GenericException
 from api.user.models import User
 
 router = APIRouter(prefix="/appointment", tags=["Appointment"])
@@ -26,18 +27,19 @@ async def get_appointments(
     user: User = Depends(authenticate),
 ):
     """
-    Retrieve all appointments.
+    # Get all appointments
 
     This endpoint retrieves all appointments for the authenticated user within a specified time range.
 
     Args:
-    - start (datetime, optional): The start datetime of the time range. Defaults to 15 days ago if not provided.
-    - end (datetime, optional): The end datetime of the time range. Defaults to 15 days from now if not provided.
-    - user (User): The authenticated user. This parameter is automatically obtained from the request.
+    - **start** (datetime, optional): The start datetime of the time range. Defaults to 15 days ago if not provided.
+    - **end** (datetime, optional): The end datetime of the time range. Defaults to 15 days from now if not provided.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-    - List[AppointmentSchema]: List of AppointmentSchema objects representing the appointments within the specified time range.
+    - **List[AppointmentSchema]**: List of AppointmentSchema objects representing the appointments within the specified time range.
     """
+
     if not start:
         start = datetime.now() - timedelta(days=15)
     if not end:
@@ -56,17 +58,18 @@ async def create_appointment(
     appointment: CreateUpdateAppointmentSchema, user: User = Depends(authenticate)
 ):
     """
-    Create a new appointment.
+    # Create a new appointment.
 
     This endpoint allows the authenticated user to create a new appointment.
 
     Args:
-    - appointment (CreateUpdateAppointmentSchema): The appointment data to be created.
-    - user (User): The authenticated user. This parameter is automatically obtained from the request.
+    - **appointment** (CreateUpdateAppointmentSchema): The appointment data to be created.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-    - The newly created appointment data.
+    - **AppointmentSchema**: The newly created appointment data.
     """
+
     appointment = await create_appointment_service(user, appointment)
     return appointment
 
@@ -83,18 +86,19 @@ async def update_appointment(
     user: User = Depends(authenticate),
 ):
     """
-    Update an appointment.
+    # Update an appointment.
 
     This endpoint allows the authenticated user to update an existing appointment.
 
     Args:
-    - appointment_id (int): The ID of the appointment to be updated.
-    - appointment (CreateUpdateAppointmentSchema): The updated appointment data.
-    - user (User): The authenticated user. This parameter is automatically obtained from the request.
+    - **appointment_id** (int): The ID of the appointment to be updated.
+    - **appointment** (CreateUpdateAppointmentSchema): The updated appointment data.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-    - The updated appointment data.
+    - **AppointmentSchema**: The updated appointment data.
     """
+
     appointment = await update_appointment_service(user, appointment_id, appointment)
     if not appointment:
         raise ERROR400
@@ -108,14 +112,15 @@ async def update_appointment(
 )
 async def delete_appointment(appointment_id: int, user: User = Depends(authenticate)):
     """
-    Delete an appointment.
+    # Delete an appointment.
 
     This endpoint allows the authenticated user to delete an existing appointment.
 
     Args:
-    - appointment_id (int): The ID of the appointment to be deleted.
-    - user (User): Authentication dependency. This parameter is automatically obtained from the request.
+    - **appointment_id** (int): The ID of the appointment to be deleted.
+    - **user** (User): Authentication dependency. This parameter is automatically obtained from the request.
     """
-    success = await delete_appointment_service(appointment_id, user)
-    if not success:
-        raise ERROR400
+    try:
+        await delete_appointment_service(appointment_id, user)
+    except GenericException as e:
+        raise e.http_exception

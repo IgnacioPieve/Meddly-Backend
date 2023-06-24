@@ -9,7 +9,7 @@ from api.user.utils import generate_code
 from database import database
 
 
-async def get_or_create_user(user_id: str, email: str) -> User:
+async def get_or_create_user(user_id: str, email: str) -> Record[User]:
     """
     Retrieves a user from the database based on the given user ID.
     If the user does not exist, a new user is created with the provided ID and email.

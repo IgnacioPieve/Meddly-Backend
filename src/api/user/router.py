@@ -12,12 +12,15 @@ router = APIRouter(prefix="/user", tags=["User"])
 @router.get("", response_model=UserSchema, status_code=200, summary="Get user data")
 async def get_user(user: User = Depends(authenticate)) -> User:
     """
-    Retrieve user data.
+    # Retrieve user data
 
     This endpoint returns the data of the authenticated user.
 
+    Args:
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+
     Returns:
-        User: The user data.
+    - **UserSchema**: The user data.
     """
     return user
 
@@ -27,15 +30,16 @@ async def update_user(
     update_data: UserUpdateSchema, user: User = Depends(authenticate)
 ):
     """
-    Update user data.
+    # Update user data
 
     This endpoint updates the data of the authenticated user with the provided update data.
 
     Args:
-        update_data (UserUpdateSchema): The data to update the user with.
+    - **update_data** (UserUpdateSchema): The data to update.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-        User: The updated user data.
+    - **UserSchema**: The updated user data.
     """
     updated_user = await update_user_service(user, update_data)
     return updated_user
@@ -44,8 +48,11 @@ async def update_user(
 @router.delete("", status_code=200, summary="Delete user")
 async def delete_user(user: User = Depends(authenticate)):
     """
-    Delete user.
+    # Delete user
 
-    This endpoint deletes the authenticated user from the system.
+    This endpoint deletes the authenticated user.
+
+    Args:
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
     await delete_user_service(user)

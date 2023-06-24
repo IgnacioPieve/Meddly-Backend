@@ -37,14 +37,16 @@ async def predict_by_symptoms(
     symptoms_typed: list[str], user: User = Depends(authenticate)
 ):
     """
-    Prediction by symptoms.
+    # Prediction by symptoms
+
+    Predicts the probability of a disease based on the symptoms provided.
 
     Args:
-    - symptoms_typed (List[str]): List of symptoms codes (I.e: ['C123456789', 'C987654321']).
-    - user (User): User object obtained from authentication.
+    - **symptoms_typed** (List[str]): List of symptoms codes (I.e: ['C123456789', 'C987654321']).
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-        List[ProbabilitySchema]: List of predicted probabilities for diseases.
+    - **List[ProbabilitySchema]**: List of predicted probabilities for diseases.
     """
 
     result = await predict_by_symptoms_service(symptoms_typed, user)
@@ -64,16 +66,18 @@ async def get_predictions_by_symptoms(
     user: User = Depends(authenticate),
 ):
     """
-    List all prediction by symptoms.
+    # List all prediction by symptoms
+
+    List all prediction by symptoms made by the user, sorted by date.
 
     Args:
-    - start (datetime, optional): Start date for filtering predictions. Defaults to None.
-    - page (int, optional): Page number for pagination. Defaults to 1.
-    - per_page (int, optional): Number of predictions per page. Defaults to 10.
-    - user (User): User object obtained from authentication.
+    - **start** (datetime, optional): Start date for filtering predictions. Defaults to None.
+    - **page** (int, optional): Page number for pagination. Defaults to 1.
+    - **per_page** (int, optional): Number of predictions per page. Defaults to 10.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-        List[PredictionBySymptomSchema]: List of prediction results.
+    - **List[PredictionBySymptomSchema]**: List of prediction results.
     """
 
     result = await get_predictions_by_symptoms_service(user, start, page, per_page)
@@ -92,17 +96,17 @@ async def verify_prediction_by_symptoms(
     user=Depends(authenticate),
 ):
     """
-    Verify a prediction by symptoms.
+    # Verify a prediction by symptoms
+
+    Verifies a prediction by symptoms, providing the actual diagnosed disease code.
+    The user can also provide consent to anonymously use their diagnosis for further retraining of the AI model.
 
     Args:
-    - prediction_id (int): ID of the prediction to verify.
-    - real_disease (str): The actual diagnosed disease code. (I.e: 'C123456789').
-    - approval_to_save (bool, optional): Flag indicating whether the user consents to anonymously use their diagnosis for further retraining of the AI model.
+    - **prediction_id** (int): ID of the prediction to verify.
+    - **real_disease** (str): The actual diagnosed disease code. (I.e: 'C123456789').
+    - **approval_to_save** (bool, optional): Flag indicating whether the user consents to anonymously use their diagnosis for further retraining of the AI model.
                                           Defaults to False, indicating that the user does not provide consent to save their diagnosis for retraining.
-    - user (User, optional): User object obtained from authentication.
-
-    Returns:
-        None
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
 
     await verify_prediction_by_symptoms_service(
@@ -118,14 +122,16 @@ async def verify_prediction_by_symptoms(
 )
 async def predict_by_image(file: UploadFile, user: User = Depends(authenticate)):
     """
-    Prediction by image.
+    # Prediction by image
+
+    Predicts the probability of a disease based on an uploaded image.
 
     Args:
-    - file (UploadFile): Uploaded image file.
-    - user (User): User object obtained from authentication.
+    - **file** (UploadFile): The image file to be uploaded.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-        List[ProbabilitySchema]: List of predicted probabilities for diseases.
+    - **List[ProbabilitySchema]**: List of predicted probabilities for diseases.
     """
 
     result = await predict_by_image_service(file, user)
@@ -145,16 +151,18 @@ async def get_predictions_by_image(
     user: User = Depends(authenticate),
 ):
     """
-    List all prediction by image.
+    # List all prediction by image
+
+    List all prediction by image made by the user, sorted by date.
 
     Args:
-    - start (datetime, optional): Start date for filtering predictions. Defaults to None.
-    - page (int, optional): Page number for pagination. Defaults to 1.
-    - per_page (int, optional): Number of predictions per page. Defaults to 10.
-    - user (User): User object obtained from authentication.
+    - **start** (datetime, optional): Start date for filtering predictions. Defaults to None.
+    - **page** (int, optional): Page number for pagination. Defaults to 1.
+    - **per_page** (int, optional): Number of predictions per page. Defaults to 10.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-        List[PredictionByImageSchema]: List of prediction results.
+    - **List[PredictionByImageSchema]**: List of prediction results.
     """
 
     result = await get_predictions_by_image_service(user, start, page, per_page)
@@ -173,17 +181,17 @@ async def verify_prediction_by_image(
     user: User = Depends(authenticate),
 ):
     """
-    Verify a prediction by image.
+    # Verify a prediction by image
+
+    Verifies a prediction by image, providing the actual diagnosed disease code.
+    The user can also provide consent to anonymously use their diagnosis for further retraining of the AI model.
 
     Args:
-    - prediction_id (int): ID of the prediction to verify.
-    - real_disease (str): The actual diagnosed disease code. (I.e: 'C123456789').
-    - approval_to_save (bool, optional): Flag indicating whether the user consents to anonymously use their diagnosis for further retraining of the AI model.
-                                          Defaults to False, indicating that the user does not provide consent to save their diagnosis for retraining.
-    - user (User, optional): User object obtained from authentication.
-
-    Returns:
-        None
+    - **prediction_id** (int): ID of the prediction to verify.
+    - **real_disease** (str): The actual diagnosed disease code. (I.e: 'C123456789').
+    - **approval_to_save** (bool, optional): Flag indicating whether the user consents to anonymously use their diagnosis for further retraining of the AI model.
+                                            Defaults to False, indicating that the user does not provide consent to save their diagnosis for retraining.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
 
     await verify_prediction_by_image_service(

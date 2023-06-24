@@ -3,13 +3,14 @@ from datetime import datetime
 from databases.interfaces import Record
 from sqlalchemy import delete, insert, select, update
 
+from api.appointment.exceptions import AppointmentDoesNotExist
 from api.appointment.models import Appointment
 from api.appointment.schemas import CreateUpdateAppointmentSchema
 from api.user.models import User
 from database import database
 
 
-async def get_appointments(user: User, start: datetime, end: datetime) -> list[Record]:
+async def get_appointments(user: User, start: datetime, end: datetime) -> list[Appointment]:
     """
     Get appointments.
 
@@ -21,7 +22,7 @@ async def get_appointments(user: User, start: datetime, end: datetime) -> list[R
         end (datetime): The end datetime of the time range.
 
     Returns:
-        list[Record] | None: A list of appointment records or None if no appointments found.
+        list[Appointment]: The list of appointments for the specified user within the specified time range.
     """
 
     select_query = select(Appointment).where(
@@ -33,8 +34,8 @@ async def get_appointments(user: User, start: datetime, end: datetime) -> list[R
 
 
 async def create_appointment(
-    user: User, appointment: CreateUpdateAppointmentSchema
-) -> Record | None:
+        user: User, appointment: CreateUpdateAppointmentSchema
+) -> Appointment | None:
     """
     Create appointment.
 
@@ -45,7 +46,7 @@ async def create_appointment(
         appointment (CreateUpdateAppointmentSchema): The appointment data to be created.
 
     Returns:
-        Union[Record, None]: The created appointment record or None if creation failed.
+        Union[Appointment, None]: The created appointment or None if creation failed.
     """
 
     insert_query = (
@@ -58,8 +59,8 @@ async def create_appointment(
 
 
 async def update_appointment(
-    user: User, appointment_id: int, appointment: CreateUpdateAppointmentSchema
-) -> Record | None:
+        user: User, appointment_id: int, appointment: CreateUpdateAppointmentSchema
+) -> Appointment | None:
     """
     Update appointment.
 
@@ -71,7 +72,7 @@ async def update_appointment(
         appointment (CreateUpdateAppointmentSchema): The updated appointment data.
 
     Returns:
-        Union[Record, None]: The updated appointment record or None if update failed.
+        Union[Appointment, None]: The updated appointment or None if update failed.
     """
 
     update_query = (
@@ -84,7 +85,7 @@ async def update_appointment(
     return appointment
 
 
-async def delete_appointment(appointment_id: int, user: User) -> bool:
+async def delete_appointment(appointment_id: int, user: User):
     """
     Delete appointment.
 
@@ -93,9 +94,6 @@ async def delete_appointment(appointment_id: int, user: User) -> bool:
     Args:
         appointment_id (int): The ID of the appointment to be deleted.
         user (User): The user object representing the user.
-
-    Returns:
-        bool: True if the appointment is successfully deleted, False otherwise.
     """
 
     delete_query = (
@@ -103,5 +101,6 @@ async def delete_appointment(appointment_id: int, user: User) -> bool:
         .where(Appointment.id == appointment_id, Appointment.user_id == user.id)
         .returning(Appointment)
     )
-    deleted = bool(await database.execute(query=delete_query))
-    return deleted
+    if not bool(await database.execute(query=delete_query)):
+        raise AppointmentDoesNotExist
+

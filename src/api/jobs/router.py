@@ -19,6 +19,12 @@ router = APIRouter(prefix="/jobs", tags=["Jobs"])
     summary="Send today user appointments notification",
 )
 async def send_today_user_appointments_notification(background_tasks: BackgroundTasks):
+    """
+    # Send today's user appointments notification
+
+    Sends notifications to users about their appointments scheduled for today.
+    """
+
     await send_today_user_appointments_notification_service(background_tasks)
 
 
@@ -28,6 +34,12 @@ async def send_today_user_appointments_notification(background_tasks: Background
     summary="Send today user medicines notification",
 )
 async def send_today_user_medicines_notification(background_tasks: BackgroundTasks):
+    """
+    # Send today's user medicines notification
+
+    Sends notifications to users about the medicines they need to take today.
+    """
+
     await send_today_user_medicines_notification_service(background_tasks)
 
 
@@ -39,6 +51,12 @@ async def send_today_user_medicines_notification(background_tasks: BackgroundTas
 async def send_yesterday_user_didnt_take_medicines_notification(
     background_tasks: BackgroundTasks,
 ):
+    """
+    # Send yesterday's user didn't take medicines notification
+
+    Sends notifications to users who didn't take their prescribed medicines yesterday.
+    """
+
     await send_yesterday_user_didnt_take_medicines_notification_service(
         background_tasks
     )

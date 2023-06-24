@@ -2,16 +2,27 @@ from fastapi import Depends, Header, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from firebase_admin import auth
 
+from api.user.models import User
 from api.user.service import assert_device, get_or_create_user
 
 
 async def authenticate(
-    cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
-    device: str | None = Header(default=None),
-):  # pragma: no cover
+        cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+        device: str | None = Header(default=None),
+) -> User:  # pragma: no cover
     """
     Authenticate a user with a Bearer token.
-    This does not support the supervisor role.
+
+    Args:
+        cred (HTTPAuthorizationCredentials): The HTTP authorization credentials.
+        device (str | None): The device header. Defaults to None and represents the device_id used to authenticate.
+                            It is used to send push notifications to the device.
+
+    Raises:
+        HTTPException: If bearer authentication is required or if the authentication credentials are invalid.
+
+    Returns:
+        User: The authenticated user.
     """
 
     if cred is None:
@@ -28,7 +39,7 @@ async def authenticate(
             detail=f"Invalid authentication credentials. {err}",
         )
 
-    user = await get_or_create_user(decoded_token["user_id"], decoded_token["email"])
+    user: User = await get_or_create_user(decoded_token["user_id"], decoded_token["email"])
     if device:
         await assert_device(user, device)
     return user

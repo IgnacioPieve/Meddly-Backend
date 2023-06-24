@@ -3,6 +3,7 @@ from typing import Annotated, Literal
 from fastapi import APIRouter, Depends, Query
 
 from api.auth.dependencies import authenticate
+from api.exceptions import GenericException
 from api.notification.schemas import NotificationSchema
 from api.notification.service import (
     add_notification_preference as add_notification_preference_service,
@@ -28,20 +29,15 @@ router = APIRouter(prefix="/notification", tags=["Notifications"])
 )
 async def get_notification_preferences(user: User = Depends(authenticate)):
     """
-    Get notification preferences.
+    # Get notification preferences
 
-    Parameters:
-    - user (User): The authenticated user.
+    This endpoint retrieves the notification preferences for the authenticated user.
+
+    Args:
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-    - list[str]: A list of notification preferences.
-
-    Summary:
-    This function retrieves the notification preferences for the authenticated user.
-
-    Responses:
-    - 200: If the notification preferences are successfully retrieved, the response will contain a list of notification preferences.
-
+    - **list[str]**: A list of notification preferences.
     """
 
     results = await get_notification_preferences_service(user)
@@ -59,24 +55,21 @@ async def add_notification_preference(
     user: User = Depends(authenticate),
 ):
     """
-    Add a notification preference.
+    # Add a notification preference
 
-    Parameters:
-    - notification_preference (Literal["email", "whatsapp", "push"]): The notification preference to add.
-    - user (User): The authenticated user.
+    This endpoint adds a notification preference for the authenticated user.
+
+    Args:
+    - **notification_preference** (Literal["email", "whatsapp", "push"]): The notification preference to add.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-    - list[str]: A list of updated notification preferences.
-
-    Summary:
-    This function adds a notification preference for the authenticated user.
-
-    Responses:
-    - 201: If the notification preference is successfully added, the response will contain a list of updated notification preferences.
-
+    - **list[str]**: A list of updated notification preferences.
     """
-
-    result = await add_notification_preference_service(notification_preference, user)
+    try:
+        result = await add_notification_preference_service(notification_preference, user)
+    except GenericException as e:
+        raise e.http_exception
     return result
 
 
@@ -91,24 +84,22 @@ async def delete_notification_preference(
     user: User = Depends(authenticate),
 ):
     """
-    Delete a notification preference.
+    # Delete a notification preference
 
-    Parameters:
-    - notification_preference (Literal["email", "whatsapp", "push"]): The notification preference to delete.
-    - user (User): The authenticated user.
+    This endpoint deletes a notification preference for the authenticated user.
+
+    Args:
+    - **notification_preference** (Literal["email", "whatsapp", "push"]): The notification preference to delete.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
 
     Returns:
-    - list[str]: A list of updated notification preferences.
-
-    Summary:
-    This function deletes a notification preference for the authenticated user.
-
-    Responses:
-    - 200: If the notification preference is successfully deleted, the response will contain a list of updated notification preferences.
-
+    - **list[str]**: A list of updated notification preferences.
     """
 
-    result = await delete_notification_preference_service(notification_preference, user)
+    try:
+        result = await delete_notification_preference_service(notification_preference, user)
+    except GenericException as e:
+        raise e.http_exception
     return result
 
 
@@ -124,6 +115,21 @@ async def get_notifications(
     per_page: int = 10,
     user: User = Depends(authenticate),
 ):
+    """
+    # Get notifications
+
+    This endpoint retrieves the notifications for the authenticated user.
+
+    Args:
+    - **type** (list[str] | None): The notification types to retrieve. If not specified, all notification types will be retrieved.
+    - **page** (int): The page number to retrieve. Defaults to 1.
+    - **per_page** (int): The number of notifications to retrieve per page. Defaults to 10.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+
+    Returns:
+    - **list[NotificationSchema]**: A list of notifications.
+    """
+
     results = await get_notifications_service(
         user, page=page, per_page=per_page, type=type
     )
@@ -139,7 +145,16 @@ async def delete_notification(
     notification_id: int,
     user: User = Depends(authenticate),
 ):
-    success = await delete_notification_service(
-        notification_id=notification_id, user=user
-    )
-    # TODO: raise exception if success is False
+    """
+    # Delete a notification
+
+    This endpoint deletes a notification for the authenticated user.
+
+    Args:
+    - **notification_id** (int): The ID of the notification to delete.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+    """
+    try:
+        await delete_notification_service(notification_id=notification_id, user=user)
+    except GenericException as e:
+        raise e.http_exception

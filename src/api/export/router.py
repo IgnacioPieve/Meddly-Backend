@@ -19,12 +19,16 @@ router = APIRouter(prefix="/export", tags=["Export"])
 )
 async def export_pdf(user: User = Depends(authenticate)):
     """
-    Export user data as PDF
+    # Export PDF
 
-    This endpoint allows the authenticated user to export their data as a PDF file.
+    Retrieves user information and generates a PDF document based on the user data.
+    The PDF is returned as a downloadable file with the appropriate headers.
 
     Args:
-    - user (User): Authentication dependency. This parameter is automatically obtained from the request.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+
+    Returns:
+    - **Response**: A response containing the generated PDF as a downloadable file.
     """
     user = User(**user)
     name = user.get_fullname().lower().strip()

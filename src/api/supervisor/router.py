@@ -19,8 +19,17 @@ async def accept_invitation(
     background_tasks: BackgroundTasks,
     user: User = Depends(authenticate),
 ):
+    """
+    # Accept invitation
+
+    This endpoint allows the authenticated user to accept an invitation.
+
+    Args:
+    - **code** (str): The invitation code.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+    """
+
     await accept_invitation_service(user, code, background_tasks)
-    return True
 
 
 @router.get(
@@ -30,6 +39,18 @@ async def accept_invitation(
     summary="Get supervisors",
 )
 async def get_supervisors(user: User = Depends(authenticate)):
+    """
+    # Get supervisors
+
+    This endpoint allows the authenticated user to retrieve a list of supervisors.
+
+    Args:
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+
+    Returns:
+    - **List[UserSchema]**: A list of supervisor data.
+    """
+
     supervisors = await get_supervisors_service(user)
     return supervisors
 
@@ -41,6 +62,18 @@ async def get_supervisors(user: User = Depends(authenticate)):
     summary="Get supervised users",
 )
 async def get_supervised(user: User = Depends(authenticate)):
+    """
+    # Get supervised users
+
+    This endpoint allows the authenticated user to retrieve a list of supervised users.
+
+    Args:
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+
+    Returns:
+    - **List[UserSchema]**: A list of supervised user data.
+    """
+
     supervised = await get_supervised_service(user)
     return supervised
 
@@ -51,6 +84,16 @@ async def get_supervised(user: User = Depends(authenticate)):
     summary="Delete supervisor",
 )
 async def delete_supervisor(supervisor_id: str, user: User = Depends(authenticate)):
+    """
+    # Delete supervisor
+
+    This endpoint allows the authenticated user to delete a supervisor.
+
+    Args:
+    - **supervisor_id** (str): The ID of the supervisor to be deleted.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+    """
+
     await delete_supervisor_service(supervisor_id, user)
 
 
@@ -60,4 +103,14 @@ async def delete_supervisor(supervisor_id: str, user: User = Depends(authenticat
     summary="Delete supervised",
 )
 async def delete_supervised(supervised_id: str, user: User = Depends(authenticate)):
+    """
+    # Delete supervised
+
+    This endpoint allows the authenticated user to delete a supervised user.
+
+    Args:
+    - **supervised_id** (str): The ID of the supervised user to be deleted.
+    - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
+    """
+
     await delete_supervised_service(supervised_id, user)

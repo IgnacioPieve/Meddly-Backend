@@ -3,6 +3,7 @@ from datetime import datetime
 from databases.interfaces import Record
 from sqlalchemy import delete, insert, select, update
 
+from api.measurement.exceptions import MeasurementNotFound
 from api.measurement.models import Measurement
 from api.measurement.schemas import CreateUpdateMeasurementSchema
 from api.user.models import User
@@ -109,5 +110,5 @@ async def delete_measurement(user: User, measurement_id: int) -> bool:
         )
         .returning(Measurement)
     )
-    deleted = bool(await database.execute(query=delete_query))
-    return deleted
+    if not bool(await database.execute(query=delete_query)):
+        raise MeasurementNotFound
