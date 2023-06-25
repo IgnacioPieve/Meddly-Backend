@@ -1,7 +1,16 @@
 # Meddly ❤️‍🩹
 [![Push image to DockerHub](https://github.com/Meddly-Health/Backend/actions/workflows/BuildAndPushDockerImage.yml/badge.svg)](https://github.com/Meddly-Health/Backend/actions/workflows/BuildAndPushDockerImage.yml)
 [![Tests](https://github.com/Meddly-Health/Backend/actions/workflows/Tests.yaml/badge.svg)](https://github.com/Meddly-Health/Backend/actions/workflows/Tests.yaml)
-> Meddly is a medical application that uses artificial intelligence to generate self-diagnosis based on symptoms.
+> Welcome to the **Meddly project API**! This API serves as the backbone for our mobile application designed to assist individuals facing health challenges. It was meticulously crafted as the culmination of the Software Engineering career at UTN FRC.
+
+Our dedicated team of talented individuals brought this vision to life:
+
+- **Sofía Florencia Cibello**: A proficient _Frontend Developer_ and _UX/UI Designer_.
+- **Ignacio Pieve Roiger**: A skilled _Team Leader_ and _Backend Developer_.
+- **Lorenzo Sala**: An accomplished _Frontend Developer_.
+- **Leila Spini**: A meticulous _Analyst_.
+
+Together, we strived to create a seamless experience for our users, ensuring that Meddly becomes a reliable companion on their health journeys.
 
 The application is built using Python, FastApi, and Docker.
 
@@ -28,6 +37,7 @@ The application is built using Python, FastApi, and Docker.
 
 
 ## Usage
-The application runs on http://localhost:11001/ 
+The application runs on http://localhost:11001/
 
-You can see the 
+By default, you can access the swagger documentation on the root path.
+

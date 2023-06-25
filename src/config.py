@@ -54,21 +54,20 @@ if not os.path.exists(IMAGES_FOLDER):
 
 # ---------- METADATA ----------
 title = "Meddly"
-version = 0.9
+version = 0.91
 description = f"""
 # Welcome to MeddlyApi!
 ![Environment](https://badgen.net/static/Environment/{ENVIRONMENT}/blue)
 
+Welcome to the Meddly project API! This API serves as the backbone for our mobile application designed to assist individuals facing health challenges. It was meticulously crafted as the culmination of the Software Engineering program at UTN FRC.
 
-This is the API for the Meddly project, a mobile application that aims to help people with health issues.
-The project was developed as part of the final project for the UTN FRC's Software Engineering career.
+Our dedicated team of talented individuals brought this vision to life:
 
-
-Created by:
-- Cibello, Sofía Florencia (Frontend Developer and UX/UI Designer)
-- Pieve Roiger, Ignacio (Team Leader and Backend Developer)
-- Sala, Lorenzo (Frontend Developer)
-- Spini, Leila (Analyst)
+Sofía Florencia Cibello: A proficient Frontend Developer and UX/UI Designer.
+Ignacio Pieve Roiger: A skilled Team Leader and Backend Developer.
+Lorenzo Sala: An accomplished Frontend Developer.
+Leila Spini: A meticulous Analyst.
+Together, we strived to create a seamless experience for our users, ensuring that Meddly becomes a reliable companion on their health journeys.
 """
 contact_email = "ignacio.pieve@gmail.com"
 
