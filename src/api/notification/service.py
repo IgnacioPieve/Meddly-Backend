@@ -23,15 +23,14 @@ async def get_notification_preferences(user: User) -> list[str]:
     """
     Get notification preferences.
 
+    This function retrieves the notification preferences for the authenticated user. It queries the database to fetch all notification preferences associated with the user and returns them as a list of strings.
+
+
     Args:
         user (User): The authenticated user.
 
     Returns:
         list[str]: A list of notification preferences.
-
-    Summary:
-    This function retrieves the notification preferences for the authenticated user. It queries the database to fetch all notification preferences associated with the user and returns them as a list of strings.
-
     """
 
     select_query = select(NotificationPreference).where(
@@ -47,19 +46,15 @@ async def add_notification_preference(
     """
     Add a notification preference.
 
+    This function adds a notification preference for the authenticated user. It inserts a new record in the database with the provided notification preference and the user's ID. If the insertion is successful, it retrieves the updated list of notification preferences and returns it. If the insertion fails, it raises an ERROR500.
+
+
     Args:
         notification_preference (str): The notification preference to add.
         user (User): The authenticated user.
 
     Returns:
-        list[str]: A list of updated notification preferences.
-
-    Raises:
-        ERROR500: If the addition of the notification preference fails.
-
-    Summary:
-    This function adds a notification preference for the authenticated user. It inserts a new record in the database with the provided notification preference and the user's ID. If the insertion is successful, it retrieves the updated list of notification preferences and returns it. If the insertion fails, it raises an ERROR500.
-
+        list[str]: A list of updated notification preferences. I.e. ["email", "whatsapp", "push"]
     """
 
     select_query = select(NotificationPreference).where(
@@ -86,19 +81,15 @@ async def delete_notification_preference(
     """
     Delete a notification preference.
 
+    This function deletes a notification preference for the authenticated user. It removes the corresponding record from the database based on the provided notification preference and the user's ID. If the deletion is successful, it retrieves the updated list of notification preferences and returns it. If the deletion fails, it raises an ERROR501.
+
+
     Args:
         notification_preference (str): The notification preference to delete.
         user (User): The authenticated user.
 
     Returns:
         list[str]: A list of updated notification preferences.
-
-    Raises:
-        ERROR501: If the deletion of the notification preference fails.
-
-    Summary:
-    This function deletes a notification preference for the authenticated user. It removes the corresponding record from the database based on the provided notification preference and the user's ID. If the deletion is successful, it retrieves the updated list of notification preferences and returns it. If the deletion fails, it raises an ERROR501.
-
     """
 
     select_query = select(NotificationPreference).where(
@@ -125,6 +116,19 @@ async def delete_notification_preference(
 async def send_notification(
     message: Message, user: User, background_tasks: BackgroundTasks
 ):
+    """
+    Send a notification.
+
+    This function sends a notification to the authenticated user.
+    It inserts a new record in the database with the provided notification data and the user's ID.
+    It also sends the notification to the user's notification preferences (email, WhatsApp, push notification).
+
+    Args:
+        message (Message): The message to send.
+        user (User): The authenticated user.
+        background_tasks (BackgroundTasks): The background tasks object.
+    """
+
     def send_email(message: Message, user: User):
         message_constructor = Mail(
             from_email=SENDGRID_CONFIG["email"],
@@ -141,7 +145,8 @@ async def send_notification(
         client.send(message_constructor)
 
     def send_whatsapp(message: Message, user: User):
-        print("Acá se debería haber enviado un mensaje de WhatsApp")
+        # TODO: Implement WhatsApp notification
+        pass
 
     async def send_push(message: Message, user: User):
         devices = await get_user_devices(user)
@@ -184,6 +189,23 @@ async def get_notifications(
     per_page: int,
     type: List[str] = None,
 ) -> list[Notification]:
+    """
+    Get notifications.
+
+    This function retrieves a list of notifications for the authenticated user.
+    It retrieves the notifications from the database based on the provided page and per_page parameters.
+    It also updates the is_read field of the retrieved notifications to True.
+
+    Args:
+        user (User): The authenticated user.
+        page (int): The page number.
+        per_page (int): The number of notifications per page.
+        type (List[str], optional): The notification types to retrieve. Defaults to None.
+
+    Returns:
+        list[Notification]: A list of notifications.
+    """
+
     select_query = (
         select(Notification)
         .where(Notification.user_id == user.id)
@@ -204,6 +226,16 @@ async def get_notifications(
 
 
 async def delete_notification(notification_id: int, user: User):
+    """
+    Delete a notification.
+
+    This function deletes a notification for the authenticated user.
+
+    Args:
+        notification_id (int): The notification ID.
+        user (User): The authenticated user.
+    """
+
     delete_query = (
         delete(Notification)
         .where(Notification.id == notification_id, Notification.user_id == user.id)

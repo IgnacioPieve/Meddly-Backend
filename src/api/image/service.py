@@ -15,6 +15,8 @@ async def get_image(name: str, user: User) -> bytes:
     """
     Get an image.
 
+    This function retrieves an image based on the provided name and the authenticated user. It fetches the image from the database, reads its content, and returns it as bytes. If the image is not found, it raises an ERROR800.
+
     Args:
         name (str): The name of the image.
         user (User): The authenticated user.
@@ -24,10 +26,6 @@ async def get_image(name: str, user: User) -> bytes:
 
     Raises:
         ERROR800: If the image is not found.
-
-    Summary:
-    This function retrieves an image based on the provided name and the authenticated user. It fetches the image from the database, reads its content, and returns it as bytes. If the image is not found, it raises an ERROR800.
-
     """
 
     select_query = select(ImageModel).where(
@@ -48,6 +46,19 @@ async def save_image(
     size: tuple[int, int] = (512, 512),
     tag: str = "Untagged",
 ) -> str:
+    """
+    Save an image.
+
+    Args:
+        file (bytes | BinaryIO): The image to save.
+        user (User, optional): The authenticated user. Defaults to None.
+        size (tuple[int, int], optional): The size of the image. Defaults to (512, 512).
+        tag (str, optional): The tag of the image. Defaults to "Untagged".
+
+    Returns:
+        str: The name of the image.
+    """
+
     image = Image.open(file).resize(size)
     file_name = f"{uuid4()}.jpg"
 
@@ -66,6 +77,17 @@ async def save_image(
 
 
 async def anonymous_copy_image(name: str, tag: str = "Untagged") -> str:
+    """
+    Copy an image anonymously.
+
+    Args:
+        name (str): The name of the image.
+        tag (str, optional): The tag of the image. Defaults to "Untagged".
+
+    Returns:
+        str: The name of the image.
+    """
+
     image = Image.open(f"{IMAGES_FOLDER}/{name}")
     file_name = f"{uuid4()}.jpg"
 

@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from databases.interfaces import Record
 from sqlalchemy import delete, insert, select, update
 
 from api.measurement.exceptions import MeasurementNotFound
@@ -10,7 +9,9 @@ from api.user.models import User
 from database import database
 
 
-async def get_measurements(user: User, start: datetime, end: datetime) -> list[Record]:
+async def get_measurements(
+    user: User, start: datetime, end: datetime
+) -> list[Measurement]:
     """
     Get measurements.
 
@@ -22,7 +23,7 @@ async def get_measurements(user: User, start: datetime, end: datetime) -> list[R
         end (datetime): The end datetime of the time range.
 
     Returns:
-        list[Record]: A list of measurement records.
+        list[Measurement]: A list of measurements.
     """
 
     select_query = select(Measurement).where(
@@ -35,7 +36,7 @@ async def get_measurements(user: User, start: datetime, end: datetime) -> list[R
 
 async def create_measurement(
     user: User, measurement: CreateUpdateMeasurementSchema
-) -> Record | None:
+) -> Measurement | None:
     """
     Create a measurement.
 
@@ -46,7 +47,7 @@ async def create_measurement(
         measurement (CreateUpdateMeasurementSchema): The measurement data to be created.
 
     Returns:
-        Record | None: The created measurement record or None if creation failed.
+        Measurement | None: The created measurement or None if creation failed.
     """
 
     insert_query = (
@@ -60,7 +61,7 @@ async def create_measurement(
 
 async def update_measurement(
     user: User, measurement_id: int, measurement: CreateUpdateMeasurementSchema
-) -> Record | None:
+) -> Measurement | None:
     """
     Update a measurement.
 
@@ -72,7 +73,7 @@ async def update_measurement(
         measurement (CreateUpdateMeasurementSchema): The updated measurement data.
 
     Returns:
-        Record | None: The updated measurement record or None if update failed.
+        Measurement | None: The updated measurement or None if update failed.
     """
 
     update_query = (

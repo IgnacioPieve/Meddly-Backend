@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from databases.interfaces import Record
 from sqlalchemy import delete, insert, select, update
 
 from api.user.models import Device, User
@@ -9,7 +8,7 @@ from api.user.utils import generate_code
 from database import database
 
 
-async def get_or_create_user(user_id: str, email: str) -> Record[User]:
+async def get_or_create_user(user_id: str, email: str) -> User:
     """
     Retrieves a user from the database based on the given user ID.
     If the user does not exist, a new user is created with the provided ID and email.
@@ -71,7 +70,7 @@ async def assert_device(user: User, device_token: str) -> bool:
     return device
 
 
-async def get_user_devices(user: User) -> list[Record]:
+async def get_user_devices(user: User) -> list[User]:
     """
     Retrieves a user's devices from the database.
 
@@ -79,7 +78,7 @@ async def get_user_devices(user: User) -> list[Record]:
         user (User): The user object to retrieve devices for.
 
     Returns:
-        list[Record]: The list of devices associated with the user.
+        list[User]: The list of devices associated with the user.
     """
 
     select_query = select(Device).where(Device.user_id == user.id)
@@ -103,7 +102,7 @@ def get_user(user_id: str) -> User | None:
     return user
 
 
-async def update_user(user: User, new_data: UserUpdateSchema) -> Record | None:
+async def update_user(user: User, new_data: UserUpdateSchema) -> User | None:
     """
     Updates a user with new data.
 
@@ -112,7 +111,7 @@ async def update_user(user: User, new_data: UserUpdateSchema) -> Record | None:
         new_data (UserUpdateSchema): The updated data for the user.
 
     Returns:
-        Union[Record, None]: The updated user object if the update was successful, None otherwise.
+        Union[User, None]: The updated user object if the update was successful, None otherwise.
     """
 
     update_query = (

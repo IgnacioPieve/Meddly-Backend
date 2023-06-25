@@ -17,6 +17,10 @@ from database import database
 
 
 async def send_today_user_appointments_notification(background_tasks: BackgroundTasks):
+    """
+    Sends notifications to users about their appointments scheduled for today.
+    """
+
     select_query = select(User)
     users = await database.fetch_all(query=select_query)
     for user in users:
@@ -50,6 +54,10 @@ async def send_today_user_appointments_notification(background_tasks: Background
 
 
 async def send_today_user_medicines_notification(background_tasks: BackgroundTasks):
+    """
+    Sends notifications to users about the medicines they need to take today.
+    """
+
     select_query = select(User)
     users = await database.fetch_all(query=select_query)
     for user in users:
@@ -110,6 +118,10 @@ async def send_today_user_medicines_notification(background_tasks: BackgroundTas
 async def send_yesterday_user_didnt_take_medicines_notification(
     background_tasks: BackgroundTasks,
 ):
+    """
+    Sends notifications to users about the medicines they didn't take yesterday.
+    """
+
     select_query = select(User)
     users = await database.fetch_all(query=select_query)
     for user in users:

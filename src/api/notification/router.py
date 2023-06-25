@@ -66,6 +66,7 @@ async def add_notification_preference(
     Returns:
     - **list[str]**: A list of updated notification preferences.
     """
+
     try:
         result = await add_notification_preference_service(
             notification_preference, user
@@ -158,6 +159,7 @@ async def delete_notification(
     - **notification_id** (int): The ID of the notification to delete.
     - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
+
     try:
         await delete_notification_service(notification_id=notification_id, user=user)
     except GenericException as e:

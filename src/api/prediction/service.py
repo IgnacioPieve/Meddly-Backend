@@ -22,7 +22,18 @@ with open(file, "r", encoding="utf-8") as f:
     codes = json.load(f)
 
 
-async def predict_by_symptoms(symptoms_typed: list[str], user: User):
+async def predict_by_symptoms(symptoms_typed: list[str], user: User) -> list[dict]:
+    """
+    Predicts diseases based on typed symptoms.
+
+    Args:
+        symptoms_typed (list[str]): A list of symptoms typed by the user.
+        user (User): An instance of the User class representing the user.
+
+    Returns:
+        list[dict]: A list of dictionaries containing disease predictions and their probabilities.
+    """
+
     for symptom in symptoms_typed:
         if symptom not in symptoms:
             raise ERROR700
@@ -58,6 +69,16 @@ async def predict_by_symptoms(symptoms_typed: list[str], user: User):
 async def get_predictions_by_symptoms(
     user: User, start: datetime = None, page: int = None, per_page: int = None
 ):
+    """
+    Retrieves predictions of diseases based on symptoms for a specific user.
+
+    Args:
+        user (User): An instance of the User class representing the user.
+        start (datetime, optional): The start datetime to filter the predictions. Defaults to None.
+        page (int, optional): The page number for pagination. Defaults to None.
+        per_page (int, optional): The number of results per page for pagination. Defaults to None.
+    """
+
     select_query = (
         select(PredictionBySymptom)
         .where(PredictionBySymptom.user_id == user.id)
@@ -87,6 +108,17 @@ async def verify_prediction_by_symptom(
     real_disease: str,
     approval_to_save: bool = False,
 ) -> bool:
+    """
+    Verifies a prediction by symptom for a user.
+
+    Args:
+        user (User): An instance of the User class representing the user.
+        prediction_id (int): The ID of the prediction to verify.
+        real_disease (str): The actual disease associated with the symptoms.
+        approval_to_save (bool, optional): Flag indicating whether the user consents to anonymously use their diagnosis for further retraining of the AI model.
+                                            Defaults to False, indicating that the user does not provide consent to save their diagnosis for retraining.
+    """
+
     select_query = select(PredictionBySymptom).where(
         PredictionBySymptom.user_id == user.id,
         PredictionBySymptom.id == prediction_id,
@@ -119,7 +151,18 @@ async def verify_prediction_by_symptom(
     return True
 
 
-async def predict_by_image(file: UploadFile, user: User):
+async def predict_by_image(file: UploadFile, user: User) -> list[dict]:
+    """
+    Predicts diseases based on an image.
+
+    Args:
+        file (UploadFile): An instance of the UploadFile class representing the image file.
+        user (User): An instance of the User class representing the user.
+
+    Returns:
+        list[dict]: A list of dictionaries containing disease predictions and their probabilities.
+    """
+
     def _predict():
         img = np.asarray(Image.open(file.file).resize((32, 32)))
         img = img / 255.0  # Scale pixel values
@@ -157,6 +200,16 @@ async def predict_by_image(file: UploadFile, user: User):
 async def get_predictions_by_image(
     user: User, start: datetime = None, page: int = None, per_page: int = None
 ):
+    """
+    Retrieves predictions of diseases based on images for a specific user.
+
+    Args:
+        user (User): An instance of the User class representing the user.
+        start (datetime, optional): The start datetime to filter the predictions. Defaults to None.
+        page (int, optional): The page number for pagination. Defaults to None.
+        per_page (int, optional): The number of results per page for pagination. Defaults to None.
+    """
+
     select_query = (
         select(PredictionByImage)
         .where(PredictionByImage.user_id == user.id)
@@ -180,6 +233,17 @@ async def verify_prediction_by_image(
     real_disease: str,
     approval_to_save: bool = False,
 ) -> bool:
+    """
+    Verifies a prediction by image for a user.
+
+    Args:
+        user (User): An instance of the User class representing the user.
+        prediction_id (int): The ID of the prediction to verify.
+        real_disease (str): The actual disease associated with the image.
+        approval_to_save (bool, optional): Flag indicating whether the user consents to anonymously use their diagnosis for further retraining of the AI model.
+                                            Defaults to False, indicating that the user does not provide consent to save their diagnosis for retraining.
+    """
+
     select_query = select(PredictionByImage).where(
         PredictionByImage.user_id == user.id,
         PredictionByImage.id == prediction_id,

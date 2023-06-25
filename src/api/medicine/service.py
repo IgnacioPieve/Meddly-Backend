@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-from databases.interfaces import Record
 from sqlalchemy import and_, delete, insert, or_, select, update
 
 from api.medicine.exceptions import (
@@ -19,7 +18,7 @@ from api.user.models import User
 from database import database
 
 
-async def get_medicines(user: User) -> list[Record]:
+async def get_medicines(user: User) -> list[Medicine]:
     """
     Get medicines for a user within a specified time range.
 
@@ -29,7 +28,7 @@ async def get_medicines(user: User) -> list[Record]:
         end (datetime, optional): End date of the time range. Defaults to None.
 
     Returns:
-        list[Record]: A list of medicine records matching the criteria.
+        list[Medicine]: A list of medicines matching the criteria.
 
     """
 
@@ -41,7 +40,7 @@ async def get_medicines(user: User) -> list[Record]:
     return await database.fetch_all(query=select_query)
 
 
-async def get_medicine(user: User, medicine_id: int) -> Record | None:
+async def get_medicine(user: User, medicine_id: int) -> Medicine | None:
     """
     Get a medicine for a user.
 
@@ -50,7 +49,7 @@ async def get_medicine(user: User, medicine_id: int) -> Record | None:
         medicine_id (int): The ID of the medicine to retrieve.
 
     Returns:
-        Record | None: The medicine record, or None if not found.
+        Medicine | None: The medicine, or None if not found.
 
     """
 
@@ -61,7 +60,9 @@ async def get_medicine(user: User, medicine_id: int) -> Record | None:
     return medicine
 
 
-async def create_medicine(user: User, medicine: CreateMedicineSchema) -> Record | None:
+async def create_medicine(
+    user: User, medicine: CreateMedicineSchema
+) -> Medicine | None:
     """
     Create a new medicine for a user.
 
@@ -70,7 +71,7 @@ async def create_medicine(user: User, medicine: CreateMedicineSchema) -> Record 
         medicine (CreateMedicineSchema): The data required to create the medicine.
 
     Returns:
-        Record | None: The created medicine record, or None if creation failed.
+        Medicine | None: The created medicine, or None if creation failed.
 
     """
 
@@ -114,7 +115,7 @@ async def delete_medicine(user: User, medicine_id: int):
 
 async def create_consumption(
     user: User, consumption: CreateConsumptionSchema
-) -> Record | None:
+) -> Consumption | None:
     """
     Create a new consumption for a user.
 
@@ -123,12 +124,11 @@ async def create_consumption(
         consumption (CreateConsumptionSchema): The data required to create the consumption.
 
     Returns:
-        Record | None: The created consumption record, or None if creation failed.
+        Consumption | None: The created consumption, or None if creation failed.
 
     Raises:
         MedicineNotFound: Raised if the medicine associated with the consumption is not found.
         ConsumptionAlreadyExists: Raised if a consumption with the same date already exists.
-
     """
 
     medicine = await database.fetch_one(
@@ -209,17 +209,19 @@ async def delete_consumption(user: User, consumption: DeleteConsumptionSchema):
         raise ConsumptionDoesNotExist
 
 
-async def get_consumptions(user: User, start: datetime, end: datetime) -> list[Record]:
+async def get_consumptions(
+    user: User, start: datetime, end: datetime
+) -> list[Medicine]:
     """
-    Retrieves consumption records of medicines for a specific user within a date range.
+    Retrieves consumptions of medicines for a specific user within a date range.
 
     Args:
-        user (User): The user for whom to retrieve the consumption records.
+        user (User): The user for whom to retrieve the consumptions.
         start (datetime): The start date of the range.
         end (datetime): The end date of the range.
 
     Returns:
-        list[Record]: A list of consumption records.
+        list[Medicine]: A list of consumptions.
     """
 
     select_query = select(Medicine).where(
@@ -279,16 +281,16 @@ async def get_consumptions(user: User, start: datetime, end: datetime) -> list[R
 
 async def get_consumptions_on_date(
     user: User, date: datetime, only_not_taken: bool = False
-) -> list[Record]:
+) -> list[Consumption]:
     """
-    Retrieves consumption records of medicines for a specific user on a specific date.
+    Retrieves consumptions of medicines for a specific user on a specific date.
 
     Args:
-        user (User): The user for whom to retrieve the consumption records.
-        date (datetime): The date for which to retrieve the consumption records.
+        user (User): The user for whom to retrieve the consumptions.
+        date (datetime): The date for which to retrieve the consumptions.
 
     Returns:
-        list[Record]: A list of consumption records.
+        list[Consumption]: A list of consumptions.
     """
 
     start = date.replace(hour=23, minute=59, second=59, microsecond=0) - timedelta(
@@ -307,7 +309,19 @@ async def get_medicines_between_dates(
     user: User,
     start: datetime,
     end: datetime,
-) -> list[Record]:
+) -> list[Medicine]:
+    """
+    Retrieves medicines for a specific user within a date range.
+
+    Args:
+        user (User): The user for whom to retrieve the medicines.
+        start (datetime): The start date of the range.
+        end (datetime): The end date of the range.
+
+    Returns:
+        list[Medicine]: A list of medicines.
+    """
+
     select_query = select(Medicine).where(
         Medicine.user_id == user.id,
         and_(
