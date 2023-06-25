@@ -59,14 +59,15 @@ description = f"""
 # Welcome to MeddlyApi!
 ![Environment](https://badgen.net/static/Environment/{ENVIRONMENT}/blue)
 
-Welcome to the Meddly project API! This API serves as the backbone for our mobile application designed to assist individuals facing health challenges. It was meticulously crafted as the culmination of the Software Engineering program at UTN FRC.
+Welcome to the **Meddly project API**! This API serves as the backbone for our mobile application designed to assist individuals facing health challenges. It was meticulously crafted as the culmination of the Software Engineering career at UTN FRC.
 
 Our dedicated team of talented individuals brought this vision to life:
 
-Sofía Florencia Cibello: A proficient Frontend Developer and UX/UI Designer.
-Ignacio Pieve Roiger: A skilled Team Leader and Backend Developer.
-Lorenzo Sala: An accomplished Frontend Developer.
-Leila Spini: A meticulous Analyst.
+- **Sofía Florencia Cibello**: A proficient _Frontend Developer_ and _UX/UI Designer_.
+- **Ignacio Pieve Roiger**: A skilled _Team Leader_ and _Backend Developer_.
+- **Lorenzo Sala**: An accomplished _Frontend Developer_.
+- **Leila Spini**: A meticulous _Analyst_.
+
 Together, we strived to create a seamless experience for our users, ensuring that Meddly becomes a reliable companion on their health journeys.
 """
 contact_email = "ignacio.pieve@gmail.com"
