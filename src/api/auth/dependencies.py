@@ -18,9 +18,6 @@ async def authenticate(
         device (str | None): The device header. Defaults to None and represents the device_id used to authenticate.
                             It is used to send push notifications to the device.
 
-    Raises:
-        HTTPException: If bearer authentication is required or if the authentication credentials are invalid.
-
     Returns:
         User: The authenticated user.
     """

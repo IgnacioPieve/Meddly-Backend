@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from starlette.background import BackgroundTasks
 
 from api.auth.dependencies import authenticate
+from api.exceptions import GenericException
 from api.supervisor.service import accept_invitation as accept_invitation_service
 from api.supervisor.service import delete_supervised as delete_supervised_service
 from api.supervisor.service import delete_supervisor as delete_supervisor_service
@@ -29,7 +30,10 @@ async def accept_invitation(
     - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
 
-    await accept_invitation_service(user, code, background_tasks)
+    try:
+        await accept_invitation_service(user, code, background_tasks)
+    except GenericException as e:
+        raise e.http_exception
 
 
 @router.get(
@@ -94,7 +98,10 @@ async def delete_supervisor(supervisor_id: str, user: User = Depends(authenticat
     - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
 
-    await delete_supervisor_service(supervisor_id, user)
+    try:
+        await delete_supervisor_service(supervisor_id, user)
+    except GenericException as e:
+        raise e.http_exception
 
 
 @router.delete(
@@ -113,4 +120,7 @@ async def delete_supervised(supervised_id: str, user: User = Depends(authenticat
     - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
 
-    await delete_supervised_service(supervised_id, user)
+    try:
+        await delete_supervised_service(supervised_id, user)
+    except GenericException as e:
+        raise e.http_exception

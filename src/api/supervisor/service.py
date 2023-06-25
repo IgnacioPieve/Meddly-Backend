@@ -3,7 +3,13 @@ from starlette.background import BackgroundTasks
 
 from api.notification.models.message import NewSupervisedMessage, NewSupervisorMessage
 from api.notification.service import send_notification
-from api.supervisor.exceptions import ERROR200, ERROR201, ERROR204
+from api.supervisor.exceptions import (
+    InvalidInvitationCode,
+    SupervisedNotFound,
+    SupervisorNotFound,
+    UserIsAlreadySupervisor,
+    UserIsSupervisingHimself,
+)
 from api.user.models import Supervised, User
 from api.user.utils import generate_code
 from database import database
@@ -22,9 +28,9 @@ async def accept_invitation(user: User, code: str, background_tasks: BackgroundT
     select_query = select(User).where(User.invitation == code)
     supervisor = await database.fetch_one(select_query)
     if supervisor is None:
-        raise ERROR201
+        raise InvalidInvitationCode
     if supervisor.id == user.id:
-        raise ERROR204
+        raise UserIsSupervisingHimself
 
     already_supervised_query = select(Supervised).where(
         Supervised.supervisor_id == supervisor.id,
@@ -32,7 +38,7 @@ async def accept_invitation(user: User, code: str, background_tasks: BackgroundT
     )
     already_supervised = bool(await database.fetch_one(already_supervised_query))
     if already_supervised:
-        raise ERROR200
+        raise UserIsAlreadySupervisor
 
     update_query = (
         update(User)
@@ -114,8 +120,8 @@ async def delete_supervisor(supervisor_id: str, user: User) -> bool:
         Supervised.supervisor_id == supervisor_id,
         Supervised.supervised_id == user.id,
     )
-    await database.execute(delete_query)
-    return True
+    if not bool(await database.execute(delete_query)):
+        raise SupervisorNotFound
 
 
 async def delete_supervised(supervised_id: str, user: User) -> bool:
@@ -133,5 +139,5 @@ async def delete_supervised(supervised_id: str, user: User) -> bool:
         Supervised.supervisor_id == user.id,
         Supervised.supervised_id == supervised_id,
     )
-    await database.execute(delete_query)
-    return True
+    if not bool(await database.execute(delete_query)):
+        raise SupervisedNotFound

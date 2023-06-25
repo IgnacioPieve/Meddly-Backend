@@ -1,6 +1,8 @@
 from fastapi import HTTPException
 from starlette import status
 
+from api.exceptions import GenericException
+
 ERROR200 = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
     detail={"code": 200, "description": "This user is already your supervisor."},
@@ -28,3 +30,23 @@ ERROR205 = HTTPException(
         "description": "Some of the selected users are not supervised by you or do not exist.",
     },
 )
+
+
+class UserIsAlreadySupervisor(GenericException):
+    http_exception = ERROR200
+
+
+class InvalidInvitationCode(GenericException):
+    http_exception = ERROR201
+
+
+class SupervisorNotFound(GenericException):
+    http_exception = ERROR202
+
+
+class SupervisedNotFound(GenericException):
+    http_exception = ERROR203
+
+
+class UserIsSupervisingHimself(GenericException):
+    http_exception = ERROR204

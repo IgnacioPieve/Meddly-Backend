@@ -3,6 +3,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, UploadFile
 
 from api.auth.dependencies import authenticate
+from api.exceptions import GenericException
 from api.prediction.schemas import (
     PredictionByImageSchema,
     PredictionBySymptomSchema,
@@ -49,8 +50,10 @@ async def predict_by_symptoms(
     - **List[ProbabilitySchema]**: List of predicted probabilities for diseases.
     """
 
-    result = await predict_by_symptoms_service(symptoms_typed, user)
-    return result
+    try:
+        return await predict_by_symptoms_service(symptoms_typed, user)
+    except GenericException as e:
+        raise e.http_exception
 
 
 @router.get(
@@ -109,9 +112,12 @@ async def verify_prediction_by_symptoms(
     - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
 
-    await verify_prediction_by_symptoms_service(
-        user, prediction_id, real_disease, approval_to_save
-    )
+    try:
+        await verify_prediction_by_symptoms_service(
+            user, prediction_id, real_disease, approval_to_save
+        )
+    except GenericException as e:
+        raise e.http_exception
 
 
 @router.post(
@@ -194,6 +200,9 @@ async def verify_prediction_by_image(
     - **user** (User): The authenticated user. This parameter is automatically obtained from the request.
     """
 
-    await verify_prediction_by_image_service(
-        user, prediction_id, real_disease, approval_to_save
-    )
+    try:
+        await verify_prediction_by_image_service(
+            user, prediction_id, real_disease, approval_to_save
+        )
+    except GenericException as e:
+        raise e.http_exception

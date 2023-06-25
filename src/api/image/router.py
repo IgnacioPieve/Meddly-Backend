@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from starlette.responses import Response
 
 from api.auth.dependencies import authenticate
+from api.exceptions import GenericException
 from api.image.service import get_image as get_image_service
 from api.user.models import User
 
@@ -29,6 +30,9 @@ async def get_image(name: str, user: User = Depends(authenticate)):
                     The response will contain the image content with the media type "image/jpg"
     """
 
-    image = await get_image_service(name, user)
+    try:
+        image = await get_image_service(name, user)
+    except GenericException as e:
+        raise e.http_exception
 
     return Response(content=image, media_type="image/jpg")

@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends
 
 from api.auth.dependencies import authenticate
 from api.exceptions import GenericException
-from api.measurement.exceptions import ERROR600
 from api.measurement.schemas import CreateUpdateMeasurementSchema, MeasurementSchema
 from api.measurement.service import create_measurement as create_measurement_service
 from api.measurement.service import delete_measurement as delete_measurement_service
@@ -101,10 +100,10 @@ async def update_measurement(
     - **MeasurementSchema**: The updated measurement data.
     """
 
-    measurement = await update_measurement_service(user, measurement_id, measurement)
-    if measurement is None:
-        raise ERROR600
-    return measurement
+    try:
+        return await update_measurement_service(user, measurement_id, measurement)
+    except GenericException as e:
+        raise e.http_exception
 
 
 @router.delete("/{measurement_id}", status_code=200, summary="Delete a measurement")

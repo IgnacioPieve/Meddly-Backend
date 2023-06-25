@@ -1,6 +1,8 @@
 from fastapi import HTTPException
 from starlette import status
 
+from api.exceptions import GenericException
+
 ERROR700 = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
     detail={
@@ -21,3 +23,15 @@ ERROR702 = HTTPException(
         "description": "The prediction does not exist or you do not have permission to access it.",
     },
 )
+
+
+class NotValidSymptoms(GenericException):
+    http_exception = ERROR700
+
+
+class PredictionAlreadyVerified(GenericException):
+    http_exception = ERROR701
+
+
+class PredictionDoesNotExist(GenericException):
+    http_exception = ERROR702

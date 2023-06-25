@@ -83,7 +83,6 @@ async def delete_notification_preference(
 
     This function deletes a notification preference for the authenticated user. It removes the corresponding record from the database based on the provided notification preference and the user's ID. If the deletion is successful, it retrieves the updated list of notification preferences and returns it. If the deletion fails, it raises an ERROR501.
 
-
     Args:
         notification_preference (str): The notification preference to delete.
         user (User): The authenticated user.

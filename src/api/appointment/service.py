@@ -36,7 +36,7 @@ async def get_appointments(
 
 async def create_appointment(
     user: User, appointment: CreateUpdateAppointmentSchema
-) -> Appointment | None:
+) -> Appointment:
     """
     Create appointment.
 
@@ -47,7 +47,7 @@ async def create_appointment(
         appointment (CreateUpdateAppointmentSchema): The appointment data to be created.
 
     Returns:
-        Union[Appointment, None]: The created appointment or None if creation failed.
+        Appointment: The created appointment
     """
 
     insert_query = (
@@ -61,7 +61,7 @@ async def create_appointment(
 
 async def update_appointment(
     user: User, appointment_id: int, appointment: CreateUpdateAppointmentSchema
-) -> Appointment | None:
+) -> Appointment:
     """
     Update appointment.
 
@@ -73,7 +73,7 @@ async def update_appointment(
         appointment (CreateUpdateAppointmentSchema): The updated appointment data.
 
     Returns:
-        Union[Appointment, None]: The updated appointment or None if update failed.
+        Appointment: The updated appointment.
     """
 
     update_query = (
@@ -83,6 +83,10 @@ async def update_appointment(
         .returning(Appointment)
     )
     appointment = await database.fetch_one(query=update_query)
+
+    if not appointment:
+        raise AppointmentDoesNotExist
+
     return appointment
 
 

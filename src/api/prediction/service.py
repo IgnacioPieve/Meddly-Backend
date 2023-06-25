@@ -8,7 +8,11 @@ from PIL import Image
 from sqlalchemy import insert, select, update
 
 from api.image.service import anonymous_copy_image, save_image
-from api.prediction.exceptions import ERROR700, ERROR701, ERROR702
+from api.prediction.exceptions import (
+    NotValidSymptoms,
+    PredictionAlreadyVerified,
+    PredictionDoesNotExist,
+)
 from api.prediction.models.by_image import DiseaseImage, PredictionByImage
 from api.prediction.models.by_image import model_trained as model_trained_by_image
 from api.prediction.models.by_symptom import DiseaseSymptoms, PredictionBySymptom
@@ -36,7 +40,7 @@ async def predict_by_symptoms(symptoms_typed: list[str], user: User) -> list[dic
 
     for symptom in symptoms_typed:
         if symptom not in symptoms:
-            raise ERROR700
+            raise NotValidSymptoms
 
     symptoms_df = pd.DataFrame(
         [{**symptoms_template, **{symptom: 1 for symptom in symptoms_typed}}]
@@ -126,9 +130,9 @@ async def verify_prediction_by_symptom(
     prediction: PredictionBySymptom = await database.fetch_one(query=select_query)
 
     if not prediction:
-        raise ERROR702
+        raise PredictionDoesNotExist
     if prediction.verified:
-        raise ERROR701
+        raise PredictionAlreadyVerified
 
     if approval_to_save:
         insert_query = insert(DiseaseSymptoms).values(
@@ -251,9 +255,9 @@ async def verify_prediction_by_image(
     prediction: PredictionByImage = await database.fetch_one(query=select_query)
 
     if not prediction:
-        raise ERROR702
+        raise PredictionDoesNotExist
     if prediction.verified:
-        raise ERROR701
+        raise PredictionAlreadyVerified
 
     if approval_to_save:
         file_name = await anonymous_copy_image(

@@ -4,7 +4,7 @@ from uuid import uuid4
 from PIL import Image
 from sqlalchemy import insert, select
 
-from api.image.exceptions import ERROR800
+from api.image.exceptions import ImageDoesNotExist
 from api.image.models import Image as ImageModel
 from api.user.models import User
 from config import IMAGES_FOLDER
@@ -23,9 +23,6 @@ async def get_image(name: str, user: User) -> bytes:
 
     Returns:
         bytes: The content of the image as bytes.
-
-    Raises:
-        ERROR800: If the image is not found.
     """
 
     select_query = select(ImageModel).where(
@@ -34,7 +31,7 @@ async def get_image(name: str, user: User) -> bytes:
     )
     image = await database.fetch_one(select_query)
     if image is None:
-        raise ERROR800
+        raise ImageDoesNotExist
     path = f"{IMAGES_FOLDER}/{image.name}"
     with open(path, "rb") as file:
         return file.read()

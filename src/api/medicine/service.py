@@ -60,9 +60,7 @@ async def get_medicine(user: User, medicine_id: int) -> Medicine | None:
     return medicine
 
 
-async def create_medicine(
-    user: User, medicine: CreateMedicineSchema
-) -> Medicine | None:
+async def create_medicine(user: User, medicine: CreateMedicineSchema) -> Medicine:
     """
     Create a new medicine for a user.
 
@@ -71,7 +69,7 @@ async def create_medicine(
         medicine (CreateMedicineSchema): The data required to create the medicine.
 
     Returns:
-        Medicine | None: The created medicine, or None if creation failed.
+        Medicine: The created medicine, or None if creation failed.
 
     """
 
@@ -115,7 +113,7 @@ async def delete_medicine(user: User, medicine_id: int):
 
 async def create_consumption(
     user: User, consumption: CreateConsumptionSchema
-) -> Consumption | None:
+) -> Consumption:
     """
     Create a new consumption for a user.
 
@@ -124,11 +122,7 @@ async def create_consumption(
         consumption (CreateConsumptionSchema): The data required to create the consumption.
 
     Returns:
-        Consumption | None: The created consumption, or None if creation failed.
-
-    Raises:
-        MedicineNotFound: Raised if the medicine associated with the consumption is not found.
-        ConsumptionAlreadyExists: Raised if a consumption with the same date already exists.
+        Consumption: The created consumption.
     """
 
     medicine = await database.fetch_one(

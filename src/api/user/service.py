@@ -86,7 +86,7 @@ async def get_user_devices(user: User) -> list[User]:
     return devices
 
 
-def get_user(user_id: str) -> User | None:
+def get_user(user_id: str) -> User:
     """
     Retrieves a user from the database based on the given user ID.
 
@@ -94,7 +94,7 @@ def get_user(user_id: str) -> User | None:
         user_id (str): The ID of the user to retrieve.
 
     Returns:
-        Union[User, None]: The user object if the user exists, None otherwise.
+        User: The user object.
     """
 
     select_query = select(User).where(User.id == user_id)
@@ -102,7 +102,7 @@ def get_user(user_id: str) -> User | None:
     return user
 
 
-async def update_user(user: User, new_data: UserUpdateSchema) -> User | None:
+async def update_user(user: User, new_data: UserUpdateSchema) -> User:
     """
     Updates a user with new data.
 
@@ -111,7 +111,7 @@ async def update_user(user: User, new_data: UserUpdateSchema) -> User | None:
         new_data (UserUpdateSchema): The updated data for the user.
 
     Returns:
-        Union[User, None]: The updated user object if the update was successful, None otherwise.
+        User: The updated user object.
     """
 
     update_query = (
@@ -121,7 +121,7 @@ async def update_user(user: User, new_data: UserUpdateSchema) -> User | None:
     return updated_user
 
 
-async def delete_user(user: User) -> None:
+async def delete_user(user: User):
     """
     Deletes a user from the database.
 

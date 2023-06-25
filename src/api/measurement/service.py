@@ -36,7 +36,7 @@ async def get_measurements(
 
 async def create_measurement(
     user: User, measurement: CreateUpdateMeasurementSchema
-) -> Measurement | None:
+) -> Measurement:
     """
     Create a measurement.
 
@@ -47,7 +47,7 @@ async def create_measurement(
         measurement (CreateUpdateMeasurementSchema): The measurement data to be created.
 
     Returns:
-        Measurement | None: The created measurement or None if creation failed.
+        Measurement: The created measurement or None if creation failed.
     """
 
     insert_query = (
@@ -61,7 +61,7 @@ async def create_measurement(
 
 async def update_measurement(
     user: User, measurement_id: int, measurement: CreateUpdateMeasurementSchema
-) -> Measurement | None:
+) -> Measurement:
     """
     Update a measurement.
 
@@ -73,7 +73,7 @@ async def update_measurement(
         measurement (CreateUpdateMeasurementSchema): The updated measurement data.
 
     Returns:
-        Measurement | None: The updated measurement or None if update failed.
+        Measurement: The updated measurement.
     """
 
     update_query = (
@@ -86,6 +86,10 @@ async def update_measurement(
         .returning(Measurement)
     )
     measurement = await database.fetch_one(query=update_query)
+
+    if not measurement:
+        raise MeasurementNotFound
+
     return measurement
 
 

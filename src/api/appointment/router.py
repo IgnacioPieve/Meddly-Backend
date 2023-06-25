@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends
 
-from api.appointment.exceptions import ERROR400
 from api.appointment.schemas import AppointmentSchema, CreateUpdateAppointmentSchema
 from api.appointment.service import create_appointment as create_appointment_service
 from api.appointment.service import delete_appointment as delete_appointment_service
@@ -99,10 +98,10 @@ async def update_appointment(
     - **AppointmentSchema**: The updated appointment data.
     """
 
-    appointment = await update_appointment_service(user, appointment_id, appointment)
-    if not appointment:
-        raise ERROR400
-    return appointment
+    try:
+        return await update_appointment_service(user, appointment_id, appointment)
+    except GenericException as e:
+        raise e.http_exception
 
 
 @router.delete(
@@ -120,6 +119,7 @@ async def delete_appointment(appointment_id: int, user: User = Depends(authentic
     - **appointment_id** (int): The ID of the appointment to be deleted.
     - **user** (User): Authentication dependency. This parameter is automatically obtained from the request.
     """
+
     try:
         await delete_appointment_service(appointment_id, user)
     except GenericException as e:
