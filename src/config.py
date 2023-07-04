@@ -2,6 +2,7 @@ import os
 
 import firebase_admin
 from dotenv import load_dotenv
+from twilio.rest import Client
 
 # ---------- CONFIG VARIABLES ----------
 
@@ -45,8 +46,11 @@ if os.environ.get("FIREBASE_PROJECT_ID"):
         )
     )
 
-WHATSAPP_API_KEY = os.getenv("WHATSAPP_API_KEY")
-WA_NUMBER_ID = os.getenv("WA_NUMBER_ID")
+TWILIO_NUMBER = os.getenv("TWILIO_NUMBER")
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+WhatsappClient = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
 
 IMAGES_FOLDER = os.getenv("IMAGES_FOLDER", "store/images")
 if not os.path.exists(IMAGES_FOLDER):

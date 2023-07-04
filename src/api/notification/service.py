@@ -15,7 +15,7 @@ from api.notification.models.notification import Notification
 from api.notification.models.notification_preference import NotificationPreference
 from api.user.models import Device, User
 from api.user.service import get_user_devices
-from config import SENDGRID_CONFIG
+from config import SENDGRID_CONFIG, TWILIO_NUMBER, WhatsappClient
 from database import database
 
 
@@ -144,8 +144,11 @@ async def send_notification(
         client.send(message_constructor)
 
     def send_whatsapp(message: Message, user: User):
-        # TODO: Implement WhatsApp notification
-        pass
+        WhatsappClient.messages.create(
+            from_=f"whatsapp:{TWILIO_NUMBER}",
+            body=message.whatsapp(),
+            to=f"whatsapp:{user.phone}",
+        )
 
     async def send_push(message: Message, user: User):
         devices = await get_user_devices(user)

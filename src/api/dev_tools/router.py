@@ -16,7 +16,7 @@ from api.measurement.models import Measurement
 from api.medicine.models import Medicine
 from api.supervisor.service import accept_invitation
 from api.user.models import User
-from config import FIREBASE_KEY, SENDGRID_CONFIG, WHATSAPP_API_KEY
+from config import FIREBASE_KEY, SENDGRID_CONFIG, TWILIO_NUMBER, WhatsappClient
 from database import Base, engine
 
 router = APIRouter(prefix="/dev", tags=["Developer_Tools"])
@@ -121,41 +121,27 @@ def send_notification(
         message_constructor.template_id = "d-5e634cd5cd6548b4b440f188c1d2a40a"
         message_constructor.dynamic_template_data = {
             "hi_message": "Hola usuario de prueba!",
-            "message": "SEEE PUTARDOOOO",
-            "subject": "mensaje de prueba",
+            "message": "Mensaje de prueba",
+            "subject": "Asunto de prueba",
         }
         sg = SendGridAPIClient(SENDGRID_CONFIG["api_key"])
         response = sg.send(message_constructor)
         print(f"Email sent to {email}. Response: {response.status_code}")
 
     def send_whatsapp():
-        message_data = [{"type": "text", "text": "Mensaje de prueba"}]
-        headers = {
-            "Authorization": f"Bearer {WHATSAPP_API_KEY}",
-            "Content-Type": "application/json",
-        }
-        body = {
-            "messaging_product": "whatsapp",
-            "to": phone_number,
-            "type": "template",
-            "template": {
-                "name": "generic_message",
-                "language": {"code": "es"},
-                "components": [{"type": "body", "parameters": message_data}],
-            },
-        }
-        response = requests.post(
-            "https://graph.facebook.com/v15.0/100370432826961/messages",
-            headers=headers,
-            json=body,
+        response = WhatsappClient.messages.create(
+            from_=f"whatsapp:{TWILIO_NUMBER}",
+            body="Mensaje de prueba",
+            to=f"whatsapp:{phone_number}",
         )
-        print(f"Message Sent via Whatsapp to {phone_number}. Response: {response.text}")
+
+        print(f"Message Sent via Whatsapp to {phone_number}. Response: {response}")
 
     def send_push():
         message = messaging.Message(
             notification=messaging.Notification(
-                title="Spiniiiiii",
-                body="Loren Puto",
+                title="Titulo de prueba",
+                body="Cuerpo de prueba",
             ),
             token=device_id,
         )
