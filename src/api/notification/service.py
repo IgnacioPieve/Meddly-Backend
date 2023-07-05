@@ -146,7 +146,7 @@ async def send_notification(
     def send_whatsapp(message: Message, user: User):
         WhatsappClient.messages.create(
             from_=f"whatsapp:{TWILIO_NUMBER}",
-            body=message.whatsapp(),
+            body=message.whatsapp()["message"],
             to=f"whatsapp:{user.phone}",
         )
 

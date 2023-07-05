@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from sqlalchemy import and_, delete, insert, or_, select, update
+from starlette.background import BackgroundTasks
 
 from api.medicine.exceptions import (
     ConsumptionAlreadyExists,
@@ -13,7 +14,12 @@ from api.medicine.schemas import (
     CreateMedicineSchema,
     DeleteConsumptionSchema,
 )
-from api.supervisor.service import get_supervised
+from api.notification.models.message import (
+    LowStockFromSupervisedUserMessage,
+    LowStockMessage,
+)
+from api.notification.service import send_notification
+from api.supervisor.service import get_supervised, get_supervisors
 from api.user.models import User
 from database import database
 
@@ -112,7 +118,9 @@ async def delete_medicine(user: User, medicine_id: int):
 
 
 async def create_consumption(
-    user: User, consumption: CreateConsumptionSchema
+    user: User,
+    consumption: CreateConsumptionSchema,
+    background_tasks: BackgroundTasks,
 ) -> Consumption:
     """
     Create a new consumption for a user.
@@ -167,6 +175,24 @@ async def create_consumption(
             .values(stock=max(medicine.stock - 1, 0))
         )
         await database.execute(query=update_query)
+
+        if medicine.stock_warning and medicine.stock <= medicine.stock_warning:
+            await send_notification(
+                LowStockMessage(
+                    medicine=medicine,
+                ),
+                user=User(**user),
+                background_tasks=background_tasks,
+            )
+            for supervisor in await get_supervisors(user):
+                await send_notification(
+                    LowStockFromSupervisedUserMessage(
+                        medicine=medicine,
+                        supervised_user=User(**user),
+                    ),
+                    user=User(**supervisor),
+                    background_tasks=background_tasks,
+                )
 
     return consumption
 

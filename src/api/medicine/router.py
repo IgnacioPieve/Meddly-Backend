@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from starlette.background import BackgroundTasks
 
 from api.auth.dependencies import authenticate
 from api.medicine.exceptions import GenericException
@@ -97,7 +98,9 @@ async def delete_medicine(medicine_id: int, user: User = Depends(authenticate)):
     summary="Create a new consumption",
 )
 async def create_consumption(
-    consumption: CreateConsumptionSchema, user: User = Depends(authenticate)
+    background_tasks: BackgroundTasks,
+    consumption: CreateConsumptionSchema,
+    user: User = Depends(authenticate),
 ):
     """
     # Create a new consumption
@@ -113,7 +116,9 @@ async def create_consumption(
     """
 
     try:
-        consumption = await create_consumption_service(user, consumption)
+        consumption = await create_consumption_service(
+            user, consumption, background_tasks
+        )
     except GenericException as e:
         raise e.http_exception
 

@@ -210,3 +210,51 @@ class YesterdarUserDidntTakeMedicine(Message):
             "body": f"Buenos días {self.user.get_fullname()}! Ingresa a la app para ver "
             f"los medicamentos no consumidos de ayer.",
         }
+
+
+class LowStockMessage(Message):
+    type = "medicine"
+
+    def whatsapp(self):
+        return {
+            "message": f"El medicamento {self.medicine.name} está por agotarse. "
+            f"Recuerda evitar que se agote para que no interrumpir el tratamiento."
+        }
+
+    def email(self):
+        return {
+            "subject": f"Medicamento por agotarse",
+            "message": f"El medicamento {self.medicine.name} está por agotarse. "
+            f"Recuerda evitar que se agote para que no interrumpir el tratamiento.",
+        }
+
+    def push(self):
+        return {
+            "title": "Medicamento por agotarse",
+            "body": f"El medicamento {self.medicine.name} está por agotarse. "
+            f"Recuerda evitar que se agote para que no interrumpir el tratamiento.",
+        }
+
+
+class LowStockFromSupervisedUserMessage(Message):
+    type = "medicine"
+
+    def whatsapp(self):
+        return {
+            "message": f"El medicamento {self.medicine.name} de {self.supervised_user.get_fullname()} está por agotarse. "
+            f"Recuerda evitar que se agote para que no interrumpir el tratamiento."
+        }
+
+    def email(self):
+        return {
+            "subject": f"Medicamento por agotarse",
+            "message": f"El medicamento {self.medicine.name} de {self.supervised_user.get_fullname()} está por agotarse. "
+            f"Recuerda evitar que se agote para que no interrumpir el tratamiento.",
+        }
+
+    def push(self):
+        return {
+            "title": "Medicamento por agotarse",
+            "body": f"El medicamento {self.medicine.name} de {self.supervised_user.get_fullname()} está por agotarse. "
+            f"Recuerda evitar que se agote para que no interrumpir el tratamiento.",
+        }
