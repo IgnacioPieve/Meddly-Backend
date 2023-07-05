@@ -218,21 +218,21 @@ class LowStockMessage(Message):
     def whatsapp(self):
         return {
             "message": f"El medicamento {self.medicine.name} está por agotarse. "
-            f"Recuerda evitar que se agote para que no interrumpir el tratamiento."
+            f"Recuerda evitar que se agote para no interrumpir el tratamiento."
         }
 
     def email(self):
         return {
             "subject": f"Medicamento por agotarse",
             "message": f"El medicamento {self.medicine.name} está por agotarse. "
-            f"Recuerda evitar que se agote para que no interrumpir el tratamiento.",
+            f"Recuerda evitar que se agote para no interrumpir el tratamiento.",
         }
 
     def push(self):
         return {
             "title": "Medicamento por agotarse",
             "body": f"El medicamento {self.medicine.name} está por agotarse. "
-            f"Recuerda evitar que se agote para que no interrumpir el tratamiento.",
+            f"Recuerda evitar que se agote para no interrumpir el tratamiento.",
         }
 
 
@@ -242,19 +242,19 @@ class LowStockFromSupervisedUserMessage(Message):
     def whatsapp(self):
         return {
             "message": f"El medicamento {self.medicine.name} de {self.supervised_user.get_fullname()} está por agotarse. "
-            f"Recuerda evitar que se agote para que no interrumpir el tratamiento."
+            f"Recuerda evitar que se agote para no interrumpir el tratamiento."
         }
 
     def email(self):
         return {
             "subject": f"Medicamento por agotarse",
             "message": f"El medicamento {self.medicine.name} de {self.supervised_user.get_fullname()} está por agotarse. "
-            f"Recuerda evitar que se agote para que no interrumpir el tratamiento.",
+            f"Recuerda evitar que se agote para no interrumpir el tratamiento.",
         }
 
     def push(self):
         return {
             "title": "Medicamento por agotarse",
             "body": f"El medicamento {self.medicine.name} de {self.supervised_user.get_fullname()} está por agotarse. "
-            f"Recuerda evitar que se agote para que no interrumpir el tratamiento.",
+            f"Recuerda evitar que se agote para no interrumpir el tratamiento.",
         }
