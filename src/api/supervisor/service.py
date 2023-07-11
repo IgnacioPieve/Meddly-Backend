@@ -116,11 +116,16 @@ async def delete_supervisor(supervisor_id: str, user: User) -> bool:
         bool: True if the supervisor was deleted successfully, False otherwise.
     """
 
-    delete_query = delete(Supervised).where(
-        Supervised.supervisor_id == supervisor_id,
-        Supervised.supervised_id == user.id,
+    delete_query = (
+        delete(Supervised)
+        .where(
+            Supervised.supervisor_id == supervisor_id,
+            Supervised.supervised_id == user.id,
+        )
+        .returning(Supervised)
     )
-    if not bool(await database.execute(delete_query)):
+
+    if not bool(await database.execute(query=delete_query)):
         raise SupervisorNotFound
 
 
@@ -135,9 +140,14 @@ async def delete_supervised(supervised_id: str, user: User) -> bool:
         bool: True if the supervised user was deleted successfully, False otherwise.
     """
 
-    delete_query = delete(Supervised).where(
-        Supervised.supervisor_id == user.id,
-        Supervised.supervised_id == supervised_id,
+    delete_query = (
+        delete(Supervised)
+        .where(
+            Supervised.supervisor_id == user.id,
+            Supervised.supervised_id == supervised_id,
+        )
+        .returning(Supervised)
     )
-    if not bool(await database.execute(delete_query)):
+
+    if not bool(await database.execute(query=delete_query)):
         raise SupervisedNotFound

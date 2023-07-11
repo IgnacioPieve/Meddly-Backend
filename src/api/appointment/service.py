@@ -106,5 +106,6 @@ async def delete_appointment(appointment_id: int, user: User):
         .where(Appointment.id == appointment_id, Appointment.user_id == user.id)
         .returning(Appointment)
     )
+
     if not bool(await database.execute(query=delete_query)):
         raise AppointmentDoesNotExist

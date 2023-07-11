@@ -113,6 +113,7 @@ async def delete_medicine(user: User, medicine_id: int):
         .where(Medicine.id == medicine_id, Medicine.user_id == user.id)
         .returning(Medicine)
     )
+
     if not bool(await database.execute(query=delete_query)):
         raise MedicineNotFound
 
@@ -225,6 +226,7 @@ async def delete_consumption(user: User, consumption: DeleteConsumptionSchema):
         )
         .returning(Consumption)
     )
+
     if not bool(await database.execute(query=delete_query)):
         raise ConsumptionDoesNotExist
 

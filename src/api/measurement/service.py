@@ -115,5 +115,6 @@ async def delete_measurement(user: User, measurement_id: int) -> bool:
         )
         .returning(Measurement)
     )
+
     if not bool(await database.execute(query=delete_query)):
         raise MeasurementNotFound
