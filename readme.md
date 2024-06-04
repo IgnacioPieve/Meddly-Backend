@@ -7,7 +7,7 @@ Our dedicated team of talented individuals brought this vision to life:
 
 - **Sofía Florencia Cibello**: A proficient _Frontend Developer_ and _UX/UI Designer_.
 - **Ignacio Pieve Roiger**: A skilled _Team Leader_ and _Backend Developer_.
-- **Lorenzo Sala**: An accomplished _Frontend Developer_.
+- **Lorenzo Sala**: An accomplished _Frontend & backend Developer_.
 
 
 Together, we strived to create a seamless experience for our users, ensuring that Meddly becomes a reliable companion on their health journeys.
